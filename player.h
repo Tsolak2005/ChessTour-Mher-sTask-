@@ -3,12 +3,15 @@
 
 #include <QObject>
 #include <QWidget>
-
-class Player
+ 
+class Player:public QObject
 {
     Q_OBJECT
 public:
-    Player();
+    explicit Player(QObject *parent = nullptr);
+    
+private :
+
 };
 
 #endif // PLAYER_H
