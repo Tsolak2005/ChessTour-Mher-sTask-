@@ -4,20 +4,20 @@
 class Game
 {
 private:
-    int white_player_id;
-    int black_player_id;
-    int result;
+    int m_whitePlayerId;
+    int m_blackPlayerId;
+    int m_result;
 
 public:
     Game(int w, int b, int res = -2);
 
-    int GetWhite_player_id() const;
-    int GetBlack_player_id() const;
-    int GetResult() const;
+    int getWhitePlayerId() const;
+    int getBlackPlayerId() const;
+    int getResult() const;
 
-    void SetWhite_player_id(int);
-    void SetBlack_player_id(int);
-    void SetResult(int);
+    void setWhitePlayerId(int);
+    void setBlackPlayerId(int);
+    void setResult(int);
 
     bool isResultDefined() const;
 
