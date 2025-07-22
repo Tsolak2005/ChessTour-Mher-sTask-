@@ -2,13 +2,16 @@
 #define PLAYER_H
 
 #include <QObject>
-
-class Player : public QObject
+#include <QWidget>
+ 
+class Player:public QObject
 {
     Q_OBJECT
 public:
     explicit Player(QObject *parent = nullptr);
+    
+private :
+
 };
 
 #endif // PLAYER_H
-
