@@ -1,27 +1,30 @@
 #include "comfortcoef.h"
-#include"player.h"
-#include<QtMath>
+#include "player.h"
+#include <QtMath>
+
 ComfortCoef::ComfortCoef() {}
-int ComfortCoef::GameCoef(Player P1, Player P2) {
-    return 10 - abs(P1.GetCurrentPoint() - P2.GetCurrentPoint()) * 2;
+
+int ComfortCoef::gameCoef(Player P1, Player P2)
+{
+    return 10 - abs(P1.getCurrentPoint() - P2.getCurrentPoint()) * 2;
 }
 
-int ComfortCoef::ColorCoef(Player P1, Player P2){
-    if (abs(P1.GetColorCoef() + P2.GetColorCoef()) == 0 && P1.GetColorCoef()!= 2)
+int ComfortCoef::colorCoef(Player P1, Player P2)
+{
+    if (abs(P1.getColorCoef() + P2.getColorCoef()) == 0 && P1.getColorCoef()!= 2)
         return 8;
-    if (abs(P1.GetColorCoef() + P2.GetColorCoef()) == 1)
+    if (abs(P1.getColorCoef() + P2.getColorCoef()) == 1)
         return 7;
-    if (abs(P1.GetColorCoef() + P2.GetColorCoef()) == 2)
+    if (abs(P1.getColorCoef() + P2.getColorCoef()) == 2)
         return 6;
-    if (abs(P1.GetColorCoef() + P2.GetColorCoef()) == 3)
+    if (abs(P1.getColorCoef() + P2.getColorCoef()) == 3)
         return 5;
-    if (abs(P1.GetColorCoef() + P2.GetColorCoef()) == 4)
+    if (abs(P1.getColorCoef() + P2.getColorCoef()) == 4)
         return 0;
     return 6; //(2,-2) case
 }
 
-int ComfortCoef::LastColorCoef(Player P1, Player P2){
-    if (P1.GetLastColor() + P2.GetLastColor() == 1)
-        return 2;
-    return 1;
+int ComfortCoef::lastColorCoef(Player P1, Player P2)
+{
+    return P1.getLastColor() + 1 == P2.getLastColor() ? 2 : 1;
 }
