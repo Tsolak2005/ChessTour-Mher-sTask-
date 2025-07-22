@@ -59,3 +59,7 @@ qrc_*.cpp
 
 # Translation files (compiled)
 *.qm
+
+# Ignore Qt Creator/CLion user-specific files
+CMakeLists.txt.user
+CMakeLists.txt.user.*
