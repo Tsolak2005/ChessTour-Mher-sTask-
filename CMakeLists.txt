@@ -39,6 +39,7 @@ else()
         add_executable(ChessTournament
             ${PROJECT_SOURCES}
             player.h player.cpp
+            comfortcoef.h comfortcoef.cpp
         )
     endif()
 endif()
