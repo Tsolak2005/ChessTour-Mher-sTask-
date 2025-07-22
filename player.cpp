@@ -1,3 +1,8 @@
 #include "player.h"
 
-Player::Player() {}
+Player::Player(QObject *parent)
+    : QObject(parent)
+{
+
+}
+
