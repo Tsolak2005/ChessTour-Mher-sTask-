@@ -21,3 +21,8 @@ void Player::setCurrentPOint(const int currentPoint)
 {
     m_currentPoint = currentPoint;
 }
+
+bool Player::isPosibleToPlay()
+{
+
+}

@@ -3,11 +3,6 @@
 
 class Game
 {
-private:
-    int m_whitePlayerId;
-    int m_blackPlayerId;
-    int m_result;
-
 public:
     Game(int w, int b, int res = -2);
 
@@ -21,6 +16,10 @@ public:
 
     bool isResultDefined() const;
 
+private:
+    int m_whitePlayerId;
+    int m_blackPlayerId;
+    int m_result;
 };
 
 #endif // GAME_H
