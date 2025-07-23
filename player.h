@@ -21,4 +21,4 @@ private:
     int m_lastColor;
 };
 
-#endif // PLAYER_H
+#endif
