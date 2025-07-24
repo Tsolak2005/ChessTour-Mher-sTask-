@@ -2,27 +2,22 @@
 
 Player::Player(QObject *parent) {}
 
-int Player::getCurrentPoint()
+int Player::getCurrentPoint()const
 {
     return m_currentPoint;
 }
 
-int Player::getColorCoef()
+int Player::getColorCoef()const
 {
     return m_colorCoef;
 }
 
-int Player::getLastColor()
+int Player::getLastColor()const
 {
     return m_lastColor;
 }
 
-void Player::setCurrentPOint(const int currentPoint)
+void Player::setCurrentPoint(const int currentPoint)
 {
     m_currentPoint = currentPoint;
-}
-
-bool Player::isPosibleToPlay()
-{
-
 }

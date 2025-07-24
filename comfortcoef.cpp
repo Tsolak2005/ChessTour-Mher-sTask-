@@ -26,5 +26,5 @@ int ComfortCoef::colorCoef(Player P1, Player P2)
 
 int ComfortCoef::lastColorCoef(Player P1, Player P2)
 {
-    return P1.getLastColor() + 1 == P2.getLastColor() ? 2 : 1;
+    return (P1.getLastColor() + 1) % 2 == P2.getLastColor() ? 2 : 1;
 }

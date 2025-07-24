@@ -10,10 +10,10 @@ class Player:public QObject
 public:
     explicit Player(QObject *parent = nullptr);
     
-    int getCurrentPoint();
-    int getColorCoef();
-    int getLastColor();
-    void setCurrentPOint(const int currentPoint);
+    int getCurrentPoint()const;
+    int getColorCoef()const;
+    int getLastColor()const;
+    void setCurrentPoint(const int currentPoint);
 
 private:
     int m_currentPoint;
