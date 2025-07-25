@@ -41,8 +41,6 @@ void MainWindow::on_pushButtonAddName_clicked()
     static int countOfNames = 0;
     QHBoxLayout * horizontalLayoutOfName = new QHBoxLayout();
     QLineEdit * newLine = new QLineEdit();
-
-    ui->verticalLayoutOfNames->insertWidget(++countOfNames, newLine);
     newLine->setMinimumHeight(10);
     QLabel * newLabel = new QLabel();
     newLabel->setMinimumWidth(15);
