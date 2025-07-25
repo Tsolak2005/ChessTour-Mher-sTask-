@@ -11,6 +11,8 @@ void MainWindow::connectFunction()
     //stackedWidget
     ui->stackedWidget->setCurrentIndex(0);
     QObject::connect(ui->newTournamnetClickButton, &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(1);});
+    QObject::connect(ui->okPushButton, &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(2);});
+
 
     //scrollArea
     ui->scrollArea->setWidgetResizable(true);

@@ -39,8 +39,8 @@
    <widget class="QWidget" name="verticalLayoutWidget_6">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>170</y>
+      <x>40</x>
+      <y>30</y>
       <width>721</width>
       <height>571</height>
      </rect>
@@ -329,13 +329,13 @@ pushButton:pressed {
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QTextBrowser" name="textBrowser">
            <property name="geometry">
             <rect>
-             <x>0</x>
+             <x>-10</x>
              <y>0</y>
              <width>531</width>
              <height>551</height>
@@ -519,7 +519,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                <number>0</number>
               </property>
               <property name="sizeConstraint">
-               <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+               <enum>QLayout::SetMinAndMaxSize</enum>
               </property>
              </layout>
             </widget>
