@@ -43,12 +43,7 @@ else()
             ${PROJECT_SOURCES}
             player.h player.cpp
             comfortcoef.h comfortcoef.cpp
-<<<<<<< HEAD
-            game.cpp
-=======
             game.cpp game.h
-
->>>>>>> d373684247abdb99733615dfc1bf1984213c7d1a
         )
     endif()
 endif()
