@@ -43,8 +43,7 @@ else()
             ${PROJECT_SOURCES}
             player.h player.cpp
             comfortcoef.h comfortcoef.cpp
-            game.cpp game.h
-            tournament.ui
+            game.cpp
         )
     endif()
 endif()
