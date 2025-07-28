@@ -44,6 +44,7 @@ else()
             player.h player.cpp
             comfortcoef.h comfortcoef.cpp
             game.cpp game.h
+            gamemanager.h gamemanager.cpp
         )
     endif()
 endif()

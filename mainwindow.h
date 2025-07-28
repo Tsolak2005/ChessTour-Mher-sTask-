@@ -24,7 +24,6 @@ private slots:
     void on_pushButtonAddName_clicked();
 
 private:
-    int countOfNames = 0;
     Ui::MainWindow *ui;
 
 };

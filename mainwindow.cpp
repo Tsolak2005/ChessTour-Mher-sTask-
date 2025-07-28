@@ -44,6 +44,7 @@ void MainWindow::on_pushButtonAddName_clicked()
 
     QLabel *newLabel = new QLabel();
     newLabel->setMinimumWidth(15);
+    int countOfNames = ui->verticalLayoutOfNames->count();
     newLabel->setNum(++countOfNames);
 
     horizontalLayoutOfName->addWidget(newLabel);

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QWidget>
- 
+
 class Player:public QObject
 {
     Q_OBJECT
@@ -14,7 +14,7 @@ public:
     int getCurrentPoint()const;
     int getColorCoef()const;
     int getLastColor()const;
-    void setId(const int playerId);
+    void setId(const int id);
     void setCurrentPoint(const int currentPoint);
     void setColorCoef(const int colorCoef);
     void setLastColor(const int lastColor);
