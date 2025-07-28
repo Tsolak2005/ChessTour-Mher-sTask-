@@ -19,7 +19,7 @@ set(PROJECT_SOURCES
         mainwindow.ui
 )
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6) # Need to add header(.h) and source(.cpp) files in this section for Qt6(>=)
     qt_add_executable(ChessTournament
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
