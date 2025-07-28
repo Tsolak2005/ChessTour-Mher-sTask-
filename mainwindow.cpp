@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <qstackedwidget.h>
 #include <QHBoxLayout>
+#include <qcheckbox.h>
 
 void MainWindow::connectFunction()
 {
@@ -14,13 +15,24 @@ void MainWindow::connectFunction()
     QObject::connect(ui->okPushButton, &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(2);});
 
 
-    //scrollArea
-    ui->scrollArea->setWidgetResizable(true);
+    //scrollAreaOfPlayerNames
+    ui->scrollAreaOfPlayersName->setWidgetResizable(true);
 
-    // Create a container widget inside the scroll area
-    QWidget* container = new QWidget();
-    container->setLayout(ui->verticalLayoutOfNames);
-    ui->scrollArea->setWidget(container);
+    //scrollAreaOfTournamnets
+    ui->scrollAreaOfTournaments->setWidgetResizable(true);
+
+
+
+    // Create a container widget inside the scroll area for scrollAreaOfPlayerNames
+    QWidget* container1 = new QWidget();
+    container1->setLayout(ui->verticalLayoutOfNames);
+    ui->scrollAreaOfPlayersName->setWidget(container1);
+
+    // Create a container widget inside the scroll area for scrollAreaOfTournamnets
+    QWidget* container2 = new QWidget();
+    container2->setLayout(ui->verticalLayoutOfTournamnets);
+    ui->scrollAreaOfTournaments->setWidget(container2);
+
  }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -49,3 +61,12 @@ void MainWindow::on_pushButtonAddName_clicked()
     horizontalLayoutOfName->addWidget(newLine);
     ui->verticalLayoutOfNames->addLayout(horizontalLayoutOfName);
 }
+
+void MainWindow::on_editPushBotton_clicked()
+{
+    static int countOfNames = 0;
+
+    QCheckBox * checkbox = new QCheckBox("Tournament " + QString::number(++countOfNames));
+    ui->verticalLayoutOfTournamnets->addWidget(checkbox);
+}
+

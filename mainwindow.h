@@ -23,6 +23,8 @@ public:
 private slots:
     void on_pushButtonAddName_clicked();
 
+    void on_editPushBotton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
