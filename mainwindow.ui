@@ -137,40 +137,9 @@ pushButton:pressed {
                  </property>
                 </widget>
                </item>
-               <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <item>
-                  <widget class="QPushButton" name="editPushBotton">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="text">
-                    <string>Edit</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="deletePushBotton">
-                   <property name="enabled">
-                    <bool>true</bool>
-                   </property>
-                   <property name="text">
-                    <string>Delete</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
               </layout>
              </item>
             </layout>
-           </item>
-           <item>
-            <widget class="Line" name="line_10">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-            </widget>
            </item>
            <item>
             <widget class="QScrollArea" name="scrollAreaOfTournaments">
@@ -203,7 +172,7 @@ pushButton:pressed {
                 <rect>
                  <x>0</x>
                  <y>10</y>
-                 <width>161</width>
+                 <width>151</width>
                  <height>80</height>
                 </rect>
                </property>
@@ -384,25 +353,15 @@ li.checked::marker { content: &quot;\2612&quot;; }
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
             <item>
-             <widget class="QLineEdit" name="lineEdit"/>
+             <widget class="QLineEdit" name="lineEditOfName"/>
             </item>
             <item>
-             <widget class="QLineEdit" name="lineEdit_2"/>
+             <widget class="QLineEdit" name="lineEditOfData"/>
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
-               <widget class="QLineEdit" name="lineEdit_3"/>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Count</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="lineEdit_4"/>
+               <widget class="QLineEdit" name="lineEditOfTourCount"/>
               </item>
              </layout>
             </item>
@@ -414,9 +373,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <widget class="QWidget" name="verticalLayoutWidget_9">
            <property name="geometry">
             <rect>
-             <x>60</x>
+             <x>40</x>
              <y>50</y>
-             <width>65</width>
+             <width>74</width>
              <height>131</height>
             </rect>
            </property>
@@ -438,7 +397,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <item>
              <widget class="QLabel" name="label_9">
               <property name="text">
-               <string>Tour</string>
+               <string>Tour Count</string>
               </property>
              </widget>
             </item>
