@@ -63,11 +63,7 @@ void MainWindow::on_pushButtonAddName_clicked()
     horizontalLayoutOfName->addWidget(newLine);
 
     ui->verticalLayoutOfNames->addLayout(horizontalLayoutOfName);
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 87ba415a966b02a8361f59d0460d90035efb9323
 }
 
 void MainWindow::on_okPushButton_clicked()
