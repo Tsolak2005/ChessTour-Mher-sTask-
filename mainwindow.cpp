@@ -56,16 +56,18 @@ void MainWindow::on_pushButtonAddName_clicked()
     QLabel *newLabel = new QLabel();
     newLabel->setMinimumWidth(15);
 
-    int countOfNames = ui->verticalLayoutOfNames->count();
-    newLabel->setNum(++countOfNames);
-
+    int count = ui->verticalLayoutOfNames->count();
+    newLabel->setNum(++count);
 
     horizontalLayoutOfName->addWidget(newLabel);
     horizontalLayoutOfName->addWidget(newLine);
 
     ui->verticalLayoutOfNames->addLayout(horizontalLayoutOfName);
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 87ba415a966b02a8361f59d0460d90035efb9323
 }
 
 void MainWindow::on_okPushButton_clicked()
