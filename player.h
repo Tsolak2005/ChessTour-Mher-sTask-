@@ -14,7 +14,11 @@ public:
     int getCurrentPoint()const;
     int getColorCoef()const;
     int getLastColor()const;
+<<<<<<< HEAD
     void setId(const int id);
+=======
+    void setId(const int playerId);
+>>>>>>> 605ff60d3de0e1eac93279037e79cff283b90150
     void setCurrentPoint(const int currentPoint);
     void setColorCoef(const int colorCoef);
     void setLastColor(const int lastColor);

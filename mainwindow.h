@@ -19,9 +19,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void connectFunction();
+    void deletTournamentDetailes();
 
 private slots:
     void on_pushButtonAddName_clicked();
+
+    void on_okPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
