@@ -11,7 +11,7 @@ void MainWindow::connectFunction()
     //stackedWidget
     ui->stackedWidget->setCurrentIndex(0);
     QObject::connect(ui->newTournamnetClickButton, &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(1);});
-    QObject::connect(ui->okPushButton, &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(2);});
+    QObject::connect(ui->okPushButton, &QPushButton::clicked, this, [this]() { if(ui->verticalLayoutOfNames->count()) ui->stackedWidget->setCurrentIndex(2);});
 
 
     //scrollArea
@@ -38,14 +38,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButtonAddName_clicked()
 {
-    static int countOfNames = 0;
-    QHBoxLayout * horizontalLayoutOfName = new QHBoxLayout();
-    QLineEdit * newLine = new QLineEdit();
+    QHBoxLayout *horizontalLayoutOfName = new QHBoxLayout();
+    QLineEdit *newLine = new QLineEdit();
     newLine->setMinimumHeight(10);
-    QLabel * newLabel = new QLabel();
+
+    QLabel *newLabel = new QLabel();
     newLabel->setMinimumWidth(15);
     newLabel->setNum(++countOfNames);
+
     horizontalLayoutOfName->addWidget(newLabel);
     horizontalLayoutOfName->addWidget(newLine);
+
     ui->verticalLayoutOfNames->addLayout(horizontalLayoutOfName);
+    ui->tableWidget->setRowCount(countOfNames);
 }
