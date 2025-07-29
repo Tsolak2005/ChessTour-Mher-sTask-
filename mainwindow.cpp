@@ -7,7 +7,7 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
-
+#include"gamemanager.h"
 void MainWindow::connectFunction()
 {
     //stackedWidget
@@ -66,6 +66,35 @@ void MainWindow::on_pushButtonAddName_clicked()
 
 }
 
+void MainWindow::addPlayersToGameManager(GameManager* gameManager)
+{
+    int rowCount = ui->verticalLayoutOfNames->count();
+
+    for (int i = 0; i < rowCount; ++i) {
+        QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
+        if (!rowItem) continue;
+
+        QHBoxLayout* rowLayout = qobject_cast<QHBoxLayout*>(rowItem->layout());
+        if (!rowLayout) continue;
+
+        QLayoutItem* nameItem = rowLayout->itemAt(1);
+        if (!nameItem) continue;
+
+        QWidget* widget = nameItem->widget();
+        if (!widget) continue;
+
+        QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
+        if (!lineEdit) continue;
+
+        QString playerName = lineEdit->text().trimmed();
+        if (!playerName.isEmpty()) {
+            Player* newPlayer = new Player();
+            newPlayer->setName(playerName);
+            gameManager->addNewPlayer(newPlayer);
+        }
+    }
+}
+
 void MainWindow::on_okPushButton_clicked()
 {
     if(ui->verticalLayoutOfNames->count() && ui->lineEditOfTourCount->isModified() && ui->lineEditOfData->isModified() && ui->lineEditOfName->isModified() && ui->textEdit->document()->isModified())
@@ -88,6 +117,34 @@ void MainWindow::on_okPushButton_clicked()
         ui->verticalLayoutOfTournamnets->addLayout(horizontalLayoutOfName);
         ui->tableWidget->setRowCount(ui->verticalLayoutOfNames->count());
 
+        GameManager* Tour = new GameManager();
+        Tour->setTourName(ui->lineEditOfName->text());
+        Tour->setTourCount(ui->lineEditOfTourCount->text().toInt());
+        Tour->setDate(ui->lineEditOfData->text());
+        Tour->setPlayerCount(ui->verticalLayoutOfNames->count());
+        ui->infoTab->setText(ui->textEdit->toPlainText());
+
+        addPlayersToGameManager(Tour);
+
+       /*     TO ENSURE THAT m_player_list CONTAINS ALL THE PLAYERS,
+                PLAYERS' NAMES WERE PRINTED IN INFOTAB
+
+        QString currentText = ui->infoTab->toPlainText();  // or toPlainText() if infoTab is a QTextEdit
+        QString newText;
+
+        for (int i = 0; i < Tour->getPlayerCount(); ++i) {
+            Player* p = Tour->m_playerList[i];
+            if (!p->getName().isEmpty()) {
+                if (!newText.isEmpty())
+                    newText += ", ";
+                newText += p->getName();
+            }
+        }
+        if (!currentText.isEmpty() && !newText.isEmpty())
+            currentText += "\n";  // add newline before appending new names
+
+        currentText += newText;
+        ui->infoTab->setText(currentText); */
     }
     else
     {

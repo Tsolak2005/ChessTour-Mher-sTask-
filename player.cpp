@@ -22,6 +22,11 @@ int Player::getLastColor()const
     return m_lastColor;
 }
 
+QString Player::getName() const
+{
+    return m_name;
+}
+
 void Player::setId(const int playerId)
 {
     m_id = playerId;
@@ -40,4 +45,9 @@ void Player::setColorCoef(const int colorCoef)
 void Player::setLastColor(const int lastColor)
 {
     m_lastColor = lastColor;
+}
+
+void Player::setName(const QString name)
+{
+    m_name = name;
 }

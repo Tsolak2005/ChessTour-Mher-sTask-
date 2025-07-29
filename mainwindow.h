@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include"gamemanager.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -20,6 +21,7 @@ public:
     ~MainWindow();
     void connectFunction();
     void deletTournamentDetailes();
+    void addPlayersToGameManager(GameManager* gameManager);
 
 private slots:
     void on_pushButtonAddName_clicked();

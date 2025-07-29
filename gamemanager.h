@@ -7,6 +7,7 @@
 class GameManager
 {
 public:
+    std::vector<Player*> m_playerList;
     GameManager();
     int getPlayerCount()const;
     int getTourCount()const;
@@ -18,7 +19,6 @@ public:
     void setDate(const QString date);
     void addNewPlayer(Player* P);
 private:
-    std::vector<Player*> m_playerList;
     int m_playerCount;
     int m_tourCount;
     QString m_tourName;
