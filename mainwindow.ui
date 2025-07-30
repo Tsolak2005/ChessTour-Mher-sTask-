@@ -304,7 +304,7 @@ pushButton:pressed {
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QTextBrowser" name="textBrowser">
@@ -566,7 +566,7 @@ QTabBar::tab:selected {
               <rect>
                <x>20</x>
                <y>40</y>
-               <width>353</width>
+               <width>363</width>
                <height>351</height>
               </rect>
              </property>

@@ -87,9 +87,14 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
         if (!lineEdit) continue;
 
         QString playerName = lineEdit->text().trimmed();
+        static int id = 0;
         if (!playerName.isEmpty()) {
             Player* newPlayer = new Player();
             newPlayer->setName(playerName);
+            newPlayer->setColorCoef(0);
+            newPlayer->setLastColor(0);
+            newPlayer->setCurrentPoint(0);
+            newPlayer->setId(++id);
             gameManager->addNewPlayer(newPlayer);
         }
     }
@@ -117,14 +122,14 @@ void MainWindow::on_okPushButton_clicked()
         ui->verticalLayoutOfTournamnets->addLayout(horizontalLayoutOfName);
         ui->tableWidget->setRowCount(ui->verticalLayoutOfNames->count());
 
-        GameManager* Tour = new GameManager();
-        Tour->setTourName(ui->lineEditOfName->text());
-        Tour->setTourCount(ui->lineEditOfTourCount->text().toInt());
-        Tour->setDate(ui->lineEditOfData->text());
-        Tour->setPlayerCount(ui->verticalLayoutOfNames->count());
+        GameManager* Tournament = new GameManager();
+        Tournament->setTourName(ui->lineEditOfName->text());
+        Tournament->setTourCount(ui->lineEditOfTourCount->text().toInt());
+        Tournament->setDate(ui->lineEditOfData->text());
+        Tournament->setPlayerCount(ui->verticalLayoutOfNames->count());
         ui->infoTab->setText(ui->textEdit->toPlainText());
 
-        addPlayersToGameManager(Tour);
+        addPlayersToGameManager(Tournament);
 
        /*     TO ENSURE THAT m_player_list CONTAINS ALL THE PLAYERS,
                 PLAYERS' NAMES WERE PRINTED IN INFOTAB
