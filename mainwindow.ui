@@ -41,8 +41,8 @@
      <rect>
       <x>40</x>
       <y>30</y>
-      <width>721</width>
-      <height>571</height>
+      <width>1051</width>
+      <height>611</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -751,7 +751,7 @@ QTableWidget::item:hover {
      <x>0</x>
      <y>0</y>
      <width>1347</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
