@@ -304,14 +304,14 @@ pushButton:pressed {
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QTextBrowser" name="textBrowser">
            <property name="geometry">
             <rect>
-             <x>-10</x>
-             <y>0</y>
+             <x>0</x>
+             <y>10</y>
              <width>531</width>
              <height>551</height>
             </rect>
@@ -566,7 +566,7 @@ QTabBar::tab:selected {
               <rect>
                <x>20</x>
                <y>40</y>
-               <width>363</width>
+               <width>471</width>
                <height>351</height>
               </rect>
              </property>
@@ -612,7 +612,7 @@ QTableWidget::item:hover {
               <number>3</number>
              </property>
              <attribute name="horizontalHeaderDefaultSectionSize">
-              <number>112</number>
+              <number>145</number>
              </attribute>
              <row/>
              <row/>
