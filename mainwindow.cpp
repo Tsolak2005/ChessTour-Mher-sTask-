@@ -26,7 +26,7 @@ void MainWindow::connectFunction()
     container2->setLayout(ui->verticalLayoutOfTournamnets);
     ui->scrollAreaOfTournaments->setWidget(container2);
 
-    QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(1); deleteTournamentDetailes();});
+    QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(0); deleteTournamentDetailes();});
 
  }
 
