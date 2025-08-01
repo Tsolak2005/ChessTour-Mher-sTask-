@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include <QLayout>
 #include <QMainWindow>
 #include"gamemanager.h"
 
@@ -20,8 +20,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void connectFunction();
-    void deletTournamentDetailes();
+    void deleteTournamentDetailes();
     void addPlayersToGameManager(GameManager* gameManager);
+    bool isDataComplete();
+    void clearLayout(QLayout* layout);
 
 private slots:
     void on_pushButtonAddName_clicked();
@@ -30,6 +32,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    std::vector<GameManager*> vectorOfTournaments;
 
 };
 #endif // MAINWINDOW_H

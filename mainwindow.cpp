@@ -7,7 +7,9 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QLayout>
 #include"gamemanager.h"
+
 void MainWindow::connectFunction()
 {
     //stackedWidget
@@ -24,14 +26,35 @@ void MainWindow::connectFunction()
     container2->setLayout(ui->verticalLayoutOfTournamnets);
     ui->scrollAreaOfTournaments->setWidget(container2);
 
+    QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(1); deleteTournamentDetailes();});
+
  }
 
-void MainWindow::deletTournamentDetailes()
+void MainWindow::clearLayout(QLayout* layout) {
+    if (!layout) return;
+
+    QLayoutItem* item ;
+    while ((item = layout->takeAt(0)) != nullptr) {
+        if (QWidget* widget = item->widget()) {
+            widget->setParent(nullptr);
+            delete widget;
+        } else if (QLayout* childLayout = item->layout()) {
+            clearLayout(childLayout);      // Recursively clear nested layouts
+            delete childLayout;
+        }
+    }
+}
+
+
+
+void MainWindow::deleteTournamentDetailes()
  {
     ui->lineEditOfName ->clear();
     ui->lineEditOfData ->clear();
     ui->lineEditOfTourCount ->clear();
     ui->textEdit->clear();
+    clearLayout(ui->verticalLayoutOfNames);
+
  }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -87,7 +110,7 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
         if (!lineEdit) continue;
 
         QString playerName = lineEdit->text().trimmed();
-        static int id = 0;
+        int id = 0;
         if (!playerName.isEmpty()) {
             Player* newPlayer = new Player();
             newPlayer->setName(playerName);
@@ -100,9 +123,37 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
     }
 }
 
+bool MainWindow::isDataComplete()
+{
+    if(!(ui->verticalLayoutOfNames->count() && ui->lineEditOfTourCount->isModified() && ui->lineEditOfData->isModified() && ui->lineEditOfName->isModified() && ui->textEdit->document()->isModified()))
+        return false;
+
+    int rowCount = ui->verticalLayoutOfNames->count();
+
+    for (int i = 0; i < rowCount; ++i) {
+        QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
+        if (!rowItem) continue;
+
+        QHBoxLayout* rowLayout = qobject_cast<QHBoxLayout*>(rowItem->layout());
+        if (!rowLayout) continue;
+
+        QLayoutItem* nameItem = rowLayout->itemAt(1);
+        if (!nameItem) continue;
+
+        QWidget* widget = nameItem->widget();
+        if (!widget) continue;
+
+        QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
+        if (!lineEdit) continue;
+
+        if(!lineEdit->isModified()) return false;
+    }
+    return true;
+}
+
 void MainWindow::on_okPushButton_clicked()
 {
-    if(ui->verticalLayoutOfNames->count() && ui->lineEditOfTourCount->isModified() && ui->lineEditOfData->isModified() && ui->lineEditOfName->isModified() && ui->textEdit->document()->isModified())
+    if(isDataComplete())
     {
         ui->stackedWidget->setCurrentIndex(2);
         QHBoxLayout *horizontalLayoutOfName = new QHBoxLayout();
@@ -130,6 +181,7 @@ void MainWindow::on_okPushButton_clicked()
         ui->infoTab->setText(ui->textEdit->toPlainText());
 
         addPlayersToGameManager(Tournament);
+        vectorOfTournaments.push_back(Tournament);
 
        /*     TO ENSURE THAT m_player_list CONTAINS ALL THE PLAYERS,
                 PLAYERS' NAMES WERE PRINTED IN INFOTAB
@@ -154,7 +206,7 @@ void MainWindow::on_okPushButton_clicked()
     else
     {
         QMessageBox * message = new QMessageBox();
-        message->setText("No Players");
+        message->setText("Data isn't complete");
         message->show();
     }
 
