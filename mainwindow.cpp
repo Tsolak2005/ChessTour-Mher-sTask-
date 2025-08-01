@@ -8,13 +8,14 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QLayout>
+#include <QRadioButton>
 #include"gamemanager.h"
 
 void MainWindow::connectFunction()
 {
     //stackedWidget
     ui->stackedWidget->setCurrentIndex(0);
-    QObject::connect(ui->newTournamnetClickButton, &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(1);});
+    QObject::connect(ui->newTournamnetClickButton, &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(2);});
 
     // Create a container widget inside the scrollAreaOfPlayersName
     QWidget* container1 = new QWidget();
@@ -26,6 +27,8 @@ void MainWindow::connectFunction()
     container2->setLayout(ui->verticalLayoutOfTournamnets);
     ui->scrollAreaOfTournaments->setWidget(container2);
 
+    ui->pushButtonEdit->setDisabled(true);
+    ui->pushButtonDelete->setDisabled(true);
     QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(0); deleteTournamentDetailes();});
 
  }
@@ -155,53 +158,30 @@ void MainWindow::on_okPushButton_clicked()
 {
     if(isDataComplete())
     {
-        ui->stackedWidget->setCurrentIndex(2);
-        QHBoxLayout *horizontalLayoutOfName = new QHBoxLayout();
+        ui->stackedWidget->setCurrentIndex(0);
+        QRadioButton * radioButton = new QRadioButton();
+        radioButton->setText(ui->lineEditOfName->text());
 
-        QLabel *newLabel = new QLabel();
-        // newLabel->setMinimumWidth(15);
-        newLabel->setText(ui->lineEditOfName->text());
-        QPushButton * buttonOfEdit = new QPushButton();
-        buttonOfEdit->setText("Edit");
-        QPushButton * buttonOfDelet = new QPushButton();
-        buttonOfDelet->setText("Delete");
+        ui->verticalLayoutOfTournamnets->addWidget(radioButton);
+        vectorOfRadioButtons.push_back(radioButton);
 
-        horizontalLayoutOfName->addWidget(newLabel);
-        horizontalLayoutOfName->addWidget(buttonOfEdit);
-        horizontalLayoutOfName->addWidget(buttonOfDelet);
 
-        ui->verticalLayoutOfTournamnets->addLayout(horizontalLayoutOfName);
-        ui->tableWidget->setRowCount(ui->verticalLayoutOfNames->count());
+
 
         GameManager* Tournament = new GameManager();
         Tournament->setTourName(ui->lineEditOfName->text());
         Tournament->setTourCount(ui->lineEditOfTourCount->text().toInt());
         Tournament->setDate(ui->lineEditOfData->text());
         Tournament->setPlayerCount(ui->verticalLayoutOfNames->count());
-        ui->infoTab->setText(ui->textEdit->toPlainText());
+        Tournament->setInfo(ui->textEdit->toPlainText());
+
 
         addPlayersToGameManager(Tournament);
         vectorOfTournaments.push_back(Tournament);
 
-       /*     TO ENSURE THAT m_player_list CONTAINS ALL THE PLAYERS,
-                PLAYERS' NAMES WERE PRINTED IN INFOTAB
+        QObject::connect(radioButton, &QRadioButton::clicked, this, [this](){ui->pushButtonEdit->setDisabled(false); ui->pushButtonDelete->setDisabled(false); });
 
-        QString currentText = ui->infoTab->toPlainText();  // or toPlainText() if infoTab is a QTextEdit
-        QString newText;
-
-        for (int i = 0; i < Tour->getPlayerCount(); ++i) {
-            Player* p = Tour->m_playerList[i];
-            if (!p->getName().isEmpty()) {
-                if (!newText.isEmpty())
-                    newText += ", ";
-                newText += p->getName();
-            }
-        }
-        if (!currentText.isEmpty() && !newText.isEmpty())
-            currentText += "\n";  // add newline before appending new names
-
-        currentText += newText;
-        ui->infoTab->setText(currentText); */
+        deleteTournamentDetailes();
     }
     else
     {
@@ -211,5 +191,29 @@ void MainWindow::on_okPushButton_clicked()
     }
 
 
+}
+
+void MainWindow::EditFunction(GameManager* Tournament)
+{
+     ui->tableWidgetOfDrowing->setRowCount(Tournament->getPlayerCount());
+     ui->infoTab->setText(Tournament->getInfo());
+     // int countOfPlayers = Tournament->getPlayerCount();
+     // for(int i = 0; i<3; i++)
+     //     for(int j = 0; j<countOfPlayers; j++)
+     //     {
+     //         ui->tableWidgetOfDrowing
+     //     }
+     // ui->tableWidgetOfDrowing->set
+}
+
+
+void MainWindow::on_pushButtonEdit_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+    int count = vectorOfRadioButtons.size();
+    for(int i = 0; i<count; ++i)
+    {
+        if(vectorOfRadioButtons[i]->isChecked()) EditFunction(vectorOfTournaments[i]);
+    }
 }
 

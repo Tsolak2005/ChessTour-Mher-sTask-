@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <QLayout>
 #include <QMainWindow>
+#include <QRadioButton>
 #include"gamemanager.h"
 
 QT_BEGIN_NAMESPACE
@@ -24,15 +25,20 @@ public:
     void addPlayersToGameManager(GameManager* gameManager);
     bool isDataComplete();
     void clearLayout(QLayout* layout);
+    void EditFunction(GameManager* Tournament);
+
 
 private slots:
     void on_pushButtonAddName_clicked();
 
     void on_okPushButton_clicked();
 
+    void on_pushButtonEdit_clicked();
+
 private:
     Ui::MainWindow *ui;
     std::vector<GameManager*> vectorOfTournaments;
+    std::vector<QRadioButton*> vectorOfRadioButtons;
 
 };
 #endif // MAINWINDOW_H

@@ -2,6 +2,11 @@
 
 GameManager::GameManager() : m_playerCount(0), m_tourCount(0) {}
 
+QString GameManager::getInfo()const
+{
+    return m_info;
+}
+
 int GameManager::getPlayerCount() const
 {
     return m_playerCount;
@@ -20,6 +25,11 @@ void GameManager::setPlayerCount(const int playerCount)
 void GameManager::setTourCount(const int tourCount)
 {
     m_tourCount = tourCount;
+}
+
+void GameManager::setInfo(const QString Info)
+{
+    m_info = Info;
 }
 
 QString GameManager::getTourName() const

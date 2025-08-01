@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1347</width>
-    <height>918</height>
+    <width>1626</width>
+    <height>806</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -188,9 +188,9 @@ pushButton:pressed {
               <widget class="QWidget" name="verticalLayoutWidget_2">
                <property name="geometry">
                 <rect>
-                 <x>0</x>
+                 <x>20</x>
                  <y>10</y>
-                 <width>181</width>
+                 <width>151</width>
                  <height>80</height>
                 </rect>
                </property>
@@ -322,11 +322,7 @@ pushButton:pressed {
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-
-         <number>1</number>
-
-         <number>0</number>
-
+          <number>2</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QTextBrowser" name="textBrowser">
@@ -545,7 +541,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <rect>
              <x>-10</x>
              <y>10</y>
-             <width>491</width>
+             <width>691</width>
              <height>501</height>
             </rect>
            </property>
@@ -571,7 +567,7 @@ QTabBar::tab:selected {
 </string>
            </property>
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <property name="iconSize">
             <size>
@@ -583,17 +579,52 @@ QTabBar::tab:selected {
             <attribute name="title">
              <string>Drawing</string>
             </attribute>
-            <widget class="QTableWidget" name="tableWidget">
+            <widget class="QPushButton" name="pushButton">
              <property name="geometry">
               <rect>
-               <x>20</x>
-               <y>40</y>
-               <width>471</width>
-               <height>351</height>
+               <x>310</x>
+               <y>380</y>
+               <width>93</width>
+               <height>29</height>
               </rect>
              </property>
-             <property name="styleSheet">
-              <string notr="true">QTableWidget {
+             <property name="text">
+              <string>OK</string>
+             </property>
+            </widget>
+            <widget class="QWidget" name="horizontalLayoutWidget">
+             <property name="geometry">
+              <rect>
+               <x>40</x>
+               <y>70</y>
+               <width>681</width>
+               <height>271</height>
+              </rect>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,10,0">
+              <property name="spacing">
+               <number>7</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="pushButton_3">
+                <property name="text">
+                 <string>previous</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="tableWidgetOfDrowing">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777210</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>true</bool>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QTableWidget {
     background-color: #fdfdfd;
     gridline-color: #ccc;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -623,53 +654,50 @@ QTableWidget::item:hover {
     background-color: #d0e7ff;
 }
 </string>
-             </property>
-             <property name="lineWidth">
-              <number>1</number>
-             </property>
-             <property name="rowCount">
-              <number>6</number>
-             </property>
-             <property name="columnCount">
-              <number>3</number>
-             </property>
-             <attribute name="horizontalHeaderDefaultSectionSize">
-              <number>145</number>
-             </attribute>
-             <row/>
-             <row/>
-             <row/>
-             <row/>
-             <row/>
-             <row/>
-             <column>
-              <property name="text">
-               <string>White Color</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Black Color</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Result</string>
-              </property>
-             </column>
-            </widget>
-            <widget class="QPushButton" name="pushButton">
-             <property name="geometry">
-              <rect>
-               <x>200</x>
-               <y>400</y>
-               <width>93</width>
-               <height>29</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>OK</string>
-             </property>
+                </property>
+                <property name="lineWidth">
+                 <number>1</number>
+                </property>
+                <property name="rowCount">
+                 <number>6</number>
+                </property>
+                <property name="columnCount">
+                 <number>3</number>
+                </property>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>145</number>
+                </attribute>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <row/>
+                <column>
+                 <property name="text">
+                  <string>White Color</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Black Color</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Result</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_2">
+                <property name="text">
+                 <string>next</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </widget>
            <widget class="QWidget" name="tab_2">
@@ -766,13 +794,26 @@ QTableWidget::item:hover {
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>1260</x>
+      <y>300</y>
+      <width>93</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1347</width>
+     <width>1626</width>
      <height>26</height>
     </rect>
    </property>
