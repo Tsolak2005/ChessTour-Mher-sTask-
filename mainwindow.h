@@ -26,7 +26,7 @@ public:
     bool isDataComplete();
     void clearLayout(QLayout* layout);
     void EditFunction(GameManager* Tournament);
-
+    void DeleteFunction(GameManager* Tournament);
 
 private slots:
     void on_pushButtonAddName_clicked();
@@ -34,6 +34,8 @@ private slots:
     void on_okPushButton_clicked();
 
     void on_pushButtonEdit_clicked();
+
+    void on_pushButtonDelete_clicked();
 
 private:
     Ui::MainWindow *ui;

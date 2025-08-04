@@ -96,6 +96,7 @@ void MainWindow::on_pushButtonAddName_clicked()
 }
 
     int  id = 0;
+
 void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 {
     int rowCount = ui->verticalLayoutOfNames->count();
@@ -239,4 +240,30 @@ void MainWindow::on_pushButtonEdit_clicked()
         }
     }
 }
+
+
+
+void MainWindow::on_pushButtonDelete_clicked()
+{
+    int index = 0;
+    for ( auto it = vectorOfRadioButtons.begin(); it != vectorOfRadioButtons.end(); ++it, ++index)
+    {
+        if ((*it)->isChecked())
+        {
+            delete vectorOfTournaments[index]; // delete the pointer
+            vectorOfTournaments.erase(vectorOfTournaments.begin() + index); // remove from tournaments
+            vectorOfRadioButtons.erase(it); // remove from radio buttons
+            ui->verticalLayoutOfTournamnets->removeItem(ui->verticalLayoutOfTournamnets->takeAt(index));
+            break;
+        }
+    }
+    ui->verticalLayoutOfTournamnets->update();
+}
+
+
+
+
+
+
+
 
