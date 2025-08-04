@@ -217,6 +217,7 @@ void MainWindow::EditFunction(GameManager* Tournament)
     for(int i = 0; i<rowCount; i++)
     {
         QComboBox * comboBox = new QComboBox();
+        comboBox->addItem("-");
         comboBox->addItem("1-0");
         comboBox->addItem("0-1");
         comboBox->addItem("0.5-0.5");
