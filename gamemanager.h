@@ -7,11 +7,12 @@
 class GameManager
 {
 public:
-    std::vector<Player*> m_playerList;
+
     GameManager();
     QString getInfo()const;
     int getPlayerCount()const;
     int getTourCount()const;
+    Player * getPlayerById(const int id) const;
     void setPlayerCount(const int playerCount);
     void setTourCount(const int tourCount);
     void setInfo(const QString Info);
@@ -26,6 +27,7 @@ private:
     QString m_tourName;
     QString m_date;
     QString m_info;
+    std::vector<Player*> m_playerList;
 };
 
 #endif // GAMEMANAGER_H

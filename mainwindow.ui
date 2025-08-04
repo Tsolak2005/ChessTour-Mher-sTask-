@@ -360,74 +360,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
           </widget>
          </widget>
          <widget class="QWidget" name="page_2">
-          <widget class="QWidget" name="verticalLayoutWidget_7">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>50</y>
-             <width>301</width>
-             <height>191</height>
-            </rect>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_12">
-            <item>
-             <widget class="QLineEdit" name="lineEditOfName"/>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEditOfData"/>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QLineEdit" name="lineEditOfTourCount"/>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <widget class="QTextEdit" name="textEdit"/>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="verticalLayoutWidget_9">
-           <property name="geometry">
-            <rect>
-             <x>40</x>
-             <y>50</y>
-             <width>74</width>
-             <height>131</height>
-            </rect>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_13">
-            <item>
-             <widget class="QLabel" name="label_7">
-              <property name="text">
-               <string>Name</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_8">
-              <property name="text">
-               <string>Date</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Tour Count</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Info</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
           <widget class="QLabel" name="label_10">
            <property name="geometry">
             <rect>
@@ -521,6 +453,74 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <string>+</string>
            </property>
           </widget>
+          <widget class="QWidget" name="verticalLayoutWidget_3">
+           <property name="geometry">
+            <rect>
+             <x>70</x>
+             <y>40</y>
+             <width>391</width>
+             <height>201</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Name</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditOfName"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Date</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditOfData"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Tour Count</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEditOfTourCount"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item alignment="Qt::AlignmentFlag::AlignTop">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Info</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QTextEdit" name="textEdit"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
          </widget>
          <widget class="QWidget" name="page_3">
           <widget class="QLabel" name="label_5">
@@ -606,7 +606,7 @@ QTabBar::tab:selected {
                <number>7</number>
               </property>
               <item>
-               <widget class="QPushButton" name="pushButton_3">
+               <widget class="QPushButton" name="pushButtonPrevios">
                 <property name="text">
                  <string>previous</string>
                 </property>
@@ -621,7 +621,7 @@ QTabBar::tab:selected {
                  </size>
                 </property>
                 <property name="autoFillBackground">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">QTableWidget {
@@ -793,19 +793,6 @@ QTableWidget::item:hover {
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="pushButton_4">
-    <property name="geometry">
-     <rect>
-      <x>1260</x>
-      <y>300</y>
-      <width>93</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

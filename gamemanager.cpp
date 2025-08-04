@@ -17,6 +17,17 @@ int GameManager::getTourCount() const
     return m_tourCount;
 }
 
+
+Player * GameManager::getPlayerById(const int id) const
+{
+    for (int i = 0; i < m_playerCount; ++i) {
+        if (m_playerList[i]->getId() == id) {
+            return m_playerList[i];
+        }
+    }
+    throw std::runtime_error("There is not  player with such Id");
+}
+
 void GameManager::setPlayerCount(const int playerCount)
 {
     m_playerCount = playerCount;
