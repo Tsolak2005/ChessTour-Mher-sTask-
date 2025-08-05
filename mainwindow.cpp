@@ -31,7 +31,9 @@ void MainWindow::connectFunction()
 
     ui->pushButtonEdit->setDisabled(true);
     ui->pushButtonDelete->setDisabled(true);
-    QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() { ui->stackedWidget->setCurrentIndex(0); deleteTournamentDetailes();});
+    QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() {
+        ui->stackedWidget->setCurrentIndex(0); deleteTournamentDetailes();
+    });
 
     ui->infoTab->setReadOnly(true);
  }
@@ -132,7 +134,12 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 
 bool MainWindow::isDataComplete()
 {
-    if(!(ui->verticalLayoutOfNames->count() && ui->lineEditOfTourCount->isModified() && ui->lineEditOfTourCount->text().toInt() && ui->lineEditOfData->isModified() && ui->lineEditOfName->isModified() && ui->textEdit->document()->isModified()))
+    if(!(ui->verticalLayoutOfNames->count() &&
+          ui->lineEditOfTourCount->isModified() &&
+          ui->lineEditOfTourCount->text().toInt() &&
+          ui->lineEditOfData->isModified() &&
+          ui->lineEditOfName->isModified() &&
+          ui->textEdit->document()->isModified()))
         return false;
 
     int rowCount = ui->verticalLayoutOfNames->count();
@@ -182,7 +189,9 @@ void MainWindow::on_okPushButton_clicked()
 
         addPlayersToGameManager(Tournament);
         vectorOfTournaments.push_back(Tournament);
-        QObject::connect(radioButton, &QRadioButton::clicked, this, [this](){ui->pushButtonEdit->setDisabled(false); ui->pushButtonDelete->setDisabled(false); });
+        QObject::connect(radioButton, &QRadioButton::clicked, this, [this](){
+            ui->pushButtonEdit->setDisabled(false); ui->pushButtonDelete->setDisabled(false);
+        });
         id = 0;
         deleteTournamentDetailes();
 

@@ -322,7 +322,7 @@ pushButton:pressed {
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="page">
           <widget class="QTextBrowser" name="textBrowser">
@@ -567,7 +567,7 @@ QTabBar::tab:selected {
 </string>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <property name="iconSize">
             <size>
@@ -819,7 +819,7 @@ QTableWidget::item:hover {
    </property>
    <widget class="QMenu" name="menughjkm">
     <property name="title">
-     <string> </string>
+     <string/>
     </property>
    </widget>
    <addaction name="menughjkm"/>
