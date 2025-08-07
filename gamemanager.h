@@ -3,6 +3,7 @@
 #include<vector>
 #include<QString>
 #include"player.h"
+#include "game.h"
 
 class GameManager
 {
@@ -21,12 +22,15 @@ public:
     void setTourName(const QString tourName);
     void setDate(const QString date);
     void addNewPlayer(Player* P);
+    bool isTheTournamnetStarted();
+
 private:
     int m_playerCount;
     int m_tourCount;
     QString m_tourName;
     QString m_date;
     QString m_info;
+    std::vector<std::vector<Game*>> m_gameList;
     std::vector<Player*> m_playerList;
 };
 

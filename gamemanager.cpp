@@ -67,3 +67,8 @@ void GameManager::addNewPlayer(Player* P)
 {
     m_playerList.push_back(P);
 }
+
+bool GameManager::isTheTournamnetStarted()
+{
+    return !m_gameList.empty();
+}
