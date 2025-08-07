@@ -32,10 +32,15 @@ void MainWindow::connectFunction()
     //edit and delete of Tournaments
     ui->pushButtonEdit->setDisabled(true);
     ui->pushButtonDelete->setDisabled(true);
+<<<<<<< HEAD
     QObject::connect(ui->pushButtonDelete, &QPushButton::clicked, this, [this]()
     {
         ui->stackedWidget->setCurrentIndex(0);
         ui->tableWidgetOfTabel->clear();
+=======
+    QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() {
+        ui->stackedWidget->setCurrentIndex(0); deleteTournamentDetailes();
+>>>>>>> 90dc450a439cda694acccf5ec40a73012c0f6953
     });
 
     //ok and cancel of new tournamnet
@@ -154,11 +159,19 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 >>bool MainWindow::isDataComplete( )
 {
     if(!(ui->verticalLayoutOfNames->count() &&
+<<<<<<< HEAD
           !ui->lineEditOfTourCount->text().isEmpty() &&
           !ui->lineEditOfTourCount->text().toInt() &&
           !ui->lineEditOfData->text().isEmpty() &&
           !ui->lineEditOfName->text().isEmpty() &&
           !ui->textEditOfInfo->document()->isEmpty()))
+=======
+          ui->lineEditOfTourCount->isModified() &&
+          ui->lineEditOfTourCount->text().toInt() &&
+          ui->lineEditOfData->isModified() &&
+          ui->lineEditOfName->isModified() &&
+          ui->textEdit->document()->isModified()))
+>>>>>>> 90dc450a439cda694acccf5ec40a73012c0f6953
         return false;
 
     int rowCount = ui->verticalLayoutOfNames->count();
@@ -210,6 +223,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked()
 
         addPlayersToGameManager(Tournament);
         vectorOfTournaments.push_back(Tournament);
+<<<<<<< HEAD
 
 
         QObject::connect(radioButton, &QRadioButton::clicked, this, [Tournament, this](){
@@ -222,6 +236,12 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked()
 
         emit radioButton->click();
 
+=======
+        QObject::connect(radioButton, &QRadioButton::clicked, this, [this](){
+            ui->pushButtonEdit->setDisabled(false); ui->pushButtonDelete->setDisabled(false);
+        });
+        id = 0;
+>>>>>>> 90dc450a439cda694acccf5ec40a73012c0f6953
         deleteTournamentDetailes();
 
     }
