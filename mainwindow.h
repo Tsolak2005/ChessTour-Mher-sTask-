@@ -43,7 +43,7 @@ public:
 private slots:
     void on_pushButtonAddName_clicked(QString text);
 
-    void on_PushButtonOkOfNewTournamnet_clicked();
+    void on_PushButtonOkOfNewTournamnet_clicked(GameManager*);
 
     void on_pushButtonEdit_clicked();
 
@@ -58,8 +58,7 @@ signals:
 private:
     Ui::MainWindow *ui;
     std::vector<GameManager*> vectorOfTournaments;
-    std::vector<QRadioButton*> vectorOfRadioButtons;
-    QButtonGroup* group;
+    std::vector<QRadioButton *> vectorOfRadioButtons;
     GameManager * theLatestRadioButton;
 
 };

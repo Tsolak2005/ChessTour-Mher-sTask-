@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include <QDebug>
+
+
 void MainWindow::connectFunction()
 {
     //stackedWidget
@@ -9,6 +11,7 @@ void MainWindow::connectFunction()
     {
         ui->stackedWidget->setCurrentIndex(1);
         deleteTournamentDetailes();
+        theLatestRadioButton = nullptr;
     });
 
    // QObject::connect(ui->pushButtonAddName, &QPushButton::clicked, this, &MainWindow::pushButtonAddName_clicked);
@@ -47,13 +50,17 @@ void MainWindow::connectFunction()
         deleteTournamentDetailes();
     });
 
+    QObject::connect(ui->PushButtonOkOfNewTournamnet, &QPushButton::clicked, this, [this]()
+    {
+        MainWindow::on_PushButtonOkOfNewTournamnet_clicked(theLatestRadioButton);
+
+    });
+
     //Drowing
     ui->infoTab->setReadOnly(true);
     ui->pushButtonNext->setDisabled(true);
     ui->pushButtonPrevios->setDisabled(true);
     ui->tabWidget->setCurrentIndex(0);
-     //QObject::connect(ui->pushButtonOKDrowing, &QPushButton::clicked, this, [this](){if(){ui->pushButtonNext->setDisabled(false);}else{} });
-
  }
 
 void MainWindow::clearLayout(QLayout* layout)
@@ -90,13 +97,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     connectFunction();
-    group = new QButtonGroup(this);
+    theLatestRadioButton = nullptr;
 };
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete group;
 }
 
 void MainWindow::on_pushButtonAddName_clicked(QString text)
@@ -123,8 +129,10 @@ void MainWindow::on_pushButtonAddName_clicked(QString text)
 void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 {
     int rowCount = ui->verticalLayoutOfNames->count();
+    int lastcount = gameManager->getPlayerCount();
+    gameManager->setPlayerCount(ui->verticalLayoutOfNames->count());
 
-    for (int i = 0; i < rowCount; ++i) {
+    for (int i =0 ; i < rowCount; ++i) {
         QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
         if (!rowItem) continue;
 
@@ -140,16 +148,24 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
         QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
         if (!lineEdit) continue;
 
-        QString playerName = lineEdit->text().trimmed();
-        if (!playerName.isEmpty()) {
-            Player* newPlayer = new Player();
-            newPlayer->setName(playerName);
-            newPlayer->setColorCoef(0);
-            newPlayer->setLastColor(0);
-            newPlayer->setCurrentPoint(0);
-            newPlayer->setId(i+1);
-            gameManager->addNewPlayer(newPlayer);
+        if(i>=lastcount)
+        {
+            QString playerName = lineEdit->text().trimmed();
+            if (!playerName.isEmpty()) {
+                Player* newPlayer = new Player();
+                newPlayer->setName(playerName);
+                newPlayer->setColorCoef(0);
+                newPlayer->setLastColor(0);
+                newPlayer->setCurrentPoint(0);
+                newPlayer->setId(++lastcount);
+                gameManager->addNewPlayer(newPlayer);
+            }
         }
+        else
+        {
+            gameManager->getPlayerById(i+1)->setName(lineEdit->text().trimmed());
+        }
+
     }
 }
 
@@ -186,54 +202,81 @@ bool MainWindow::isDataComplete( )
     return true;
 }
 
-void MainWindow::on_PushButtonOkOfNewTournamnet_clicked()
+void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangingTournamnet)
 {
-    if(isDataComplete())
-    {
-        ui->stackedWidget->setCurrentIndex(2);
-        QRadioButton * radioButton = new QRadioButton();
-        radioButton->setText(ui->lineEditOfName->text());
+        if(isDataComplete())
+        {
+            if(thechangingTournamnet)
+            {
+                thechangingTournamnet->setTourName(ui->lineEditOfName->text());
+                thechangingTournamnet->setTourCount(ui->lineEditOfTourCount->text().toInt());
+                thechangingTournamnet->setDate(ui->lineEditOfData->text());
+                thechangingTournamnet->setInfo(ui->textEditOfInfo->toPlainText());
 
-
-        ui->verticalLayoutOfTournamnets->addWidget(radioButton);
-        group->addButton(radioButton);
-
-        ui->lineEditOfTourCount->setDisabled(false);
-        ui->pushButtonAddName->setDisabled(false);
-
-        static int theCountOfTurnamnets = 0;
-
-        GameManager* Tournament = new GameManager();
-        Tournament->setTourName(ui->lineEditOfName->text());
-        Tournament->setTourCount(ui->lineEditOfTourCount->text().toInt());
-        Tournament->setDate(ui->lineEditOfData->text());
-        Tournament->setPlayerCount(ui->verticalLayoutOfNames->count());
-        Tournament->setInfo(ui->textEditOfInfo->toPlainText());
-        Tournament->setIndexOfTournament(theCountOfTurnamnets++);
-
-        addPlayersToGameManager(Tournament);
-        vectorOfTournaments.push_back(Tournament);
+                addPlayersToGameManager(thechangingTournamnet);
+                vectorOfRadioButtons[thechangingTournamnet->getIndexOfTournamnet()]->setText(ui->lineEditOfName->text());
+                ui->stackedWidget->setCurrentIndex(2);
+                ui->tableWidgetOfDrowing->clear();
+                EditFunction(thechangingTournamnet);
 
 
 
-        QObject::connect(radioButton, &QRadioButton::clicked, this, [Tournament, this](){
-            ui->pushButtonEdit->setDisabled(false);
-            ui->pushButtonDelete->setDisabled(false);
-            ui->stackedWidget->setCurrentIndex(2);
-            theLatestRadioButton = Tournament;
-            EditFunction(Tournament);
-        });
 
-        emit radioButton->click();
+                // if(thechangingTournamnet->isTheTournamnetStarted())
+                // {
 
-    }
-    else
-    {
+                // }
+
+            }
+            else
+            {
+
+                ui->stackedWidget->setCurrentIndex(2);
+                QRadioButton * radioButton = new QRadioButton();
+                radioButton->setText(ui->lineEditOfName->text());
+
+
+                ui->verticalLayoutOfTournamnets->addWidget(radioButton);
+                vectorOfRadioButtons.push_back(radioButton);
+
+                ui->lineEditOfTourCount->setDisabled(false);
+                ui->pushButtonAddName->setDisabled(false);
+
+                static int theCountOfTurnamnets = 0;
+
+                GameManager* Tournament = new GameManager();
+                Tournament->setTourName(ui->lineEditOfName->text());
+                Tournament->setTourCount(ui->lineEditOfTourCount->text().toInt());
+                Tournament->setDate(ui->lineEditOfData->text());
+                Tournament->setInfo(ui->textEditOfInfo->toPlainText());
+                Tournament->setIndexOfTournament(theCountOfTurnamnets++);
+
+                addPlayersToGameManager(Tournament);
+                vectorOfTournaments.push_back(Tournament);
+
+
+                QObject::connect(radioButton, &QRadioButton::clicked, this, [Tournament, this](){
+                    ui->pushButtonEdit->setDisabled(false);
+                    ui->pushButtonDelete->setDisabled(false);
+                    ui->stackedWidget->setCurrentIndex(2);
+                    theLatestRadioButton = Tournament;
+                    EditFunction(Tournament);
+                });
+
+                emit radioButton->click();
+            }
+            deleteTournamentDetailes();
+        }
+        else
+        {
         QMessageBox * message = new QMessageBox();
         message->setText("Data isn't complete");
         message->show();
-    }
+        }
 }
+
+
+
 
 void MainWindow::EditFunction(GameManager* Tournament)
 {
@@ -264,8 +307,7 @@ void MainWindow::EditFunction(GameManager* Tournament)
 
 void MainWindow::on_pushButtonEdit_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
-
+        ui->stackedWidget->setCurrentIndex(1);
         ui->lineEditOfName->setText(theLatestRadioButton->getTourName());
         ui->lineEditOfData->setText(theLatestRadioButton->getDate());
         ui->textEditOfInfo->setText(theLatestRadioButton->getInfo());
@@ -285,6 +327,7 @@ void MainWindow::on_pushButtonEdit_clicked()
             ui->lineEditOfTourCount->setDisabled(true);
             ui->pushButtonAddName->setDisabled(true);
         }
+
 }
 
 
@@ -298,13 +341,11 @@ void MainWindow::on_pushButtonDelete_clicked()
         ui->verticalLayoutOfTournamnets->removeItem(ui->verticalLayoutOfTournamnets->takeAt(index));// remove from radio buttons
         ui->pushButtonEdit->setDisabled(true);
         ui->pushButtonDelete->setDisabled(true);
-
         return;
 }
 
 void MainWindow::on_pushButtonNext_clicked()
 {
-
 
 }
 
