@@ -32,15 +32,12 @@ void MainWindow::connectFunction()
     //edit and delete of Tournaments
     ui->pushButtonEdit->setDisabled(true);
     ui->pushButtonDelete->setDisabled(true);
-<<<<<<< HEAD
+
+
     QObject::connect(ui->pushButtonDelete, &QPushButton::clicked, this, [this]()
     {
         ui->stackedWidget->setCurrentIndex(0);
         ui->tableWidgetOfTabel->clear();
-=======
-    QObject::connect(ui->cancelPushbutton,  &QPushButton::clicked, this, [this]() {
-        ui->stackedWidget->setCurrentIndex(0); deleteTournamentDetailes();
->>>>>>> 90dc450a439cda694acccf5ec40a73012c0f6953
     });
 
     //ok and cancel of new tournamnet
@@ -156,22 +153,14 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
     }
 }
 
->>bool MainWindow::isDataComplete( )
+bool MainWindow::isDataComplete( )
 {
     if(!(ui->verticalLayoutOfNames->count() &&
-<<<<<<< HEAD
           !ui->lineEditOfTourCount->text().isEmpty() &&
-          !ui->lineEditOfTourCount->text().toInt() &&
+          ui->lineEditOfTourCount->text().toInt() &&
           !ui->lineEditOfData->text().isEmpty() &&
           !ui->lineEditOfName->text().isEmpty() &&
           !ui->textEditOfInfo->document()->isEmpty()))
-=======
-          ui->lineEditOfTourCount->isModified() &&
-          ui->lineEditOfTourCount->text().toInt() &&
-          ui->lineEditOfData->isModified() &&
-          ui->lineEditOfName->isModified() &&
-          ui->textEdit->document()->isModified()))
->>>>>>> 90dc450a439cda694acccf5ec40a73012c0f6953
         return false;
 
     int rowCount = ui->verticalLayoutOfNames->count();
@@ -192,7 +181,7 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
         QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
         if (!lineEdit) continue;
 
-        if(!lineEdit->text().isEmpty()) return false;
+        if(lineEdit->text().isEmpty()) return false;
     }
     return true;
 }
@@ -207,12 +196,12 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked()
 
 
         ui->verticalLayoutOfTournamnets->addWidget(radioButton);
-        vectorOfRadioButtons.push_back(radioButton);
         group->addButton(radioButton);
 
         ui->lineEditOfTourCount->setDisabled(false);
         ui->pushButtonAddName->setDisabled(false);
 
+        static int theCountOfTurnamnets = 0;
 
         GameManager* Tournament = new GameManager();
         Tournament->setTourName(ui->lineEditOfName->text());
@@ -220,29 +209,22 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked()
         Tournament->setDate(ui->lineEditOfData->text());
         Tournament->setPlayerCount(ui->verticalLayoutOfNames->count());
         Tournament->setInfo(ui->textEditOfInfo->toPlainText());
+        Tournament->setIndexOfTournament(theCountOfTurnamnets++);
 
         addPlayersToGameManager(Tournament);
         vectorOfTournaments.push_back(Tournament);
-<<<<<<< HEAD
+
 
 
         QObject::connect(radioButton, &QRadioButton::clicked, this, [Tournament, this](){
             ui->pushButtonEdit->setDisabled(false);
             ui->pushButtonDelete->setDisabled(false);
             ui->stackedWidget->setCurrentIndex(2);
-            int size = vectorOfTournaments.size();
+            theLatestRadioButton = Tournament;
             EditFunction(Tournament);
         });
 
         emit radioButton->click();
-
-=======
-        QObject::connect(radioButton, &QRadioButton::clicked, this, [this](){
-            ui->pushButtonEdit->setDisabled(false); ui->pushButtonDelete->setDisabled(false);
-        });
-        id = 0;
->>>>>>> 90dc450a439cda694acccf5ec40a73012c0f6953
-        deleteTournamentDetailes();
 
     }
     else
@@ -283,53 +265,41 @@ void MainWindow::EditFunction(GameManager* Tournament)
 void MainWindow::on_pushButtonEdit_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    const int count = vectorOfRadioButtons.size();
-    for(int i = 0; i < count; ++i)
-    {
-        if (vectorOfRadioButtons[i]->isChecked())
+
+        ui->lineEditOfName->setText(theLatestRadioButton->getTourName());
+        ui->lineEditOfData->setText(theLatestRadioButton->getDate());
+        ui->textEditOfInfo->setText(theLatestRadioButton->getInfo());
+        ui->lineEditOfTourCount->setText(QString::number(theLatestRadioButton->getTourCount()));
+
+        int playerCount = theLatestRadioButton->getPlayerCount();
+
+        for(int i = 1; i<=playerCount; ++i)
         {
-            ui->lineEditOfName->setText(vectorOfTournaments[i]->getTourName());
-            ui->lineEditOfData->setText(vectorOfTournaments[i]->getDate());
-            ui->textEditOfInfo->setText(vectorOfTournaments[i]->getInfo());
-            ui->lineEditOfTourCount->setText(QString::number(vectorOfTournaments[i]->getTourCount()));
-
-            int playerCount = vectorOfTournaments[i]->getPlayerCount();
-
-            for(int j = 1; j<=playerCount; ++j)
-            {
-                if (vectorOfTournaments[i] && vectorOfTournaments[i]->getPlayerById(j)) {
-                    emit pushButtonAddName_clicked(vectorOfTournaments[i]->getPlayerById(j)->getName());
-                }
+            if (theLatestRadioButton && theLatestRadioButton->getPlayerById(i)) {
+                emit pushButtonAddName_clicked(theLatestRadioButton->getPlayerById(i)->getName());
             }
-
-            if(vectorOfTournaments[i]->isTheTournamnetStarted())
-            {
-                ui->lineEditOfTourCount->setDisabled(true);
-                ui->pushButtonAddName->setDisabled(true);
-            }
-            break;
         }
-    }
+
+        if(theLatestRadioButton->isTheTournamnetStarted())
+        {
+            ui->lineEditOfTourCount->setDisabled(true);
+            ui->pushButtonAddName->setDisabled(true);
+        }
 }
 
 
 void MainWindow::on_pushButtonDelete_clicked()
 {
-    int index = 0;
-    for ( auto it = vectorOfRadioButtons.begin(); it != vectorOfRadioButtons.end(); ++it, ++index)
-    {
-        if ((*it)->isChecked())
-        {
-            delete vectorOfTournaments[index]; // delete the pointer
-            vectorOfTournaments.erase(vectorOfTournaments.begin() + index); // remove from tournaments
-            vectorOfRadioButtons.erase(it); // remove from radio buttons
-            ui->verticalLayoutOfTournamnets->removeItem(ui->verticalLayoutOfTournamnets->takeAt(index));
-            ui->pushButtonEdit->setDisabled(true);
-            ui->pushButtonDelete->setDisabled(true);
 
-            return;
-        }
-    }
+
+        int index = theLatestRadioButton->getIndexOfTournamnet();
+        delete vectorOfTournaments[index]; // delete the pointer
+        vectorOfTournaments.erase(vectorOfTournaments.begin() + index); // remove from tournaments
+        ui->verticalLayoutOfTournamnets->removeItem(ui->verticalLayoutOfTournamnets->takeAt(index));// remove from radio buttons
+        ui->pushButtonEdit->setDisabled(true);
+        ui->pushButtonDelete->setDisabled(true);
+
+        return;
 }
 
 void MainWindow::on_pushButtonNext_clicked()

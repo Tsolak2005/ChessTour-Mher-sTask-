@@ -60,6 +60,7 @@ private:
     std::vector<GameManager*> vectorOfTournaments;
     std::vector<QRadioButton*> vectorOfRadioButtons;
     QButtonGroup* group;
+    GameManager * theLatestRadioButton;
 
 };
 #endif // MAINWINDOW_H

@@ -17,6 +17,11 @@ int GameManager::getTourCount() const
     return m_tourCount;
 }
 
+int GameManager::getIndexOfTournamnet() const
+{
+    return m_IndexOfTournament;
+}
+
 
 Player * GameManager::getPlayerById(const int id) const
 {
@@ -26,6 +31,11 @@ Player * GameManager::getPlayerById(const int id) const
         }
     }
     throw std::runtime_error("There is not  player with such Id");
+}
+
+void GameManager::setIndexOfTournament(const int index)
+{
+    m_IndexOfTournament = index;
 }
 
 void GameManager::setPlayerCount(const int playerCount)
