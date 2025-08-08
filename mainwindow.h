@@ -50,6 +50,10 @@ private slots:
     void on_pushButtonDelete_clicked();
     void on_pushButtonNext_clicked();
 
+    void on_pushButtonOKDrowing_clicked();
+
+    void on_pushButtonPrevios_clicked();
+
 signals:
 
     void pushButtonAddName_clicked(QString text);
@@ -59,7 +63,7 @@ private:
     Ui::MainWindow *ui;
     std::vector<GameManager*> vectorOfTournaments;
     std::vector<QRadioButton *> vectorOfRadioButtons;
-    GameManager * theLatestRadioButton;
+    GameManager * currentTournament;
 
 };
 #endif // MAINWINDOW_H

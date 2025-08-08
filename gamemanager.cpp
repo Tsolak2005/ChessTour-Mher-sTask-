@@ -1,6 +1,6 @@
 #include "gamemanager.h"
 
-GameManager::GameManager() : m_playerCount(0), m_tourCount(0) {}
+GameManager::GameManager() : m_playerCount(0), m_tourCount(0), m_currentTour(1) {}
 
 QString GameManager::getInfo()const
 {
@@ -20,6 +20,11 @@ int GameManager::getTourCount() const
 int GameManager::getIndexOfTournamnet() const
 {
     return m_IndexOfTournament;
+}
+
+int GameManager::getCurrentTour() const
+{
+    return m_currentTour;
 }
 
 
@@ -51,6 +56,11 @@ void GameManager::setTourCount(const int tourCount)
 void GameManager::setInfo(const QString Info)
 {
     m_info = Info;
+}
+
+void GameManager::setCurrentTour(const int tour)
+{
+    m_currentTour = tour;
 }
 
 QString GameManager::getTourName() const
