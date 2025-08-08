@@ -81,13 +81,22 @@
     background-color: lightgray;
     color: black;
     padding: 5px 10px;
-    border: 1px solid gray;
     border-radius: 4px;
+border: 1px solid black;   /* Black border */
 }
 
 pushButton:pressed {
     background-color: yellow;
 }
+
+QLabel {
+    background-color: white;   /* White background */
+    color: black;              /* Black text */
+    border: 1px solid black;   /* Black border */
+    padding: 4px;              /* Optional: inner spacing */
+    border-radius: 3px;        /* Optional: slightly rounded corners */
+}
+
 </string>
                </property>
                <property name="text">
@@ -567,7 +576,7 @@ QTabBar::tab:selected {
 </string>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="iconSize">
             <size>
