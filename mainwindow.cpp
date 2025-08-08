@@ -171,44 +171,65 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 
 bool MainWindow::isDataComplete( )
 {
-    if(!(ui->verticalLayoutOfNames->count() &&
-          !ui->lineEditOfTourCount->text().isEmpty() &&
-          ui->lineEditOfTourCount->text().toInt() &&
-          !ui->lineEditOfData->text().isEmpty() &&
-          !ui->lineEditOfName->text().isEmpty() &&
-          !ui->textEditOfInfo->document()->isEmpty()))
-        return false;
+    try
+    {
+        if (ui->lineEditOfName->text().isEmpty())
+            throw " The 'Name' field is empty. ";
 
-    int rowCount = ui->verticalLayoutOfNames->count();
+        if (ui->lineEditOfData->text().isEmpty())
+            throw " The 'Date' field is empty. ";
 
-    for (int i = 0; i < rowCount; ++i) {
-        QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
-        if (!rowItem) continue;
+        if (ui->lineEditOfTourCount->text().isEmpty())
+            throw " The 'Tour Count' field is empty. ";
 
-        QHBoxLayout* rowLayout = qobject_cast<QHBoxLayout*>(rowItem->layout());
-        if (!rowLayout) continue;
+        if (!(ui->lineEditOfTourCount->text().toInt()))
+            throw " The 'Tour Count' should be an integer. ";
 
-        QLayoutItem* nameItem = rowLayout->itemAt(1);
-        if (!nameItem) continue;
+        if (ui->textEditOfInfo->document()->isEmpty())
+            throw " The 'Info' field is empty. ";
 
-        QWidget* widget = nameItem->widget();
-        if (!widget) continue;
+        if(!(ui->verticalLayoutOfNames->count() >= 2))
+            throw " The count of the players should be at least two. ";
 
-        QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
-        if (!lineEdit) continue;
+        int rowCount = ui->verticalLayoutOfNames->count();
 
-        if(lineEdit->text().isEmpty()) return false;
+        int maxcount =((rowCount*(rowCount-1)/2)/(rowCount/2));
+
+        if( maxcount < ui->lineEditOfTourCount->text().toInt())
+            throw std::string("The count of tour is bigger than it should be, it can be maximum: ") + std::to_string(maxcount);
+
+        return true;
+
+            for (int i = 0; i < rowCount; ++i) {
+                QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
+                if (!rowItem) continue;
+
+                QHBoxLayout* rowLayout = qobject_cast<QHBoxLayout*>(rowItem->layout());
+                if (!rowLayout) continue;
+
+                QLayoutItem* nameItem = rowLayout->itemAt(1);
+                if (!nameItem) continue;
+
+                QWidget* widget = nameItem->widget();
+                if (!widget) continue;
+
+                QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
+                if (!lineEdit) continue;
+
+                if(lineEdit->text().isEmpty())
+                    throw " The data of the players is not complete. ";
+
+            }
+
+
     }
-
-    int maxcount =((rowCount*(rowCount-1)/2)/(rowCount/2));
-    if( maxcount < ui->lineEditOfTourCount->text().toInt())
+    catch (const std::string& error)
     {
         QMessageBox * message = new QMessageBox();
-        message->setText("the count of tour is bigger, it can be maximum :" + QString::number(maxcount));
+        message->setText(QString::fromStdString(error));
         message->show();
         return false;
     }
-    return true;
 }
 
 void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangingTournamnet)
@@ -275,9 +296,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
         }
         else
         {
-        QMessageBox * message = new QMessageBox();
-        message->setText("Data isn't complete");
-        message->show();
+            return;
         }
 }
 
