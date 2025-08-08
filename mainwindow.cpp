@@ -219,9 +219,6 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                 ui->tableWidgetOfDrowing->clear();
                 EditFunction(thechangingTournamnet);
 
-
-
-
                 // if(thechangingTournamnet->isTheTournamnetStarted())
                 // {
 
@@ -333,8 +330,6 @@ void MainWindow::on_pushButtonEdit_clicked()
 
 void MainWindow::on_pushButtonDelete_clicked()
 {
-
-
         int index = theLatestRadioButton->getIndexOfTournamnet();
         delete vectorOfTournaments[index]; // delete the pointer
         vectorOfTournaments.erase(vectorOfTournaments.begin() + index); // remove from tournaments
