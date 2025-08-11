@@ -61,6 +61,7 @@ void MainWindow::connectFunction()
     ui->pushButtonNext->setDisabled(true);
     ui->pushButtonPrevios->setDisabled(true);
     ui->tabWidget->setCurrentIndex(0);
+    ui->labelOfTour->setText("Tour 1");
  }
 
 void MainWindow::clearLayout(QLayout* layout)
@@ -176,6 +177,7 @@ bool MainWindow::isDataComplete( )
         if (ui->lineEditOfName->text().isEmpty())
             throw " The 'Name' field is empty. ";
 
+
         if (ui->lineEditOfData->text().isEmpty())
             throw " The 'Date' field is empty. ";
 
@@ -195,12 +197,11 @@ bool MainWindow::isDataComplete( )
 
         int maxcount =((rowCount*(rowCount-1)/2)/(rowCount/2));
 
-        if( maxcount < ui->lineEditOfTourCount->text().toInt())
-            throw std::string("The count of tour is bigger than it should be, it can be maximum: ") + std::to_string(maxcount);
+        if( maxcount < ui->lineEditOfTourCount->text().toInt() || !ui->lineEditOfTourCount->text().toInt())
+            throw std::string("The count of tour is bigger or smaller than it should be , it can be maximum: ") + std::to_string(maxcount);
 
-        return true;
-
-            for (int i = 0; i < rowCount; ++i) {
+            for (int i = 0; i < rowCount; ++i)
+        {
                 QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
                 if (!rowItem) continue;
 
@@ -220,14 +221,16 @@ bool MainWindow::isDataComplete( )
                     throw " The data of the players is not complete. ";
 
             }
-
-
+            return true;
     }
     catch (const std::string& error)
     {
-        QMessageBox * message = new QMessageBox();
-        message->setText(QString::fromStdString(error));
-        message->show();
+        QMessageBox::warning(this, "Validation Error", QString::fromStdString(error));
+        return false;
+    }
+    catch (const char* error)
+    {
+        QMessageBox::warning(this, "Validation Error", QString(error));
         return false;
     }
 }
@@ -355,7 +358,6 @@ void MainWindow::on_pushButtonEdit_clicked()
 
 }
 
-
 void MainWindow::on_pushButtonDelete_clicked()
 {
         int index = currentTournament->getIndexOfTournamnet();
@@ -367,10 +369,19 @@ void MainWindow::on_pushButtonDelete_clicked()
         return;
 }
 
+
+
+
+
 void MainWindow::on_pushButtonNext_clicked()
 {
+    if(currentTournament->getCurrentTour() + 1 == currentTournament->getTourCount())
+    {
+        ui->pushButtonNext->setDisabled(true);
+    }
     int count = currentTournament->getCurrentTour();
     currentTournament->setCurrentTour(++count);
+    ui->labelOfTour->setText("Tour " + QString::number(count));
 
     if(!ui->pushButtonNext->isEnabled())
     {
@@ -378,16 +389,32 @@ void MainWindow::on_pushButtonNext_clicked()
     }
 }
 
-
-
-
 void MainWindow::on_pushButtonOKDrowing_clicked()
 {
-    ui->pushButtonOKDrowing->setVisible(false);
-    ui->pushButtonNext->setDisabled(false);
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::warning(
+        this,
+        "Warning",
+        "Are you sure that the  results are correct?",
+        QMessageBox::Ok | QMessageBox::Cancel
+        );
 
+    if (reply == QMessageBox::Ok)
+    {
+
+        ui->pushButtonOKDrowing->setVisible(false);
+        ui->pushButtonNext->setDisabled(false);
+        int countOfgames = currentTournament->getPlayerCount()/2;
+        // for(int i = 0; i<countOfgames; ++i)
+        // {
+        //     currentTournament->setGame(i, new Game(currentTournament->getPlayerById(ui->tableWidgetOfDrowing->cellWidget(i, 0)->))
+        // }
+    }
+    else
+    {
+        return;
+    }
 }
-
 
 void MainWindow::on_pushButtonPrevios_clicked()
 {
@@ -400,8 +427,4 @@ void MainWindow::on_pushButtonPrevios_clicked()
     ui->pushButtonOKDrowing->setVisible(false);
 }
 
-// catch (QString& eror)
-// {
-
-// }
 
