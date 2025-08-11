@@ -218,10 +218,7 @@ bool MainWindow::isDataComplete( )
 
                 if(lineEdit->text().isEmpty())
                     throw " The data of the players is not complete. ";
-
             }
-
-
     }
     catch (const std::string& error)
     {
@@ -400,8 +397,5 @@ void MainWindow::on_pushButtonPrevios_clicked()
     ui->pushButtonOKDrowing->setVisible(false);
 }
 
-// catch (QString& eror)
-// {
 
-// }
 
