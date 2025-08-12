@@ -342,6 +342,8 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 
 
 
+
+
 }
 
 
