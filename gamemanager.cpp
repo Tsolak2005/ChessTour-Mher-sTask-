@@ -63,6 +63,15 @@ void GameManager::setCurrentTour(const int tour)
     m_currentTour = tour;
 }
 
+void GameManager::setGame(int tour, Game* game)
+{
+    if(tour <= m_tourCount && tour > 0)
+    {
+        auto it = m_gameMap.find(tour);
+        it->second.push_back(game);
+    }
+}
+
 QString GameManager::getTourName() const
 {
     return m_tourName;
@@ -71,6 +80,19 @@ QString GameManager::getTourName() const
 QString GameManager::getDate() const
 {
     return m_date;
+}
+
+const std::vector<Game*>* GameManager::getTourgames(int tour) const
+{
+
+    if(tour <= m_tourCount && tour > 0)
+    {
+        auto it = m_gameMap.find(tour);
+        if (it != m_gameMap.end()) {
+            return &it->second;
+        }
+    }
+    return nullptr;
 }
 
 void GameManager::setTourName(const QString tourName)
@@ -90,5 +112,5 @@ void GameManager::addNewPlayer(Player* P)
 
 bool GameManager::isTheTournamnetStarted()
 {
-    return !m_gameList.empty();
+    return !m_gameMap.empty();
 }

@@ -557,19 +557,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
             </widget>
            </widget>
            <widget class="QWidget" name="page_3">
-            <widget class="QLabel" name="label_5">
-             <property name="geometry">
-              <rect>
-               <x>350</x>
-               <y>540</y>
-               <width>63</width>
-               <height>20</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string>2</string>
-             </property>
-            </widget>
             <widget class="QTabWidget" name="tabWidget">
              <property name="geometry">
               <rect>
@@ -613,52 +600,60 @@ QTabBar::tab:selected {
               <attribute name="title">
                <string>Drawing</string>
               </attribute>
-              <widget class="QPushButton" name="pushButtonOKDrowing">
+              <widget class="QWidget" name="verticalLayoutWidget_4">
                <property name="geometry">
                 <rect>
-                 <x>310</x>
-                 <y>380</y>
-                 <width>93</width>
-                 <height>29</height>
+                 <x>40</x>
+                 <y>30</y>
+                 <width>631</width>
+                 <height>331</height>
                 </rect>
                </property>
-               <property name="text">
-                <string>OK</string>
-               </property>
-              </widget>
-              <widget class="QWidget" name="horizontalLayoutWidget">
-               <property name="geometry">
-                <rect>
-                 <x>10</x>
-                 <y>70</y>
-                 <width>671</width>
-                 <height>271</height>
-                </rect>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,10,0">
-                <property name="spacing">
-                 <number>7</number>
+               <layout class="QVBoxLayout" name="verticalLayout_9">
+                <property name="sizeConstraint">
+                 <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                 </property>
-                <item>
-                 <widget class="QPushButton" name="pushButtonPrevios">
+                <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
+                 <widget class="QLabel" name="labelOfTour">
+                  <property name="minimumSize">
+                   <size>
+                    <width>60</width>
+                    <height>30</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>previous</string>
+                   <string>Tour</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QTableWidget" name="tableWidgetOfDrowing">
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777210</width>
-                    <height>16777215</height>
-                   </size>
+                 <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,10,0">
+                  <property name="spacing">
+                   <number>7</number>
                   </property>
-                  <property name="autoFillBackground">
-                   <bool>false</bool>
+                  <property name="sizeConstraint">
+                   <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                   </property>
-                  <property name="styleSheet">
-                   <string notr="true">QTableWidget {
+                  <item>
+                   <widget class="QPushButton" name="pushButtonPrevios">
+                    <property name="text">
+                     <string>previous</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTableWidget" name="tableWidgetOfDrowing">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777210</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="autoFillBackground">
+                     <bool>false</bool>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">QTableWidget {
     background-color: #fdfdfd;
     gridline-color: #ccc;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -688,46 +683,55 @@ QTableWidget::item:hover {
     background-color: #d0e7ff;
 }
 </string>
-                  </property>
-                  <property name="lineWidth">
-                   <number>1</number>
-                  </property>
-                  <property name="rowCount">
-                   <number>6</number>
-                  </property>
-                  <property name="columnCount">
-                   <number>3</number>
-                  </property>
-                  <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>145</number>
-                  </attribute>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <column>
-                   <property name="text">
-                    <string>White Color</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Black Color</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Result</string>
-                   </property>
-                  </column>
-                 </widget>
+                    </property>
+                    <property name="lineWidth">
+                     <number>1</number>
+                    </property>
+                    <property name="rowCount">
+                     <number>6</number>
+                    </property>
+                    <property name="columnCount">
+                     <number>3</number>
+                    </property>
+                    <attribute name="horizontalHeaderDefaultSectionSize">
+                     <number>145</number>
+                    </attribute>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <row/>
+                    <column>
+                     <property name="text">
+                      <string>White Color</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Black Color</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>Result</string>
+                     </property>
+                    </column>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButtonNext">
+                    <property name="text">
+                     <string>next</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
-                <item>
-                 <widget class="QPushButton" name="pushButtonNext">
+                <item alignment="Qt::AlignmentFlag::AlignHCenter">
+                 <widget class="QPushButton" name="pushButtonOKDrowing">
                   <property name="text">
-                   <string>next</string>
+                   <string>OK</string>
                   </property>
                  </widget>
                 </item>

@@ -2,6 +2,9 @@
 
 Game::Game(int w, int b, int res) : m_whitePlayerId(w), m_blackPlayerId(b), m_result(res) {}
 
+Game::Game(int w, int res): m_whitePlayerId(w), m_result(res) {}
+
+
 int Game::getWhitePlayerId() const { return m_whitePlayerId; }
 int Game::getBlackPlayerId() const { return m_blackPlayerId; }
 int Game::getResult() const { return m_result; }
