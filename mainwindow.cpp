@@ -248,7 +248,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                 addPlayersToGameManager(thechangingTournamnet);
                 vectorOfRadioButtons[thechangingTournamnet->getIndexOfTournamnet()]->setText(ui->lineEditOfName->text());
                 ui->stackedWidget->setCurrentIndex(2);
-                ui->tableWidgetOfDrowing->clear();
+                ui->tableWidgetOfDrawing->clear();
                 GivingDataToDrawing(thechangingTournamnet);
 
                 // if(thechangingTournamnet->isTheTournamnetStarted())
@@ -318,15 +318,15 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 {
     int rowCount = Tournament->getPlayerCount()%2?Tournament->getPlayerCount()/2 +1 : Tournament->getPlayerCount()/2;
-    ui->tableWidgetOfDrowing->setRowCount(rowCount);
+    ui->tableWidgetOfDrawing->setRowCount(rowCount);
     ui->infoTab->setText(Tournament->getInfo());
     int countOfPlayers = Tournament->getPlayerCount();
     for(int row = 0, playerId =1  ; playerId <= countOfPlayers; ++row, ++playerId)
     {
-        ui->tableWidgetOfDrowing->setCellWidget(row,0,new QLabel(Tournament->getPlayerById(playerId)->getName()));
+        ui->tableWidgetOfDrawing->setCellWidget(row,0,new QLabel(Tournament->getPlayerById(playerId)->getName()));
          if(playerId+1 <= countOfPlayers)
          {
-            ui->tableWidgetOfDrowing->setCellWidget(row,1,new QLabel(Tournament->getPlayerById(++playerId)->getName()));
+            ui->tableWidgetOfDrawing->setCellWidget(row,1,new QLabel(Tournament->getPlayerById(++playerId)->getName()));
          }
     }
 
@@ -337,12 +337,8 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
         comboBox->addItem("1-0");
         comboBox->addItem("0-1");
         comboBox->addItem("0.5-0.5");
-        ui->tableWidgetOfDrowing->setCellWidget(i, 2, comboBox);
+        ui->tableWidgetOfDrawing->setCellWidget(i, 2, comboBox);
     }
-
-
-
-
 
 }
 
@@ -371,8 +367,6 @@ void MainWindow::on_pushButtonEdit_clicked()
             ui->lineEditOfTourCount->setDisabled(true);
             ui->pushButtonAddName->setDisabled(true);
         }
-
-
 
 
 }
@@ -426,7 +420,7 @@ void MainWindow::on_pushButtonOKDrowing_clicked()
         int countOfgames = currentTournament->getPlayerCount()/2;
         // for(int i = 0; i<countOfgames; ++i)
         // {
-        //     currentTournament->setGame(i, new Game(currentTournament->getPlayerById(ui->tableWidgetOfDrowing->cellWidget(i, 0)->))
+        //     currentTournament->setGame(i, new Game(currentTournament->getPlayerById(ui->tableWidgetOfDrawing->cellWidget(i, 0)->))
         // }
     }
     else
