@@ -67,8 +67,7 @@ void GameManager::setGame(int tour, Game* game)
 {
     if(tour <= m_tourCount && tour > 0)
     {
-        auto it = m_gameMap.find(tour);
-        it->second.push_back(game);
+        m_gameMap[tour].push_back(game);
     }
 }
 
@@ -88,9 +87,9 @@ const std::vector<Game*>* GameManager::getTourgames(int tour) const
     if(tour <= m_tourCount && tour > 0)
     {
         auto it = m_gameMap.find(tour);
-        if (it != m_gameMap.end()) {
-            return &it->second;
-        }
+        // if (it != m_gameMap.end()) {
+        //     return &it->second;
+        // }
     }
     return nullptr;
 }
