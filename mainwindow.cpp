@@ -249,7 +249,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                 vectorOfRadioButtons[thechangingTournamnet->getIndexOfTournamnet()]->setText(ui->lineEditOfName->text());
                 ui->stackedWidget->setCurrentIndex(2);
                 ui->tableWidgetOfDrowing->clear();
-                EditFunction(thechangingTournamnet);
+                GivingDataToDrawing(thechangingTournamnet);
 
                 // if(thechangingTournamnet->isTheTournamnetStarted())
                 // {
@@ -299,7 +299,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     ui->pushButtonDelete->setDisabled(false);
                     ui->stackedWidget->setCurrentIndex(2);
                     currentTournament = Tournament;
-                    EditFunction(Tournament);
+                    GivingDataToDrawing(Tournament);
                 });
 
                 emit radioButton->click();
@@ -315,7 +315,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
 
 
-void MainWindow::EditFunction(GameManager* Tournament)
+void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 {
     int rowCount = Tournament->getPlayerCount()%2?Tournament->getPlayerCount()/2 +1 : Tournament->getPlayerCount()/2;
     ui->tableWidgetOfDrowing->setRowCount(rowCount);
@@ -339,6 +339,9 @@ void MainWindow::EditFunction(GameManager* Tournament)
         comboBox->addItem("0.5-0.5");
         ui->tableWidgetOfDrowing->setCellWidget(i, 2, comboBox);
     }
+
+
+
 }
 
 
@@ -366,6 +369,9 @@ void MainWindow::on_pushButtonEdit_clicked()
             ui->lineEditOfTourCount->setDisabled(true);
             ui->pushButtonAddName->setDisabled(true);
         }
+
+
+
 
 }
 

@@ -1,5 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+
 #include <QLayout>
 #include <QMainWindow>
 #include <QRadioButton>
@@ -37,7 +38,7 @@ public:
     void addPlayersToGameManager(GameManager* gameManager);
     bool isDataComplete();
     void clearLayout(QLayout* layout);
-    void EditFunction(GameManager* Tournament);
+    void GivingDataToDrawing(GameManager* Tournament);
     void OkOfDrowing();
 
 private slots:
