@@ -81,7 +81,7 @@ QString GameManager::getDate() const
     return m_date;
 }
 
-const std::vector<Game*>* GameManager::getTourgames(int tour)
+std::vector<Game*>* GameManager::getTourgames(int tour)
 {
 
     if(tour <= m_tourCount && tour > 0)

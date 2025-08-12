@@ -12,6 +12,7 @@ void MainWindow::connectFunction()
         ui->stackedWidget->setCurrentIndex(1);
         deleteTournamentDetailes();
         currentTournament = nullptr;
+        ui->pushButtonOKDrowing->setVisible(true);
     });
 
    // QObject::connect(ui->pushButtonAddName, &QPushButton::clicked, this, &MainWindow::pushButtonAddName_clicked);
@@ -240,8 +241,8 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
         {
             if(thechangingTournamnet)
             {
+
                 thechangingTournamnet->setTourName(ui->lineEditOfName->text());
-                thechangingTournamnet->setTourCount(ui->lineEditOfTourCount->text().toInt());
                 thechangingTournamnet->setDate(ui->lineEditOfData->text());
                 thechangingTournamnet->setInfo(ui->textEditOfInfo->toPlainText());
 
@@ -388,18 +389,30 @@ void MainWindow::on_pushButtonDelete_clicked()
 
 void MainWindow::on_pushButtonNext_clicked()
 {
+    currentTournament->setCurrentTour((currentTournament->getCurrentTour())+1);
     if(currentTournament->getCurrentTour() + 1 == currentTournament->getTourCount())
     {
         ui->pushButtonNext->setDisabled(true);
     }
-    int count = currentTournament->getCurrentTour();
-    currentTournament->setCurrentTour(++count);
-    ui->labelOfTour->setText("Tour " + QString::number(count));
+
+    ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
 
     if(!ui->pushButtonNext->isEnabled())
     {
         ui->pushButtonOKDrowing->setVisible(true);
     }
+}
+
+void MainWindow::on_pushButtonPrevios_clicked()
+{
+    currentTournament->setCurrentTour((currentTournament->getCurrentTour())-1);
+    if(currentTournament->getCurrentTour()>=2)
+    {
+        if(currentTournament->getCurrentTour()==2) ui->pushButtonPrevios->setDisabled(true);
+        int count = currentTournament->getCurrentTour();
+        currentTournament->setCurrentTour(--count);
+    }
+    ui->pushButtonOKDrowing->setVisible(false);
 }
 
 void MainWindow::on_pushButtonOKDrowing_clicked()
@@ -415,11 +428,62 @@ void MainWindow::on_pushButtonOKDrowing_clicked()
     if (reply == QMessageBox::Ok)
     {
 
-        ui->pushButtonOKDrowing->setVisible(false);
-        ui->pushButtonNext->setDisabled(false);
-        auto game = currentTournament->getTourgames(currentTournament->getCurrentTour());
-        // int countOfGames = currentTournament->for (int i = 0; i <)
+        std::vector<Game*>* game = currentTournament->getTourgames(currentTournament->getCurrentTour());
+        int countOfGames = game->size();
+        int countOfPlayers = currentTournament->getPlayerCount();
+        if(currentTournament->getPlayerCount()%2)
+        {
+            currentTournament->getPlayerById(countOfPlayers)->setCurrentPoint(1);
+            --countOfGames;
+        }
+        for(int i =0; i<countOfGames; ++i)
+        {
 
+
+            if (QComboBox* combo = qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i, 2)))
+            {
+                int index = combo->currentIndex();
+                    switch (index)
+                {
+                    case 0:
+                    {
+                        QMessageBox::warning(this, "Input Error", "Please select a valid option.");
+                        return;
+                    }
+
+                    case 1:
+                    {
+                        (*game)[i]->setResult(1);
+                        int witePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint();
+                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(++witePlayerCurrentPoint);
+
+                    }
+                    case 2:
+                    {
+                        int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint();
+                        currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(++blackPlayerCurrentPoint);
+                    }
+
+                    case 3:
+                    {
+                        (*game)[i]->setResult(1);
+                        int witePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint() + 0.5;
+                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(witePlayerCurrentPoint);
+
+                        int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint() + 0.5;
+                        currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(blackPlayerCurrentPoint);
+                    }
+
+                    default: qDebug() << "the combobox Id is wrong";
+                }
+            }
+            else
+            {
+                qDebug() << "No combo box in this cell.";
+            }
+        }
+        ui->pushButtonOKDrowing->setVisible(false);
+        if(currentTournament->getTourCount()>=2)ui->pushButtonNext->setDisabled(false);
     }
     else
     {
@@ -427,13 +491,4 @@ void MainWindow::on_pushButtonOKDrowing_clicked()
     }
 }
 
-void MainWindow::on_pushButtonPrevios_clicked()
-{
-    if(currentTournament->getCurrentTour()>=2)
-    {
-        if(currentTournament->getCurrentTour()==2) ui->pushButtonPrevios->setDisabled(true);
-        int count = currentTournament->getCurrentTour();
-        currentTournament->setCurrentTour(--count);
-    }
-    ui->pushButtonOKDrowing->setVisible(false);
-}
+

@@ -8,7 +8,7 @@ int Player::getId() const
     return m_id;
 }
 
-int Player::getCurrentPoint()const
+double Player::getCurrentPoint()const
 {
     return m_currentPoint;
 }
@@ -33,7 +33,7 @@ void Player::setId(const int playerId)
     m_id = playerId;
 }
 
-void Player::setCurrentPoint(const int currentPoint)
+void Player::setCurrentPoint(const double currentPoint)
 {
     m_currentPoint = currentPoint;
 }
