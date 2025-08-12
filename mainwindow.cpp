@@ -340,11 +340,7 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
         ui->tableWidgetOfDrawing->setCellWidget(i, 2, comboBox);
     }
 
-<<<<<<< HEAD
-    if(Tournament->getPlayerCount()%2) ui->tableWidgetOfDrowing->cellWidget(rowCount-1, 2)->setDisabled(true);
-
-=======
->>>>>>> 9ffce698b08fc9c38499a0dc54fd384455588901
+    if(Tournament->getPlayerCount()%2) ui->tableWidgetOfDrawing->cellWidget(rowCount-1, 2)->setDisabled(true);
 }
 
 
@@ -373,10 +369,6 @@ void MainWindow::on_pushButtonEdit_clicked()
             ui->pushButtonAddName->setDisabled(true);
         }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9ffce698b08fc9c38499a0dc54fd384455588901
 }
 
 void MainWindow::on_pushButtonDelete_clicked()
@@ -425,16 +417,9 @@ void MainWindow::on_pushButtonOKDrowing_clicked()
 
         ui->pushButtonOKDrowing->setVisible(false);
         ui->pushButtonNext->setDisabled(false);
-<<<<<<< HEAD
         auto game = currentTournament->getTourgames(currentTournament->getCurrentTour());
         // int countOfGames = currentTournament->for (int i = 0; i <)
-=======
-        int countOfgames = currentTournament->getPlayerCount()/2;
-        // for(int i = 0; i<countOfgames; ++i)
-        // {
-        //     currentTournament->setGame(i, new Game(currentTournament->getPlayerById(ui->tableWidgetOfDrawing->cellWidget(i, 0)->))
-        // }
->>>>>>> 9ffce698b08fc9c38499a0dc54fd384455588901
+
     }
     else
     {

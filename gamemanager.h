@@ -17,7 +17,7 @@ public:
     int getCurrentTour()const;
     QString getTourName()const;
     QString getDate()const;
-    const std::vector<Game*>* getTourgames(int tour)const;
+    const std::vector<Game*>* getTourgames(int tour);
     Player * getPlayerById(const int id) const;
     void setIndexOfTournament(const int index);
     void setPlayerCount(const int playerCount);

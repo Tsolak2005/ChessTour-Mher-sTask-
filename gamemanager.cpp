@@ -81,15 +81,12 @@ QString GameManager::getDate() const
     return m_date;
 }
 
-const std::vector<Game*>* GameManager::getTourgames(int tour) const
+const std::vector<Game*>* GameManager::getTourgames(int tour)
 {
 
     if(tour <= m_tourCount && tour > 0)
     {
-        auto it = m_gameMap.find(tour);
-        // if (it != m_gameMap.end()) {
-        //     return &it->second;
-        // }
+        return &m_gameMap[tour];
     }
     return nullptr;
 }
