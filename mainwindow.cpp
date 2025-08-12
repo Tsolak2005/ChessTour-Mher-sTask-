@@ -340,9 +340,7 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
         ui->tableWidgetOfDrowing->setCellWidget(i, 2, comboBox);
     }
 
-
-
-
+    if(Tournament->getPlayerCount()%2) ui->tableWidgetOfDrowing->cellWidget(rowCount-1, 2)->setDisabled(true);
 
 }
 
@@ -372,20 +370,17 @@ void MainWindow::on_pushButtonEdit_clicked()
             ui->pushButtonAddName->setDisabled(true);
         }
 
-
-
-
 }
 
 void MainWindow::on_pushButtonDelete_clicked()
 {
-        int index = currentTournament->getIndexOfTournamnet();
-        delete vectorOfTournaments[index]; // delete the pointer
-        vectorOfTournaments.erase(vectorOfTournaments.begin() + index); // remove from tournaments
-        ui->verticalLayoutOfTournamnets->removeItem(ui->verticalLayoutOfTournamnets->takeAt(index));// remove from radio buttons
-        ui->pushButtonEdit->setDisabled(true);
-        ui->pushButtonDelete->setDisabled(true);
-        return;
+    int index = currentTournament->getIndexOfTournamnet();
+    delete vectorOfTournaments[index]; // delete the pointer
+    vectorOfTournaments.erase(vectorOfTournaments.begin() + index); // remove from tournaments
+    ui->verticalLayoutOfTournamnets->removeItem(ui->verticalLayoutOfTournamnets->takeAt(index));// remove from radio buttons
+    ui->pushButtonEdit->setDisabled(true);
+    ui->pushButtonDelete->setDisabled(true);
+    return;
 }
 
 
@@ -423,11 +418,8 @@ void MainWindow::on_pushButtonOKDrowing_clicked()
 
         ui->pushButtonOKDrowing->setVisible(false);
         ui->pushButtonNext->setDisabled(false);
-        int countOfgames = currentTournament->getPlayerCount()/2;
-        // for(int i = 0; i<countOfgames; ++i)
-        // {
-        //     currentTournament->setGame(i, new Game(currentTournament->getPlayerById(ui->tableWidgetOfDrowing->cellWidget(i, 0)->))
-        // }
+        auto game = currentTournament->getTourgames(currentTournament->getCurrentTour());
+        // int countOfGames = currentTournament->for (int i = 0; i <)
     }
     else
     {
