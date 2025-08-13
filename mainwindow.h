@@ -51,9 +51,9 @@ private slots:
     void on_pushButtonDelete_clicked();
     void on_pushButtonNext_clicked();
 
-    void on_pushButtonOKDrowing_clicked();
+    void on_pushButtonOKDrawing_clicked();
 
-    void on_pushButtonPrevios_clicked();
+    void on_pushButtonPrevious_clicked();
 
 signals:
 
