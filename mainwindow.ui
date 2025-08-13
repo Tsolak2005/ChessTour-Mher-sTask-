@@ -356,7 +356,7 @@ QLabel {
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>2</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page">
             <widget class="QTextBrowser" name="textBrowser">
@@ -562,7 +562,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <rect>
                <x>10</x>
                <y>20</y>
-               <width>691</width>
+               <width>690</width>
                <height>501</height>
               </rect>
              </property>
@@ -588,7 +588,7 @@ QTabBar::tab:selected {
 </string>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <property name="iconSize">
               <size>

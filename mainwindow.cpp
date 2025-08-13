@@ -454,12 +454,14 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                         (*game)[i]->setResult(1);
                         int witePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint();
                         currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(++witePlayerCurrentPoint);
+                        break;
 
                     }
                     case 2:
                     {
                         int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint();
                         currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(++blackPlayerCurrentPoint);
+                        break;
                     }
 
                     case 3:
@@ -470,9 +472,12 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
 
                         int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint() + 0.5;
                         currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(blackPlayerCurrentPoint);
+                        break;
                     }
 
-                    default: qDebug() << "The combo box Id is wrong. ";
+                    default:
+                        qDebug() << "The combo box Id is wrong. ";
+                        break;
                 }
             }
             else
