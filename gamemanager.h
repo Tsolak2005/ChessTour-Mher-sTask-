@@ -13,11 +13,11 @@ public:
     QString getInfo()const;
     int getPlayerCount()const;
     int getTourCount()const;
-    int getIndexOfTournamnet()const;
+    int getIndexOfTournament()const;
     int getCurrentTour()const;
     QString getTourName()const;
     QString getDate()const;
-    std::vector<Game *> *getTourgames(int tour);
+    std::vector<Game *> *getTourGames(int tour);
     Player * getPlayerById(const int id) const;
     void setIndexOfTournament(const int index);
     void setPlayerCount(const int playerCount);
@@ -29,7 +29,7 @@ public:
     void setTourName(const QString tourName);
     void setDate(const QString date);
     void addNewPlayer(Player* P);
-    bool isTheTournamnetStarted();
+    bool hasTheTournamentStarted();
 
 private:
     int m_IndexOfTournament;

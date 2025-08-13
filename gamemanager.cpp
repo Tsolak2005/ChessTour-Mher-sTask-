@@ -17,7 +17,7 @@ int GameManager::getTourCount() const
     return m_tourCount;
 }
 
-int GameManager::getIndexOfTournamnet() const
+int GameManager::getIndexOfTournament() const
 {
     return m_IndexOfTournament;
 }
@@ -81,7 +81,7 @@ QString GameManager::getDate() const
     return m_date;
 }
 
-std::vector<Game*>* GameManager::getTourgames(int tour)
+std::vector<Game*>* GameManager::getTourGames(int tour)
 {
 
     if(tour <= m_tourCount && tour > 0)
@@ -106,7 +106,7 @@ void GameManager::addNewPlayer(Player* P)
     m_playerList.push_back(P);
 }
 
-bool GameManager::isTheTournamnetStarted()
+bool GameManager::hasTheTournamentStarted()
 {
     return !m_gameMap.empty();
 }
