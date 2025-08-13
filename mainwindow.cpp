@@ -392,6 +392,7 @@ void MainWindow::on_pushButtonNext_clicked()
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())+1);
     if(currentTournament->getCurrentTour() + 1 == currentTournament->getTourCount())
     {
+        std::cout << "aaaa";
         ui->pushButtonNext->setDisabled(true);
     }
 
@@ -431,7 +432,7 @@ void MainWindow::on_pushButtonOKDrowing_clicked()
         std::vector<Game*>* game = currentTournament->getTourgames(currentTournament->getCurrentTour());
         int countOfGames = game->size();
         int countOfPlayers = currentTournament->getPlayerCount();
-        if(currentTournament->getPlayerCount()%2)
+        if((currentTournament->getPlayerCount())%2)
         {
             currentTournament->getPlayerById(countOfPlayers)->setCurrentPoint(1);
             --countOfGames;
@@ -439,8 +440,8 @@ void MainWindow::on_pushButtonOKDrowing_clicked()
         for(int i =0; i<countOfGames; ++i)
         {
 
-
-            if (QComboBox* combo = qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i, 2)))
+            QComboBox* combo = qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i, 2));
+            if (combo)
             {
                 int index = combo->currentIndex();
                     switch (index)
