@@ -431,11 +431,13 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
         std::vector<Game*>* game = currentTournament->getTourGames(currentTournament->getCurrentTour());
         int countOfGames = game->size();
         int countOfPlayers = currentTournament->getPlayerCount();
-        if(currentTournament->getPlayerCount()%2)
+
+        if((currentTournament->getPlayerCount())%2)
         {
             currentTournament->getPlayerById(countOfPlayers)->setCurrentPoint(1);
             --countOfGames;
         }
+
         for(int i = 0; i<countOfGames; ++i)
         {
             if (QComboBox* combo = qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i, 2)))
