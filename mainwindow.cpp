@@ -62,7 +62,7 @@ void MainWindow::connectFunction()
     //Drowing
     ui->infoTab->setReadOnly(true);
     ui->pushButtonNext->setDisabled(true);
-    ui->pushButtonPrevios->setDisabled(true);
+    ui->pushButtonPrevious->setDisabled(true);
     ui->tabWidget->setCurrentIndex(0);
     ui->labelOfTour->setText("Tour 1");
  }
@@ -455,18 +455,23 @@ std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(const std:
 
 void MainWindow::on_pushButtonNext_clicked()
 {
+    ui->pushButtonNext->setDisabled(true);
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())+1);
+
     if(currentTournament->getCurrentTour() == currentTournament->getTourCount())
     {
         ui->pushButtonNext->setDisabled(true);
     }
 
+
     ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
+
 
     if(!ui->pushButtonNext->isEnabled())
     {
         ui->pushButtonOKDrawing->setVisible(true);
     }
+
 
     std::vector<int> vectorOfIndices ;
     int playerCount = currentTournament->getPlayerCount();
@@ -500,19 +505,23 @@ void MainWindow::on_pushButtonNext_clicked()
         }
     }
 
+    ui->pushButtonPrevious->setDisabled(false);
+
 
 }
+
 
 void MainWindow::on_pushButtonPrevious_clicked()
 {
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())-1);
-    if(currentTournament->getCurrentTour()>=2)
-    {
-        if(currentTournament->getCurrentTour()==2) ui->pushButtonPrevios->setDisabled(true);
-        int count = currentTournament->getCurrentTour();
-        currentTournament->setCurrentTour(--count);
-    }
+    ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
+
+    if(currentTournament->getCurrentTour()==1) ui->pushButtonPrevious->setDisabled(true);
+
     ui->pushButtonOKDrawing->setVisible(false);
+    ui->pushButtonNext->setDisabled(false);
+
+
 }
 
 
@@ -592,7 +601,10 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
             }
         }
         ui->pushButtonOKDrawing->setVisible(false);
-        if(currentTournament->getTourCount()>=2)ui->pushButtonNext->setDisabled(false);
+        if(currentTournament->getTourCount()>=2 && currentTournament->getCurrentTour() < currentTournament->getTourCount())
+            ui->pushButtonNext->setDisabled(false);
+        else
+            ui->pushButtonNext->setDisabled(true);
     }
     else
     {
