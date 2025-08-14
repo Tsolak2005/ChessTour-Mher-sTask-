@@ -33,7 +33,7 @@
      </rect>
     </property>
     <property name="orientation">
-     <enum>Qt::Orientation::Horizontal</enum>
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget_6">
@@ -47,24 +47,24 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <property name="sizeConstraint">
-      <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+      <enum>QLayout::SetMinimumSize</enum>
      </property>
      <item>
       <widget class="Line" name="line_10">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="sizeConstraint">
-        <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+        <enum>QLayout::SetMinimumSize</enum>
        </property>
        <item>
         <widget class="Line" name="line_5">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
@@ -73,14 +73,14 @@
          <item>
           <widget class="Line" name="line_2">
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout">
            <property name="sizeConstraint">
-            <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+            <enum>QLayout::SetMinimumSize</enum>
            </property>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -122,7 +122,7 @@ QLabel {
                <item>
                 <widget class="Line" name="line_7">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -155,7 +155,7 @@ QLabel {
                <item>
                 <widget class="Line" name="line_8">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -218,7 +218,7 @@ QLabel {
                </property>
                <layout class="QVBoxLayout" name="verticalLayoutOfTournamnets">
                 <property name="sizeConstraint">
-                 <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+                 <enum>QLayout::SetMinAndMaxSize</enum>
                 </property>
                </layout>
               </widget>
@@ -258,7 +258,7 @@ QLabel {
                <item>
                 <widget class="Line" name="line_11">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -285,7 +285,7 @@ QLabel {
                <item>
                 <widget class="Line" name="line_12">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -322,7 +322,7 @@ QLabel {
                <item>
                 <widget class="Line" name="line_4">
                  <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -337,19 +337,19 @@ QLabel {
        <item>
         <widget class="Line" name="line_17">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_6">
          <property name="sizeConstraint">
-          <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
+          <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
           <widget class="Line" name="line_6">
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -468,7 +468,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                  <number>0</number>
                 </property>
                 <property name="sizeConstraint">
-                 <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+                 <enum>QLayout::SetMinAndMaxSize</enum>
                 </property>
                </layout>
               </widget>
@@ -541,7 +541,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_8">
-                <item alignment="Qt::AlignmentFlag::AlignTop">
+                <item alignment="Qt::AlignTop">
                  <widget class="QLabel" name="label">
                   <property name="text">
                    <string>Info</string>
@@ -567,10 +567,10 @@ li.checked::marker { content: &quot;\2612&quot;; }
               </rect>
              </property>
              <property name="contextMenuPolicy">
-              <enum>Qt::ContextMenuPolicy::ActionsContextMenu</enum>
+              <enum>Qt::ActionsContextMenu</enum>
              </property>
              <property name="layoutDirection">
-              <enum>Qt::LayoutDirection::LeftToRight</enum>
+              <enum>Qt::LeftToRight</enum>
              </property>
              <property name="styleSheet">
               <string notr="true">QTabBar::tab {
@@ -611,9 +611,9 @@ QTabBar::tab:selected {
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_9">
                 <property name="sizeConstraint">
-                 <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+                 <enum>QLayout::SetDefaultConstraint</enum>
                 </property>
-                <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
+                <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                  <widget class="QLabel" name="labelOfTour">
                   <property name="minimumSize">
                    <size>
@@ -632,10 +632,10 @@ QTabBar::tab:selected {
                    <number>7</number>
                   </property>
                   <property name="sizeConstraint">
-                   <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+                   <enum>QLayout::SetDefaultConstraint</enum>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="pushButtonPrevios">
+                   <widget class="QPushButton" name="pushButtonPrevious">
                     <property name="text">
                      <string>previous</string>
                     </property>
@@ -728,7 +728,7 @@ QTableWidget::item:hover {
                   </item>
                  </layout>
                 </item>
-                <item alignment="Qt::AlignmentFlag::AlignHCenter">
+                <item alignment="Qt::AlignHCenter">
                  <widget class="QPushButton" name="pushButtonOKDrawing">
                   <property name="text">
                    <string>OK</string>
@@ -883,7 +883,7 @@ QTableWidget::item:hover {
          <item>
           <widget class="Line" name="line_9">
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -892,7 +892,7 @@ QTableWidget::item:hover {
        <item>
         <widget class="Line" name="line">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
@@ -901,7 +901,7 @@ QTableWidget::item:hover {
      <item>
       <widget class="Line" name="line_13">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
