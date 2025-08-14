@@ -5,6 +5,9 @@
 #include <QMainWindow>
 #include <QRadioButton>
 #include"gamemanager.h"
+#include "comfortcoef.h"
+#include "player.h"
+#include "game.h"
 #include <QObject>
 #include <QLineEdit>
 #include <QLabel>

@@ -321,17 +321,27 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
 void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 {
+    ui->tableWidgetOfDrawing->clear();
     int rowCount = Tournament->getPlayerCount()%2?Tournament->getPlayerCount()/2 +1 : Tournament->getPlayerCount()/2;
     ui->tableWidgetOfDrawing->setRowCount(rowCount);
     ui->infoTab->setText(Tournament->getInfo());
-    int countOfPlayers = Tournament->getPlayerCount();
-    for(int row = 0, playerId =1  ; playerId <= countOfPlayers; ++row, ++playerId)
+
+
+    std::vector<Game*>* games = Tournament->getTourGames(Tournament->getCurrentTour());
+    int size = (*games).size();
+    for (int i = 0; i < size; ++i)
     {
-        ui->tableWidgetOfDrawing->setCellWidget(row,0,new QLabel(Tournament->getPlayerById(playerId)->getName()));
-         if(playerId+1 <= countOfPlayers)
-         {
-            ui->tableWidgetOfDrawing->setCellWidget(row,1,new QLabel(Tournament->getPlayerById(++playerId)->getName()));
-         }
+        ui->tableWidgetOfDrawing->setCellWidget(
+            i,0, new QLabel(
+                Tournament->getPlayerById(
+                                     (*games)[i]->getWhitePlayerId())->getName()));
+        if(!(i ==  size-1 && Tournament->getPlayerCount()%2))
+        {
+            ui->tableWidgetOfDrawing->setCellWidget(
+                i,1, new QLabel(
+                    Tournament->getPlayerById(
+                                     (*games)[i]->getBlackPlayerId())->getName()));
+        }
     }
 
     for(int i = 0; i<rowCount; i++)
@@ -389,13 +399,63 @@ void MainWindow::on_pushButtonDelete_clicked()
 }
 
 
+std::vector<std::vector<int>> eraseRowCol(const std::vector<std::vector<int>>& matrix, int i, int j) {
+    int n = matrix.size();
+    std::vector<std::vector<int>> result;
+
+    for (int r = 0; r < n; ++r) {
+        if (r == i || r == j) continue;
+        std::vector<int> newRow;
+        for (int c = 0; c < n; ++c) {
+            if (c == i || c == j) continue;
+            newRow.push_back(matrix[r][c]);
+        }
+        result.push_back(newRow);
+    }
+    return result;
+}
+
+// Now returns both sum and pairs
+std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(const std::vector<std::vector<int>>& matrix, std::vector<int> indices) {
+    size_t n = matrix.size();
+    if (n == 2) {
+        // Only one choice possible
+        return { matrix[0][1], { {indices[0], indices[1]} } };
+    }
+
+    std::pair<int, std::vector<std::pair<int,int>>> best = {INT_MIN, {}};
+
+    for (int i = 0; i < n-1; ++i) {
+        auto erasedMatrix = eraseRowCol(matrix, n-1, i);
+
+        // Remove those indices from list
+        std::vector<int> newIndices;
+        for (int k = 0; k < (int)indices.size(); ++k) {
+            if (k == n-1 || k == i) continue;
+            newIndices.push_back(indices[k]);
+        }
+
+        auto subResult = findMaxValueWithPairs(erasedMatrix, newIndices);
+        int totalSum = matrix[n-1][i] + subResult.first;
+
+        if (totalSum > best.first) {
+            best.first = totalSum;
+            best.second.clear();
+            best.second.push_back({indices[n-1], indices[i]});
+            best.second.insert(best.second.end(), subResult.second.begin(), subResult.second.end());
+        }
+    }
+
+    return best;
+}
+
+
 
 
 
 void MainWindow::on_pushButtonNext_clicked()
 {
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())+1);
-    std::cout << currentTournament->getTourCount() << std::endl;
     if(currentTournament->getCurrentTour() == currentTournament->getTourCount())
     {
         ui->pushButtonNext->setDisabled(true);
@@ -408,7 +468,39 @@ void MainWindow::on_pushButtonNext_clicked()
         ui->pushButtonOKDrawing->setVisible(true);
     }
 
-    // ui->
+    std::vector<int> vectorOfIndices ;
+    int playerCount = currentTournament->getPlayerCount();
+    for(int i=0; i<playerCount; ++i)
+    {
+        vectorOfIndices.push_back(i);
+    }
+
+
+    std::vector<std::vector<int>> matrix;
+    for(int i=0; i<playerCount; ++i)
+    {
+        for(int j =0; j<playerCount; ++j)
+        {
+            ComfortCoef coef;
+            int gameCoef = coef.gameCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+            int colorCoef = coef.colorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+            int lastColorCoef = coef.lastColorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+            matrix[i].push_back(gameCoef+colorCoef+lastColorCoef);
+        }
+    }
+    std::cout << "okkkkk" <<std::endl;
+    std::pair<int, std::vector<std::pair<int,int>>> bestVersion = findMaxValueWithPairs(matrix,vectorOfIndices);
+    int count = bestVersion.second.size();
+    for(int i=0; i<count; ++i)
+    {
+        Game* newGame = new Game(bestVersion.second[i].first);
+            if(!(i ==  count-1 && currentTournament->getPlayerCount()%2))
+        {
+            newGame->setBlackPlayerId(bestVersion.second[i].second);
+        }
+    }
+
+
 }
 
 void MainWindow::on_pushButtonPrevious_clicked()
@@ -422,6 +514,10 @@ void MainWindow::on_pushButtonPrevious_clicked()
     }
     ui->pushButtonOKDrawing->setVisible(false);
 }
+
+
+
+
 
 void MainWindow::on_pushButtonOKDrawing_clicked()
 {
