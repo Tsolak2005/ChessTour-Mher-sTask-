@@ -12,7 +12,9 @@ void MainWindow::connectFunction()
         ui->stackedWidget->setCurrentIndex(1);
         deleteTournamentDetailes();
         currentTournament = nullptr;
-        ui->pushButtonOKDrowing->setVisible(true);
+        ui->pushButtonOKDrawing->setVisible(true);
+        ui->lineEditOfTourCount->setDisabled(false);
+        ui->PushButtonOkOfNewTournamnet->setDisabled(false);
     });
 
    // QObject::connect(ui->pushButtonAddName, &QPushButton::clicked, this, &MainWindow::pushButtonAddName_clicked);
@@ -301,6 +303,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     ui->stackedWidget->setCurrentIndex(2);
                     currentTournament = Tournament;
                     GivingDataToDrawing(Tournament);
+                    deleteTournamentDetailes();
                 });
 
                 emit radioButton->click();
@@ -370,6 +373,8 @@ void MainWindow::on_pushButtonEdit_clicked()
             ui->pushButtonAddName->setDisabled(true);
         }
 
+        ui->pushButtonEdit->setDisabled(true);
+
 }
 
 void MainWindow::on_pushButtonDelete_clicked()
@@ -390,7 +395,8 @@ void MainWindow::on_pushButtonDelete_clicked()
 void MainWindow::on_pushButtonNext_clicked()
 {
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())+1);
-    if(currentTournament->getCurrentTour() + 1 == currentTournament->getTourCount())
+    std::cout << currentTournament->getTourCount() << std::endl;
+    if(currentTournament->getCurrentTour() == currentTournament->getTourCount())
     {
         ui->pushButtonNext->setDisabled(true);
     }
@@ -399,8 +405,10 @@ void MainWindow::on_pushButtonNext_clicked()
 
     if(!ui->pushButtonNext->isEnabled())
     {
-        ui->pushButtonOKDrowing->setVisible(true);
+        ui->pushButtonOKDrawing->setVisible(true);
     }
+
+    // ui->
 }
 
 void MainWindow::on_pushButtonPrevious_clicked()
@@ -412,7 +420,7 @@ void MainWindow::on_pushButtonPrevious_clicked()
         int count = currentTournament->getCurrentTour();
         currentTournament->setCurrentTour(--count);
     }
-    ui->pushButtonOKDrowing->setVisible(false);
+    ui->pushButtonOKDrawing->setVisible(false);
 }
 
 void MainWindow::on_pushButtonOKDrawing_clicked()
@@ -487,7 +495,7 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                 qDebug() << "No combo box in this cell. ";
             }
         }
-        ui->pushButtonOKDrowing->setVisible(false);
+        ui->pushButtonOKDrawing->setVisible(false);
         if(currentTournament->getTourCount()>=2)ui->pushButtonNext->setDisabled(false);
     }
     else
