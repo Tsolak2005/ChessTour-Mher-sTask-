@@ -15,6 +15,7 @@ void MainWindow::connectFunction()
         ui->pushButtonOKDrawing->setVisible(true);
         ui->lineEditOfTourCount->setDisabled(false);
         ui->PushButtonOkOfNewTournamnet->setDisabled(false);
+        ui->pushButtonAddName->setDisabled(false);
     });
 
    // QObject::connect(ui->pushButtonAddName, &QPushButton::clicked, this, &MainWindow::pushButtonAddName_clicked);
@@ -455,58 +456,107 @@ std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(const std:
 
 void MainWindow::on_pushButtonNext_clicked()
 {
+    // for(int i=1; i<=currentTournament->getPlayerCount(); ++i)
+    // {
+    //     std::cout << (*currentTournament->getPlayerById(i)).getCurrentPoint() << std::endl;
+    // }
+
     ui->pushButtonNext->setDisabled(true);
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())+1);
+    int currentTour = currentTournament->getCurrentTour();
+
 
     if(currentTournament->getCurrentTour() == currentTournament->getTourCount())
     {
         ui->pushButtonNext->setDisabled(true);
     }
 
-
     ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
 
 
-    if(!ui->pushButtonNext->isEnabled())
-    {
         ui->pushButtonOKDrawing->setVisible(true);
-    }
 
-
-    std::vector<int> vectorOfIndices ;
-    int playerCount = currentTournament->getPlayerCount();
-    for(int i=0; i<playerCount; ++i)
-    {
-        vectorOfIndices.push_back(i);
-    }
-
-
-    std::vector<std::vector<int>> matrix;
-    for(int i=0; i<playerCount; ++i)
-    {
-        for(int j =0; j<playerCount; ++j)
+        int playerCount = currentTournament->getPlayerCount();
+        int weakestPlayerId = -1;
+        if(playerCount%2)
         {
-            ComfortCoef coef;
-            int gameCoef = coef.gameCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
-            int colorCoef = coef.colorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
-            int lastColorCoef = coef.lastColorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
-            matrix[i].push_back(gameCoef+colorCoef+lastColorCoef);
+            weakestPlayerId = 1;
+            for(int i=2; i<=playerCount; i++)
+            {
+                if(currentTournament->getPlayerById(weakestPlayerId)->getCurrentPoint()>currentTournament->getPlayerById(i)->getCurrentPoint())
+                    weakestPlayerId = i;
+            }
         }
-    }
-    std::cout << "okkkkk" <<std::endl;
-    std::pair<int, std::vector<std::pair<int,int>>> bestVersion = findMaxValueWithPairs(matrix,vectorOfIndices);
-    int count = bestVersion.second.size();
-    for(int i=0; i<count; ++i)
-    {
-        Game* newGame = new Game(bestVersion.second[i].first);
-            if(!(i ==  count-1 && currentTournament->getPlayerCount()%2))
+
+
+        std::vector<int> vectorOfIndices ;
+
+        int adjustedPlayerCount = (playerCount % 2 == 0) ? playerCount : playerCount - 1;
+
+        for(int i=0; i<adjustedPlayerCount; ++i)
         {
-            newGame->setBlackPlayerId(bestVersion.second[i].second);
+            vectorOfIndices.push_back(i);
         }
-    }
+
+        std::vector<int> participantPlayers;
+
+        for(int i=1; i<=playerCount; i++)
+        {
+            if(i != weakestPlayerId) participantPlayers.push_back(i);
+        }
+
+        std::vector<std::vector<int>> matrix;
+        for(int i=1; i<=playerCount; ++i)
+        {
+            if( i==weakestPlayerId) continue;
+            std::vector<int> v;
+            for(int j =1; j<=playerCount; ++j)
+            {
+                if( j==weakestPlayerId) continue;
+                ComfortCoef coef;
+                int gameCoef = coef.gameCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+                int colorCoef = coef.colorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+                int lastColorCoef = coef.lastColorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+                v.push_back(gameCoef+colorCoef+lastColorCoef);
+            }
+            matrix.push_back(v);
+        }
+
+        std::pair<int, std::vector<std::pair<int,int>>> bestVersion = findMaxValueWithPairs(matrix,vectorOfIndices);
+
+        int count = bestVersion.second.size();
+        auto result = bestVersion.second;
+
+        for(int i=0; i<count; ++i)
+        {
+            currentTournament->setGame(currentTour, new Game(participantPlayers[result[i].first], participantPlayers[result[i].second]));
+
+        }
+
+        if(weakestPlayerId != -1)
+        currentTournament->setGame(currentTour, new Game(weakestPlayerId));
+
+        // for(int i=0; i<count; ++i)
+        // {
+        //     // std::cout << "(" << participantPlayers[result[i].first] << "," << participantPlayers[result[i].second] << ")" << std::endl;
+
+
+        //     std::cout<<(*currentTournament->getTourGames(currentTour))[i]->getWhitePlayerId() << "~~" <<
+        //     (*currentTournament->getTourGames(currentTour))[i]->getBlackPlayerId() << std::endl;
+
+
+        // }
+
+        // for(int i=0; i<participantPlayers.size(); ++i)
+        // {
+        //     std::cout << participantPlayers[i] << std::endl;
+        // }
+        // std::cout << weakestPlayerId << std::endl;
+
+
+    GivingDataToDrawing(currentTournament);
 
     ui->pushButtonPrevious->setDisabled(false);
-
 
 }
 
@@ -567,14 +617,14 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                     case 1:
                     {
                         (*game)[i]->setResult(1);
-                        int witePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint();
-                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(++witePlayerCurrentPoint);
+                        double whitePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint();
+                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(++whitePlayerCurrentPoint);
                         break;
 
                     }
                     case 2:
                     {
-                        int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint();
+                        double blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint();
                         currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(++blackPlayerCurrentPoint);
                         break;
                     }
@@ -582,10 +632,10 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                     case 3:
                     {
                         (*game)[i]->setResult(1);
-                        int witePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint() + 0.5;
-                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(witePlayerCurrentPoint);
+                        double whitePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint() + 0.5;
+                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(whitePlayerCurrentPoint);
 
-                        int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint() + 0.5;
+                        double blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint() + 0.5;
                         currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(blackPlayerCurrentPoint);
                         break;
                     }
