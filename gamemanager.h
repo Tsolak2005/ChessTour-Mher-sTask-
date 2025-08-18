@@ -18,6 +18,7 @@ public:
     QString getTourName()const;
     QString getDate()const;
     std::vector<Game *> *getTourGames(int tour);
+    int getSizeOfGameMap() const;
     Player * getPlayerById(const int id) const;
     void setIndexOfTournament(const int index);
     void setPlayerCount(const int playerCount);

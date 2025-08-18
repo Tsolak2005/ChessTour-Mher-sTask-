@@ -20,6 +20,7 @@
 #include <QRadioButton>
 #include <iostream>
 #include <QButtonGroup>
+#include <QList>
 
 QT_BEGIN_NAMESPACE
 
