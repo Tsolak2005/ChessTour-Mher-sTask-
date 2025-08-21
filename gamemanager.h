@@ -10,6 +10,7 @@ class GameManager
 public:
 
     GameManager();
+    int getCurrentoOganizedTour()const;
     QString getInfo()const;
     int getPlayerCount()const;
     int getTourCount()const;
@@ -20,6 +21,7 @@ public:
     std::vector<Game *> *getTourGames(int tour);
     int getSizeOfGameMap() const;
     Player * getPlayerById(const int id) const;
+    void setCurrentoOganizedTour(const int tour);
     void setIndexOfTournament(const int index);
     void setPlayerCount(const int playerCount);
     void setTourCount(const int tourCount);
@@ -34,6 +36,7 @@ public:
 
 private:
     int m_IndexOfTournament;
+    int m_currentoOganizedTour;
     int m_playerCount;
     int m_tourCount;
     int m_currentTour;
