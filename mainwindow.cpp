@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
 #include <QDebug>
 
 
@@ -13,6 +12,10 @@ void MainWindow::connectFunction()
         deleteTournamentDetailes();
         currentTournament = nullptr;
         ui->pushButtonOKDrawing->setVisible(true);
+
+        ui->lineEditOfTourCount->setDisabled(false);
+        ui->PushButtonOkOfNewTournamnet->setDisabled(false);
+        ui->pushButtonAddName->setDisabled(false);
     });
 
    // QObject::connect(ui->pushButtonAddName, &QPushButton::clicked, this, &MainWindow::pushButtonAddName_clicked);
@@ -60,7 +63,7 @@ void MainWindow::connectFunction()
     //Drowing
     ui->infoTab->setReadOnly(true);
     ui->pushButtonNext->setDisabled(true);
-    ui->pushButtonPrevios->setDisabled(true);
+    ui->pushButtonPrevious->setDisabled(true);
     ui->tabWidget->setCurrentIndex(0);
     ui->labelOfTour->setText("Tour 1");
  }
@@ -239,6 +242,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 {
         if(isDataComplete())
         {
+            ui->labelOfTour->setText("Tour 1");
             if(thechangingTournamnet)
             {
 
@@ -249,7 +253,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                 addPlayersToGameManager(thechangingTournamnet);
                 vectorOfRadioButtons[thechangingTournamnet->getIndexOfTournament()]->setText(ui->lineEditOfName->text());
                 ui->stackedWidget->setCurrentIndex(2);
-                ui->tableWidgetOfDrawing->clear();
+                 ui->tableWidgetOfDrawing->clear();
                 GivingDataToDrawing(thechangingTournamnet);
 
                 // if(thechangingTournamnet->isTheTournamentStarted())
@@ -301,6 +305,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     ui->stackedWidget->setCurrentIndex(2);
                     currentTournament = Tournament;
                     GivingDataToDrawing(Tournament);
+                    deleteTournamentDetailes();
                 });
 
                 emit radioButton->click();
@@ -318,17 +323,31 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
 void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 {
+    ui->tableWidgetOfDrawing->clear();
     int rowCount = Tournament->getPlayerCount()%2?Tournament->getPlayerCount()/2 +1 : Tournament->getPlayerCount()/2;
     ui->tableWidgetOfDrawing->setRowCount(rowCount);
+    ui->tableWidgetOfDrawing->setColumnCount(3);
     ui->infoTab->setText(Tournament->getInfo());
-    int countOfPlayers = Tournament->getPlayerCount();
-    for(int row = 0, playerId =1  ; playerId <= countOfPlayers; ++row, ++playerId)
+
+    QStringList headers;
+    headers << "White Color" << "Black Color" << "Results";
+    ui->tableWidgetOfDrawing->setHorizontalHeaderLabels(headers);
+
+    std::vector<Game*>* games = Tournament->getTourGames(Tournament->getCurrentTour());
+    int size = (*games).size();
+    for (int i = 0; i < size; ++i)
     {
-        ui->tableWidgetOfDrawing->setCellWidget(row,0,new QLabel(Tournament->getPlayerById(playerId)->getName()));
-         if(playerId+1 <= countOfPlayers)
-         {
-            ui->tableWidgetOfDrawing->setCellWidget(row,1,new QLabel(Tournament->getPlayerById(++playerId)->getName()));
-         }
+        ui->tableWidgetOfDrawing->setCellWidget(
+            i,0, new QLabel(
+                Tournament->getPlayerById(
+                                     (*games)[i]->getWhitePlayerId())->getName()));
+        if(!(i ==  size-1 && Tournament->getPlayerCount()%2))
+        {
+            ui->tableWidgetOfDrawing->setCellWidget(
+                i,1, new QLabel(
+                    Tournament->getPlayerById(
+                                     (*games)[i]->getBlackPlayerId())->getName()));
+        }
     }
 
     for(int i = 0; i<rowCount; i++)
@@ -338,7 +357,49 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
         comboBox->addItem("1-0");
         comboBox->addItem("0-1");
         comboBox->addItem("0.5-0.5");
-        ui->tableWidgetOfDrawing->setCellWidget(i, 2, comboBox);
+
+        if(!(Tournament->getCurrentTour() == Tournament->getSizeOfGameMap()) && Tournament->hasTheTournamentStarted())
+        {
+            std::vector<Game*>* game = Tournament->getTourGames(Tournament->getCurrentTour());
+
+            switch ((*game)[i]->getResult())
+            {
+                case -1:
+                {
+                    comboBox->setCurrentIndex(2);
+                    break;
+                }
+
+                case 1:
+                {
+                    comboBox->setCurrentIndex(1);
+                    break;
+
+                }
+                case 0:
+                {
+                    comboBox->setCurrentIndex(3);
+                    break;
+                }
+                case -2:
+                {
+                    comboBox->setCurrentIndex(0);
+                    break;
+                }
+
+                default:
+                    qDebug() << "the results of games is wrong ";
+                    break;
+            }
+            comboBox->setDisabled(true);
+            ui->tableWidgetOfDrawing->setCellWidget(i, 2, comboBox);
+
+            // qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i,2))->setDisabled(true);
+        }
+        else
+        {
+            ui->tableWidgetOfDrawing->setCellWidget(i, 2, comboBox);
+        }
     }
 
     if(Tournament->getPlayerCount()%2) ui->tableWidgetOfDrawing->cellWidget(rowCount-1, 2)->setDisabled(true);
@@ -370,6 +431,8 @@ void MainWindow::on_pushButtonEdit_clicked()
             ui->pushButtonAddName->setDisabled(true);
         }
 
+        ui->pushButtonEdit->setDisabled(true);
+
 }
 
 void MainWindow::on_pushButtonDelete_clicked()
@@ -384,28 +447,156 @@ void MainWindow::on_pushButtonDelete_clicked()
 }
 
 
+std::vector<std::vector<int>> eraseRowCol(const std::vector<std::vector<int>>& matrix, int i, int j) {
+    int n = matrix.size();
+    std::vector<std::vector<int>> result;
+
+    for (int r = 0; r < n; ++r) {
+        if (r == i || r == j) continue;
+        std::vector<int> newRow;
+        for (int c = 0; c < n; ++c) {
+            if (c == i || c == j) continue;
+            newRow.push_back(matrix[r][c]);
+        }
+        result.push_back(newRow);
+    }
+    return result;
+}
+
+// Now returns both sum and pairs
+std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(const std::vector<std::vector<int>>& matrix, std::vector<int> indices) {
+    size_t n = matrix.size();
+    if (n == 2) {
+        // Only one choice possible
+        return { matrix[0][1], { {indices[0], indices[1]} } };
+    }
+
+    std::pair<int, std::vector<std::pair<int,int>>> best = {INT_MIN, {}};
+
+    for (int i = 0; i < n-1; ++i) {
+        auto erasedMatrix = eraseRowCol(matrix, n-1, i);
+
+        // Remove those indices from list
+        std::vector<int> newIndices;
+        for (int k = 0; k < (int)indices.size(); ++k) {
+            if (k == n-1 || k == i) continue;
+            newIndices.push_back(indices[k]);
+        }
+
+        auto subResult = findMaxValueWithPairs(erasedMatrix, newIndices);
+        int totalSum = matrix[n-1][i] + subResult.first;
+
+        if (totalSum > best.first) {
+            best.first = totalSum;
+            best.second.clear();
+            best.second.push_back({indices[n-1], indices[i]});
+            best.second.insert(best.second.end(), subResult.second.begin(), subResult.second.end());
+        }
+    }
+
+    return best;
+}
+
+
 
 
 
 void MainWindow::on_pushButtonNext_clicked()
 {
+
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())+1);
-    if(currentTournament->getCurrentTour() + 1 == currentTournament->getTourCount())
+    int currentTour = currentTournament->getCurrentTour();
+
+    if(currentTournament->getCurrentTour() == currentTournament->getTourCount())
     {
         ui->pushButtonNext->setDisabled(true);
     }
 
     ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
 
-    if(!ui->pushButtonNext->isEnabled())
+    if(currentTour-1 == currentTournament->getSizeOfGameMap() || currentTour == currentTournament->getSizeOfGameMap())
     {
         ui->pushButtonOKDrawing->setVisible(true);
+<<<<<<< HEAD
+=======
+        ui->pushButtonNext->setDisabled(true);
+
+        int playerCount = currentTournament->getPlayerCount();
+        int weakestPlayerId = -1;
+        if(playerCount%2)
+        {
+            weakestPlayerId = 1;
+            for(int i=2; i<=playerCount; i++)
+            {
+                if(currentTournament->getPlayerById(weakestPlayerId)->getCurrentPoint()>currentTournament->getPlayerById(i)->getCurrentPoint())
+                    weakestPlayerId = i;
+            }
+        }
+
+
+        std::vector<int> vectorOfIndices ;
+
+        int adjustedPlayerCount = (playerCount % 2 == 0) ? playerCount : playerCount - 1;
+
+        for(int i=0; i<adjustedPlayerCount; ++i)
+        {
+            vectorOfIndices.push_back(i);
+        }
+
+        std::vector<int> participantPlayers;
+
+        for(int i=1; i<=playerCount; i++)
+        {
+            if(i != weakestPlayerId) participantPlayers.push_back(i);
+        }
+
+        std::vector<std::vector<int>> matrix;
+        for(int i=1; i<=playerCount; ++i)
+        {
+            if( i==weakestPlayerId) continue;
+            std::vector<int> v;
+            for(int j =1; j<=playerCount; ++j)
+            {
+                if( j==weakestPlayerId) continue;
+                ComfortCoef coef;
+                int gameCoef = coef.gameCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+                int colorCoef = coef.colorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+                int lastColorCoef = coef.lastColorCoef(currentTournament->getPlayerById(i),currentTournament->getPlayerById(j));
+                v.push_back(gameCoef+colorCoef+lastColorCoef);
+            }
+            matrix.push_back(v);
+        }
+
+        std::pair<int, std::vector<std::pair<int,int>>> bestVersion = findMaxValueWithPairs(matrix,vectorOfIndices);
+
+        int count = bestVersion.second.size();
+        auto result = bestVersion.second;
+
+        for(int i=0; i<count; ++i)
+        {
+            currentTournament->setGame(currentTour, new Game(participantPlayers[result[i].first], participantPlayers[result[i].second]));
+
+        }
+
+        if(weakestPlayerId != -1)
+            currentTournament->setGame(currentTour, new Game(weakestPlayerId));
+
+>>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
     }
+
+     ui->tableWidgetOfDrawing->clear();
+
+    GivingDataToDrawing(currentTournament);
+
+    ui->pushButtonPrevious->setDisabled(false);
+
 }
+
 
 void MainWindow::on_pushButtonPrevious_clicked()
 {
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())-1);
+<<<<<<< HEAD
     if(currentTournament->getCurrentTour()>=2)
     {
         if(currentTournament->getCurrentTour()==2) ui->pushButtonPrevios->setDisabled(true);
@@ -413,7 +604,22 @@ void MainWindow::on_pushButtonPrevious_clicked()
         currentTournament->setCurrentTour(--count);
     }
     ui->pushButtonOKDrawing->setVisible(false);
+=======
+    ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
+
+    if(currentTournament->getCurrentTour()==1) ui->pushButtonPrevious->setDisabled(true);
+
+    ui->pushButtonOKDrawing->setVisible(false);
+    ui->pushButtonNext->setDisabled(false);
+
+    ui->tableWidgetOfDrawing->clear();
+     GivingDataToDrawing(currentTournament);
+>>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
 }
+
+
+
+
 
 void MainWindow::on_pushButtonOKDrawing_clicked()
 {
@@ -455,25 +661,26 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                     case 1:
                     {
                         (*game)[i]->setResult(1);
-                        int witePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint();
-                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(++witePlayerCurrentPoint);
+                        double whitePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint();
+                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(++whitePlayerCurrentPoint);
                         break;
 
                     }
                     case 2:
                     {
-                        int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint();
+                        (*game)[i]->setResult(-1);
+                        double blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint();
                         currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(++blackPlayerCurrentPoint);
                         break;
                     }
 
                     case 3:
                     {
-                        (*game)[i]->setResult(1);
-                        int witePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint() + 0.5;
-                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(witePlayerCurrentPoint);
+                        (*game)[i]->setResult(0);
+                        double whitePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint() + 0.5;
+                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(whitePlayerCurrentPoint);
 
-                        int blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint() + 0.5;
+                        double blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint() + 0.5;
                         currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(blackPlayerCurrentPoint);
                         break;
                     }
@@ -482,6 +689,7 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                         qDebug() << "The combo box Id is wrong. ";
                         break;
                 }
+                    qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i,2))->setDisabled(true);
             }
             else
             {
@@ -489,7 +697,14 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
             }
         }
         ui->pushButtonOKDrawing->setVisible(false);
+<<<<<<< HEAD
         if(currentTournament->getTourCount()>=2)ui->pushButtonNext->setDisabled(false);
+=======
+        if(currentTournament->getTourCount()>=2 && currentTournament->getCurrentTour() < currentTournament->getTourCount())
+            ui->pushButtonNext->setDisabled(false);
+        else
+            ui->pushButtonNext->setDisabled(true);
+>>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
     }
     else
     {

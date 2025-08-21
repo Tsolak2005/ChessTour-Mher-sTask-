@@ -2,7 +2,7 @@
 
 Game::Game(int w, int b, int res) : m_whitePlayerId(w), m_blackPlayerId(b), m_result(res) {}
 
-Game::Game(int w, int res): m_whitePlayerId(w), m_result(res) {}
+Game::Game(int w): m_whitePlayerId(w), m_result(-2) {}
 
 
 int Game::getWhitePlayerId() const {

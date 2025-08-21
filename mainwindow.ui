@@ -635,7 +635,7 @@ QTabBar::tab:selected {
                    <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                   </property>
                   <item>
-                   <widget class="QPushButton" name="pushButtonPrevios">
+                   <widget class="QPushButton" name="pushButtonPrevious">
                     <property name="text">
                      <string>previous</string>
                     </property>
@@ -728,7 +728,11 @@ QTableWidget::item:hover {
                   </item>
                  </layout>
                 </item>
+<<<<<<< HEAD
                 <item alignment="Qt::AlignmentFlag::AlignHCenter">
+=======
+                <item alignment="Qt::AlignHCenter">
+>>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
                  <widget class="QPushButton" name="pushButtonOKDrawing">
                   <property name="text">
                    <string>OK</string>

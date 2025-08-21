@@ -91,6 +91,11 @@ std::vector<Game*>* GameManager::getTourGames(int tour)
     return nullptr;
 }
 
+int GameManager::getSizeOfGameMap() const
+{
+    return m_gameMap.size();
+}
+
 void GameManager::setTourName(const QString tourName)
 {
     m_tourName = tourName;
@@ -108,5 +113,5 @@ void GameManager::addNewPlayer(Player* P)
 
 bool GameManager::hasTheTournamentStarted()
 {
-    return !m_gameMap.empty();
+    return m_gameMap.size() > 1;
 }
