@@ -1,6 +1,11 @@
 #include "gamemanager.h"
 
-GameManager::GameManager() : m_playerCount(0), m_tourCount(0), m_currentTour(1) {}
+GameManager::GameManager() : m_currentoOganizedTour(1), m_playerCount(0), m_tourCount(0), m_currentTour(1) {}
+
+int GameManager::getCurrentoOganizedTour() const
+{
+    return m_currentoOganizedTour;
+}
 
 QString GameManager::getInfo()const
 {
@@ -36,6 +41,11 @@ Player * GameManager::getPlayerById(const int id) const
         }
     }
     throw std::runtime_error("There is not  player with such Id");
+}
+
+void GameManager::setCurrentoOganizedTour(const int tour)
+{
+    m_currentoOganizedTour = tour;
 }
 
 void GameManager::setIndexOfTournament(const int index)
@@ -113,5 +123,5 @@ void GameManager::addNewPlayer(Player* P)
 
 bool GameManager::hasTheTournamentStarted()
 {
-    return m_gameMap.size() > 1;
+    return (m_gameMap.size() > 1) || ((*getTourGames(m_currentTour))[0]->getResult() != -2);
 }
