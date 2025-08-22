@@ -1,5 +1,7 @@
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 #include <QDebug>
+#include <_mingw_mac.h>
 
 
 void MainWindow::connectFunction()
@@ -313,6 +315,17 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     else
                     {ui->pushButtonNext->setDisabled(true);}
 
+                    if(currentTournament->getCurrentTour()==1)
+                    {
+                        ui->pushButtonPrevious->setDisabled(true);
+                    }
+                    else
+                    {
+                        ui->pushButtonPrevious->setDisabled(false);
+
+                    }
+
+                    GivingDataToTable(Tournament);
                     GivingDataToDrawing(Tournament);
                     deleteTournamentDetailes();
                 });
@@ -326,6 +339,8 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
             return;
         }
 }
+
+
 
 
 
@@ -420,6 +435,21 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
     if(Tournament->getPlayerCount()%2) ui->tableWidgetOfDrawing->cellWidget(rowCount-1, 2)->setDisabled(true);
 }
 
+
+void MainWindow::GivingDataToTable(GameManager *Tournament)
+{
+    int tourCount = Tournament->getTourCount();
+    int playerCount = Tournament->getPlayerCount();
+    ui->tableWidgetOfTabel->setRowCount(playerCount);
+    ui->tableWidgetOfTabel->setColumnCount(tourCount+2);
+
+    QStringList* list = new QStringList();
+    for(int i=0; i<playerCount; ++i)
+    {
+        list->insert(i,QString::number(i+1)+". "+(Tournament->getPlayerById(i+1)->getName()));
+    }
+    ui->tableWidgetOfTabel->setVerticalHeaderLabels(*list);
+}
 
 
 
@@ -529,13 +559,16 @@ void MainWindow::on_pushButtonNext_clicked()
 
     ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
 
-    if(currentTournament->getCurrentoOganizedTour() == currentTour) ui->pushButtonOKDrawing->setVisible(true);
+    if(currentTournament->getCurrentoOganizedTour() == currentTour)
+    {
+        ui->pushButtonOKDrawing->setVisible(true);
+        ui->pushButtonNext->setDisabled(true);
+    }
 
     if(currentTour-1 == currentTournament->getSizeOfGameMap())
     {
         ui->pushButtonOKDrawing->setVisible(true);
-<<<<<<< HEAD
-=======
+
         ui->pushButtonNext->setDisabled(true);
 
         int playerCount = currentTournament->getPlayerCount();
@@ -598,7 +631,6 @@ void MainWindow::on_pushButtonNext_clicked()
         if(weakestPlayerId != -1)
             currentTournament->setGame(currentTour, new Game(weakestPlayerId));
 
->>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
     }
 
      ui->tableWidgetOfDrawing->clear();
@@ -613,15 +645,7 @@ void MainWindow::on_pushButtonNext_clicked()
 void MainWindow::on_pushButtonPrevious_clicked()
 {
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())-1);
-<<<<<<< HEAD
-    if(currentTournament->getCurrentTour()>=2)
-    {
-        if(currentTournament->getCurrentTour()==2) ui->pushButtonPrevios->setDisabled(true);
-        int count = currentTournament->getCurrentTour();
-        currentTournament->setCurrentTour(--count);
-    }
-    ui->pushButtonOKDrawing->setVisible(false);
-=======
+
     ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
 
     if(currentTournament->getCurrentTour()==1) ui->pushButtonPrevious->setDisabled(true);
@@ -631,7 +655,6 @@ void MainWindow::on_pushButtonPrevious_clicked()
 
     ui->tableWidgetOfDrawing->clear();
      GivingDataToDrawing(currentTournament);
->>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
 }
 
 
@@ -708,22 +731,24 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                         qDebug() << "The combo box Id is wrong. ";
                         break;
                 }
-                    qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i,2))->setDisabled(true);
             }
             else
             {
                 qDebug() << "No combo box in this cell. ";
             }
         }
+
+        for(int i = 0; i<countOfGames; ++i)
+        {
+            qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i,2))->setDisabled(true);
+        }
+
         ui->pushButtonOKDrawing->setVisible(false);
-<<<<<<< HEAD
-        if(currentTournament->getTourCount()>=2)ui->pushButtonNext->setDisabled(false);
-=======
+
         if(currentTournament->getTourCount()>=2 && currentTournament->getCurrentTour() < currentTournament->getTourCount())
             ui->pushButtonNext->setDisabled(false);
         else
             ui->pushButtonNext->setDisabled(true);
->>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
     }
     else
     {

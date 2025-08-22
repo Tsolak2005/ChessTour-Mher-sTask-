@@ -19,6 +19,27 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QApplication app(argc, argv);
+app.setStyleSheet(R&quot;(
+    QMainWindow {
+        background-color: #2b2b2b;
+    }
+    QLabel {
+        color: #ffffff;
+    }
+    QPushButton {
+        background-color: #3498db;
+        color: white;
+        border-radius: 5px;
+        padding: 6px;
+    }
+    QPushButton:hover {
+        background-color: #2980b9;
+    }
+)&quot;);
+</string>
+  </property>
   <property name="dockNestingEnabled">
    <bool>false</bool>
   </property>
@@ -588,7 +609,7 @@ QTabBar::tab:selected {
 </string>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <property name="iconSize">
               <size>
@@ -728,11 +749,7 @@ QTableWidget::item:hover {
                   </item>
                  </layout>
                 </item>
-<<<<<<< HEAD
                 <item alignment="Qt::AlignmentFlag::AlignHCenter">
-=======
-                <item alignment="Qt::AlignHCenter">
->>>>>>> 2a8690d8e54843b20b8d8f1cd273babf655d6315
                  <widget class="QPushButton" name="pushButtonOKDrawing">
                   <property name="text">
                    <string>OK</string>

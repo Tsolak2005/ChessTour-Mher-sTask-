@@ -43,6 +43,7 @@ public:
     bool isDataComplete();
     void clearLayout(QLayout* layout);
     void GivingDataToDrawing(GameManager* Tournament);
+    void GivingDataToTable(GameManager* Tournament);
     void OkOfDrowing();
 
 private slots:
