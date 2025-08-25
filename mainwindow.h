@@ -21,6 +21,7 @@
 #include <iostream>
 #include <QButtonGroup>
 #include <QList>
+#include <QFrame>
 
 QT_BEGIN_NAMESPACE
 
@@ -43,7 +44,7 @@ public:
     bool isDataComplete();
     void clearLayout(QLayout* layout);
     void GivingDataToDrawing(GameManager* Tournament);
-    void GivingDataToTable(GameManager* Tournament);
+    void GivingDataToTable(GameManager* Tournament, int toWichTour);
     void OkOfDrowing();
 
 private slots:

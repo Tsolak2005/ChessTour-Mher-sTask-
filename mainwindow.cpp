@@ -325,7 +325,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
                     }
 
-                    GivingDataToTable(Tournament);
+
                     GivingDataToDrawing(Tournament);
                     deleteTournamentDetailes();
                 });
@@ -384,7 +384,6 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
         comboBox->addItem("0-1");
         comboBox->addItem("0.5-0.5");
 
-        std::cout << "eror" << std::endl;
 
         if(!(Tournament->getCurrentoOganizedTour() == Tournament->getCurrentTour()) && Tournament->hasTheTournamentStarted())
         {
@@ -436,20 +435,173 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 }
 
 
-void MainWindow::GivingDataToTable(GameManager *Tournament)
+void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
 {
     int tourCount = Tournament->getTourCount();
     int playerCount = Tournament->getPlayerCount();
     ui->tableWidgetOfTabel->setRowCount(playerCount);
     ui->tableWidgetOfTabel->setColumnCount(tourCount+2);
 
-    QStringList* list = new QStringList();
-    for(int i=0; i<playerCount; ++i)
+    QStringList listoOfColumn;
+    for (int i = 0; i < tourCount; ++i)
     {
-        list->insert(i,QString::number(i+1)+". "+(Tournament->getPlayerById(i+1)->getName()));
+        listoOfColumn << QString::number(i+1);
     }
-    ui->tableWidgetOfTabel->setVerticalHeaderLabels(*list);
+    listoOfColumn << "Score";
+    listoOfColumn << "Extra Point";
+
+    ui->tableWidgetOfTabel->setHorizontalHeaderLabels(listoOfColumn);
+
+    QStringList listOfRows;
+    for (int i = 0; i < playerCount; ++i)
+    {
+        listOfRows << QString("%1. %2").arg(i+1).arg(Tournament->getPlayerById(i+1)->getName());
+    }
+    ui->tableWidgetOfTabel->setVerticalHeaderLabels(listOfRows);
+
+    for(int i=1; i<=toWichTour; ++i)
+    {
+        std::vector<Game*>* vectorOgGames = Tournament->getTourGames(i);
+        bool odd = false;
+        for(Game* it : (*vectorOgGames))
+        {
+            int res = it->getResult();
+            double score;
+            switch (res)
+            {
+                case 1: score=1;
+                    break;
+                case -1: score=0;
+                    break;
+                case 0: score=0.5;
+
+                case -2:
+                {
+                    score = 1;
+                    odd = true;
+                }
+            }
+
+            {
+                QHBoxLayout *horizLay1 = new QHBoxLayout();
+                horizLay1->setContentsMargins(5, 5, 0, 0);
+                {
+                    QLabel* l1 = new QLabel(QString::number(score));
+                    horizLay1->addWidget(l1);
+                    QLabel* l2 = new QLabel();
+                    l2->setMaximumSize(10,18);
+                    horizLay1->addWidget(l2);
+                }
+
+                QHBoxLayout *horizLay2 = new QHBoxLayout();
+                {
+                    QLabel* l2 = new QLabel();
+                    l2->setMaximumSize(10,18);
+                    horizLay2->addWidget(l2);
+
+                    QLabel *labelOfBlackPlayer = new QLabel(odd?"":QString::number(it->getBlackPlayerId()));
+                    labelOfBlackPlayer->setMinimumSize(10,14);
+                    labelOfBlackPlayer->setStyleSheet("border: 1px solid black; background-color: white; color: black;");
+                    horizLay2->addWidget(labelOfBlackPlayer);
+                }
+                horizLay2->setContentsMargins(0, 0, 2, 5);
+
+                QVBoxLayout *vertLay = new QVBoxLayout();
+                vertLay->setContentsMargins(0, 0, 0, 0); // inner padding
+                vertLay->addLayout(horizLay1);
+                vertLay->addLayout(horizLay2);
+
+                QFrame *container = new QFrame();
+                container->setFrameShape(QFrame::Box);
+                container->setFrameShadow(QFrame::Plain);
+                container->setStyleSheet("color: black;");
+                container->setLayout(vertLay);
+                container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+                QWidget *wrapper = new QWidget();
+                QHBoxLayout *wrapLayout = new QHBoxLayout(wrapper);
+                wrapLayout->addStretch();          // left spacing
+                wrapLayout->addWidget(container);  // container in center
+                wrapLayout->addStretch();          // right spacing
+                wrapLayout->setContentsMargins(0, 0, 12, 5);
+
+                QVBoxLayout *outerLayout = new QVBoxLayout();
+                outerLayout->addStretch();         // top spacing
+                outerLayout->addWidget(wrapper);   // wrapper
+                outerLayout->addStretch();         // bottom spacing
+                outerLayout->setContentsMargins(0, 0, 0, 0);
+
+                QWidget *finalWrapper = new QWidget();
+                finalWrapper->setMinimumSize(60,40);
+                finalWrapper->setLayout(outerLayout);
+
+                ui->tableWidgetOfTabel->setCellWidget(it->getWhitePlayerId()-1, i-1, finalWrapper);
+            }
+
+            if(!odd)
+            {
+                QHBoxLayout *horizLay1 = new QHBoxLayout();
+                horizLay1->setContentsMargins(5, 5, 0, 0);
+                {
+
+                    QLabel* l1 = new QLabel(QString::number(1-score));
+                    l1->setStyleSheet("color: white");
+                    horizLay1->addWidget(l1);
+                    QLabel* l2 = new QLabel();
+                    l2->setMaximumSize(10,18);
+                    horizLay1->addWidget(l2);
+                }
+
+                QHBoxLayout *horizLay2 = new QHBoxLayout();
+                {
+                    QLabel* l2 = new QLabel();
+                    l2->setMaximumSize(10,18);
+                    horizLay2->addWidget(l2);
+                    QLabel *labelOfWhitePlayer = new QLabel(QString::number(it->getWhitePlayerId()));
+                    labelOfWhitePlayer->setMinimumSize(10,14);
+                    labelOfWhitePlayer->setStyleSheet("border: 1px solid black; background-color: white; color: black;");
+                    horizLay2->addWidget(labelOfWhitePlayer);
+                }
+                horizLay2->setContentsMargins(0, 0, 2, 5);
+
+                QVBoxLayout *vertLay = new QVBoxLayout();
+                vertLay->setContentsMargins(0, 0, 0, 0); // inner padding
+                vertLay->addLayout(horizLay1);
+                vertLay->addLayout(horizLay2);
+
+                QFrame *container = new QFrame();
+                container->setFrameShape(QFrame::Box);
+                container->setFrameShadow(QFrame::Plain);
+                container->setStyleSheet("color: black;");
+                container->setStyleSheet("background-color: black; color: white;");
+                container->setLayout(vertLay);
+                container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+                QWidget *wrapper = new QWidget();
+                QHBoxLayout *wrapLayout = new QHBoxLayout(wrapper);
+                wrapLayout->addStretch();          // left spacing
+                wrapLayout->addWidget(container);  // container in center
+                wrapLayout->addStretch();          // right spacing
+                wrapLayout->setContentsMargins(0, 0, 12, 5);
+
+                QVBoxLayout *outerLayout = new QVBoxLayout();
+                outerLayout->addStretch();         // top spacing
+                outerLayout->addWidget(wrapper);   // wrapper
+                outerLayout->addStretch();         // bottom spacing
+                outerLayout->setContentsMargins(0, 0, 0, 0);
+
+                QWidget *finalWrapper = new QWidget();
+                finalWrapper->setMinimumSize(60,40);
+                finalWrapper->setLayout(outerLayout);
+
+                ui->tableWidgetOfTabel->setCellWidget(it->getBlackPlayerId()-1, i-1, finalWrapper);
+            }
+        }
+    }
+    ui->tableWidgetOfTabel->resizeRowsToContents();
+    ui->tableWidgetOfTabel->resizeColumnsToContents();
 }
+
 
 
 
@@ -477,7 +629,6 @@ void MainWindow::on_pushButtonEdit_clicked()
         }
 
         ui->pushButtonEdit->setDisabled(true);
-
 }
 
 void MainWindow::on_pushButtonDelete_clicked()
@@ -749,6 +900,8 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
             ui->pushButtonNext->setDisabled(false);
         else
             ui->pushButtonNext->setDisabled(true);
+
+         GivingDataToTable(currentTournament, 1);
     }
     else
     {
