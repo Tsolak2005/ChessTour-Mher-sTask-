@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
-#include <_mingw_mac.h>
 
 
 void MainWindow::connectFunction()
@@ -158,7 +157,8 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
         if(i>=lastcount)
         {
             QString playerName = lineEdit->text().trimmed();
-            if (!playerName.isEmpty()) {
+            if (!playerName.isEmpty())
+            {
                 Player* newPlayer = new Player();
                 newPlayer->setName(playerName);
                 newPlayer->setColorCoef(0);
@@ -266,7 +266,8 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
             }
             else
             {
-
+                // ui->tabWidget->setTabEnabled(1,false);
+                ui->tableWidgetOfTabel->clear();
                 ui->stackedWidget->setCurrentIndex(2);
                 QRadioButton * radioButton = new QRadioButton();
                 radioButton->setText(ui->lineEditOfName->text());
@@ -325,7 +326,24 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
                     }
 
+                    if(currentTournament->hasTheTournamentStarted())
+                    {
+                        ui->tabWidget->setTabEnabled(1,true);
+                    }
+                    else
+                    {
+                        ui->tabWidget->setTabEnabled(1,false);
+                    }
 
+                    clearLayout(ui->horizontalLayoutOFTorursOfTabel);
+                    QLabel * l = new QLabel();
+                    l->setText("                  ");
+                    ui->horizontalLayoutOFTorursOfTabel->addWidget(l);
+                    for(auto it: *currentTournament->getRadioButtonsOfTabel())
+                    {
+                        ui->horizontalLayoutOFTorursOfTabel->addWidget(it);
+                    }
+                    GivingDataToTable(currentTournament, currentTournament->getCurrentoOganizedTour());
                     GivingDataToDrawing(Tournament);
                     deleteTournamentDetailes();
                 });
@@ -437,6 +455,7 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 
 void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
 {
+    ui->tableWidgetOfTabel->clear();
     int tourCount = Tournament->getTourCount();
     int playerCount = Tournament->getPlayerCount();
     ui->tableWidgetOfTabel->setRowCount(playerCount);
@@ -469,16 +488,26 @@ void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
             double score;
             switch (res)
             {
-                case 1: score=1;
+                case 1:
+                {
+                    score=1;
                     break;
-                case -1: score=0;
+                }
+                case -1:
+                {
+                    score=0;
                     break;
-                case 0: score=0.5;
-
+                }
+                case 0:
+                {
+                    score=0.5;
+                    break;
+                }
                 case -2:
                 {
                     score = 1;
                     odd = true;
+                    break;
                 }
             }
 
@@ -514,7 +543,7 @@ void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
                 QFrame *container = new QFrame();
                 container->setFrameShape(QFrame::Box);
                 container->setFrameShadow(QFrame::Plain);
-                container->setStyleSheet("color: black;");
+                container->setStyleSheet(odd?"background-color: gray; color: white;":"color: black;");
                 container->setLayout(vertLay);
                 container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
@@ -572,7 +601,6 @@ void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
                 QFrame *container = new QFrame();
                 container->setFrameShape(QFrame::Box);
                 container->setFrameShadow(QFrame::Plain);
-                container->setStyleSheet("color: black;");
                 container->setStyleSheet("background-color: black; color: white;");
                 container->setLayout(vertLay);
                 container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -597,6 +625,12 @@ void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
                 ui->tableWidgetOfTabel->setCellWidget(it->getBlackPlayerId()-1, i-1, finalWrapper);
             }
         }
+    }
+    for(int i=0; i<playerCount; i++)
+    {
+        QLabel* l = new QLabel();
+        l->setText(QString::number(currentTournament->getPlayerById(i+1)->getCurrentPoint()));
+
     }
     ui->tableWidgetOfTabel->resizeRowsToContents();
     ui->tableWidgetOfTabel->resizeColumnsToContents();
@@ -825,17 +859,13 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
     if (reply == QMessageBox::Ok)
     {
 
+        ui->tabWidget->setTabEnabled(1,true);
         std::vector<Game*>* game = currentTournament->getTourGames(currentTournament->getCurrentTour());
         int countOfGames = game->size();
         int countOfPlayers = currentTournament->getPlayerCount();
 
         currentTournament->setCurrentoOganizedTour(currentTournament->getCurrentoOganizedTour()+1);
 
-        if((currentTournament->getPlayerCount())%2)
-        {
-            currentTournament->getPlayerById(countOfPlayers)->setCurrentPoint(1);
-            --countOfGames;
-        }
 
         for(int i = 0; i<countOfGames; ++i)
         {
@@ -847,34 +877,67 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
                 {
                     case 0:
                     {
-                        QMessageBox::warning(this, "Input Error. ", "Please select a valid option. ");
-                        return;
-                    }
+                        if(!(currentTournament->getPlayerCount()%2))
+                        {
+                            QMessageBox::critical(this, "Error", "Insert result!!");
+                            return;
+                        }
+                        (*game)[i]->setResult(-2);
+                        Player* currentPlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
+                        double GrayPlayerCurrentPoint = currentPlayer->getCurrentPoint();
+                        currentPlayer->setCurrentPoint(++GrayPlayerCurrentPoint);
+                        currentPlayer->setLastColor(-2);
+                        break;
 
+                    }
                     case 1:
                     {
                         (*game)[i]->setResult(1);
-                        double whitePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint();
-                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(++whitePlayerCurrentPoint);
+                        Player* currentWhitePlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
+                        double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
+                        currentWhitePlayer->setCurrentPoint(++WhitePlayerCurrentPoint);
+                        currentWhitePlayer->setLastColor(0);
+                        currentWhitePlayer->setColorCoef(currentWhitePlayer->getColorCoef()+1);
+
+                        Player* currentBlackPlayer =  currentTournament->getPlayerById((*game)[i]->getBlackPlayerId());
+                        // double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
+                        // currentBlackPlayer->setCurrentPoint(++WhitePlayerCurrentPoint);
+                        currentBlackPlayer->setLastColor(1);
+                        currentBlackPlayer->setColorCoef(currentBlackPlayer->getColorCoef()-1);
                         break;
 
                     }
                     case 2:
                     {
                         (*game)[i]->setResult(-1);
-                        double blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint();
-                        currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(++blackPlayerCurrentPoint);
+                        Player* currentWhitePlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
+                        // double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
+                        // currentWhitePlayer->setCurrentPoint(++WhitePlayerCurrentPoint);
+                        currentWhitePlayer->setLastColor(0);
+                        currentWhitePlayer->setColorCoef(currentWhitePlayer->getColorCoef()+1);
+
+                        Player* currentBlackPlayer =  currentTournament->getPlayerById((*game)[i]->getBlackPlayerId());
+                        double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
+                        currentBlackPlayer->setCurrentPoint(++BlackPlayerCurrentPoint);
+                        currentBlackPlayer->setLastColor(1);
+                        currentBlackPlayer->setColorCoef(currentBlackPlayer->getColorCoef()-1);
                         break;
                     }
 
                     case 3:
                     {
                         (*game)[i]->setResult(0);
-                        double whitePlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->getCurrentPoint() + 0.5;
-                        currentTournament->getPlayerById((*game)[i]->getWhitePlayerId())->setCurrentPoint(whitePlayerCurrentPoint);
+                        Player* currentWhitePlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
+                        double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
+                        currentWhitePlayer->setCurrentPoint(WhitePlayerCurrentPoint + 0.5);
+                        currentWhitePlayer->setLastColor(0);
+                        currentWhitePlayer->setColorCoef(currentWhitePlayer->getColorCoef()+1);
 
-                        double blackPlayerCurrentPoint = currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->getCurrentPoint() + 0.5;
-                        currentTournament->getPlayerById((*game)[i]->getBlackPlayerId())->setCurrentPoint(blackPlayerCurrentPoint);
+                        Player* currentBlackPlayer =  currentTournament->getPlayerById((*game)[i]->getBlackPlayerId());
+                        double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
+                        currentBlackPlayer->setCurrentPoint(BlackPlayerCurrentPoint + 0.5);
+                        currentBlackPlayer->setLastColor(1);
+                        currentBlackPlayer->setColorCoef(currentBlackPlayer->getColorCoef()-1);
                         break;
                     }
 
@@ -889,6 +952,8 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
             }
         }
 
+        int currentTour = currentTournament->getCurrentTour();
+
         for(int i = 0; i<countOfGames; ++i)
         {
             qobject_cast<QComboBox*>(ui->tableWidgetOfDrawing->cellWidget(i,2))->setDisabled(true);
@@ -896,14 +961,25 @@ void MainWindow::on_pushButtonOKDrawing_clicked()
 
         ui->pushButtonOKDrawing->setVisible(false);
 
-        if(currentTournament->getTourCount()>=2 && currentTournament->getCurrentTour() < currentTournament->getTourCount())
+        if(currentTournament->getTourCount()>=2 && currentTour < currentTournament->getTourCount())
             ui->pushButtonNext->setDisabled(false);
         else
             ui->pushButtonNext->setDisabled(true);
 
-         GivingDataToTable(currentTournament, 1);
+        // GivingDataToTable(currentTournament, 1);
+
+        QRadioButton * radioButtonOfTours = new QRadioButton();
+        radioButtonOfTours->setText("Tour " + QString::number(currentTour));
+        QObject::connect(radioButtonOfTours, &QRadioButton::clicked, this, [radioButtonOfTours, this, currentTour]()
+        {
+            GivingDataToTable(currentTournament, currentTour);
+        });
+        currentTournament->setRadioButtonsOfTabel(radioButtonOfTours);
+        ui->horizontalLayoutOFTorursOfTabel->addWidget(radioButtonOfTours);
+        emit radioButtonOfTours->click();
     }
     else
+
     {
         return;
     }

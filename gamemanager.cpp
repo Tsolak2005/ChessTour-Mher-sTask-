@@ -43,6 +43,11 @@ Player * GameManager::getPlayerById(const int id) const
     throw std::runtime_error("There is not  player with such Id");
 }
 
+void GameManager::setRadioButtonsOfTabel(QRadioButton *radioButton)
+{
+    m_vecotrOfRadioButtonsOfTabel.push_back(radioButton);
+}
+
 void GameManager::setCurrentoOganizedTour(const int tour)
 {
     m_currentoOganizedTour = tour;
@@ -99,6 +104,11 @@ std::vector<Game*>* GameManager::getTourGames(int tour)
         return &m_gameMap[tour];
     }
     return nullptr;
+}
+
+std::vector<QRadioButton *>* GameManager::getRadioButtonsOfTabel()
+{
+    return &m_vecotrOfRadioButtonsOfTabel;
 }
 
 int GameManager::getSizeOfGameMap() const

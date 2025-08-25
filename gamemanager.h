@@ -4,6 +4,7 @@
 #include<QString>
 #include"player.h"
 #include "game.h"
+#include <QRadioButton>
 
 class GameManager
 {
@@ -19,8 +20,10 @@ public:
     QString getTourName()const;
     QString getDate()const;
     std::vector<Game *> *getTourGames(int tour);
+    std::vector<QRadioButton*>*  getRadioButtonsOfTabel();
     int getSizeOfGameMap() const;
     Player * getPlayerById(const int id) const;
+    void setRadioButtonsOfTabel( QRadioButton* radioButton);
     void setCurrentoOganizedTour(const int tour);
     void setIndexOfTournament(const int index);
     void setPlayerCount(const int playerCount);
@@ -35,6 +38,7 @@ public:
     bool hasTheTournamentStarted();
 
 private:
+
     int m_IndexOfTournament;
     int m_currentoOganizedTour;
     int m_playerCount;
@@ -44,6 +48,7 @@ private:
     QString m_date;
     QString m_info;
 
+    std::vector<QRadioButton*>  m_vecotrOfRadioButtonsOfTabel;
     std::map< int, std::vector<Game*> > m_gameMap;
     std::vector<Player*> m_playerList;
 };

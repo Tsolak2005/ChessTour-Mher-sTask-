@@ -70,7 +70,10 @@ private:
     Ui::MainWindow *ui;
     std::vector<GameManager*> vectorOfTournaments;
     std::vector<QRadioButton *> vectorOfRadioButtons;
+
+
     GameManager * currentTournament;
+
 
 };
 #endif // MAINWINDOW_H

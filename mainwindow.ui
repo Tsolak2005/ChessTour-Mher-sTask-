@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1557</width>
-    <height>733</height>
+    <width>1757</width>
+    <height>970</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -582,7 +582,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>20</y>
+               <y>10</y>
                <width>690</width>
                <height>501</height>
               </rect>
@@ -763,17 +763,20 @@ QTableWidget::item:hover {
               <attribute name="title">
                <string>Table</string>
               </attribute>
-              <widget class="QTableWidget" name="tableWidgetOfTabel">
+              <widget class="QWidget" name="verticalLayoutWidget_5">
                <property name="geometry">
                 <rect>
-                 <x>20</x>
+                 <x>10</x>
                  <y>30</y>
-                 <width>661</width>
-                 <height>391</height>
+                 <width>681</width>
+                 <height>331</height>
                 </rect>
                </property>
-               <property name="styleSheet">
-                <string notr="true">QTableWidget {
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="QTableWidget" name="tableWidgetOfTabel">
+                  <property name="styleSheet">
+                   <string notr="true">QTableWidget {
     background-color: #fdfdfd;
     gridline-color: #ccc;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -803,72 +806,99 @@ QTableWidget::item:hover {
     background-color: #d0e7ff;
 }
 </string>
-               </property>
-               <property name="lineWidth">
-                <number>1</number>
-               </property>
-               <property name="autoScrollMargin">
-                <number>16</number>
-               </property>
-               <property name="rowCount">
-                <number>6</number>
-               </property>
-               <property name="columnCount">
-                <number>6</number>
-               </property>
-               <attribute name="horizontalHeaderCascadingSectionResizes">
-                <bool>false</bool>
-               </attribute>
-               <attribute name="horizontalHeaderDefaultSectionSize">
-                <number>99</number>
-               </attribute>
-               <attribute name="verticalHeaderDefaultSectionSize">
-                <number>37</number>
-               </attribute>
-               <row>
-                <property name="text">
-                 <string>Player 1</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Player 2</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Player 3</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Player 4</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Player 5</string>
-                </property>
-               </row>
-               <row>
-                <property name="text">
-                 <string>Player 6</string>
-                </property>
-               </row>
-               <column/>
-               <column/>
-               <column/>
-               <column/>
-               <column>
-                <property name="text">
-                 <string>Score</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Extra Point</string>
-                </property>
-               </column>
+                  </property>
+                  <property name="lineWidth">
+                   <number>1</number>
+                  </property>
+                  <property name="autoScrollMargin">
+                   <number>16</number>
+                  </property>
+                  <property name="rowCount">
+                   <number>6</number>
+                  </property>
+                  <property name="columnCount">
+                   <number>6</number>
+                  </property>
+                  <attribute name="horizontalHeaderCascadingSectionResizes">
+                   <bool>false</bool>
+                  </attribute>
+                  <attribute name="horizontalHeaderDefaultSectionSize">
+                   <number>99</number>
+                  </attribute>
+                  <attribute name="verticalHeaderDefaultSectionSize">
+                   <number>37</number>
+                  </attribute>
+                  <row>
+                   <property name="text">
+                    <string>Player 1</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Player 2</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Player 3</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Player 4</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Player 5</string>
+                   </property>
+                  </row>
+                  <row>
+                   <property name="text">
+                    <string>Player 6</string>
+                   </property>
+                  </row>
+                  <column/>
+                  <column/>
+                  <column/>
+                  <column/>
+                  <column>
+                   <property name="text">
+                    <string>Score</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Extra Point</string>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_2">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayoutOFTorursOfTabel">
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+                    </property>
+                   </layout>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Orientation::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
               </widget>
              </widget>
              <widget class="QWidget" name="tab_3">
@@ -928,30 +958,14 @@ QTableWidget::item:hover {
      </item>
     </layout>
    </widget>
-   <widget class="QFrame" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>610</y>
-      <width>120</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::Shape::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Shadow::Raised</enum>
-    </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1557</width>
-     <height>21</height>
+     <width>1757</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menughjkm">
