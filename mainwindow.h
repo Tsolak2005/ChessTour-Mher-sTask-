@@ -4,10 +4,7 @@
 #include <QLayout>
 #include <QMainWindow>
 #include <QRadioButton>
-#include"gamemanager.h"
-#include "comfortcoef.h"
-#include "player.h"
-#include "game.h"
+#include <QCheckBox>
 #include <QObject>
 #include <QLineEdit>
 #include <QLabel>
@@ -22,6 +19,10 @@
 #include <QButtonGroup>
 #include <QList>
 #include <QFrame>
+#include"gamemanager.h"
+#include "comfortcoef.h"
+#include "player.h"
+#include "game.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -46,6 +47,8 @@ public:
     void GivingDataToDrawing(GameManager* Tournament);
     void GivingDataToTable(GameManager* Tournament, int toWichTour);
     void OkOfDrowing();
+    void MergeSortForPlayers(std::vector<Player*>&, int start, int end);
+    std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(const std::vector<std::vector<int>>&, std::vector<int>& , std::vector<int>);
 
 private slots:
     void on_pushButtonAddName_clicked(QString text);
@@ -57,7 +60,7 @@ private slots:
     void on_pushButtonDelete_clicked();
     void on_pushButtonNext_clicked();
 
-    void on_pushButtonOKDrawing_clicked();
+    void on_pushButtonOkOfDrawing_clicked();
 
     void on_pushButtonPrevious_clicked();
 
@@ -68,6 +71,7 @@ signals:
 
 private:
     Ui::MainWindow *ui;
+
     std::vector<GameManager*> vectorOfTournaments;
     std::vector<QRadioButton *> vectorOfRadioButtons;
 

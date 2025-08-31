@@ -10,32 +10,53 @@ class GameManager
 {
 public:
 
-    GameManager();
+    GameManager(int playerCount);
+     GameManager(GameManager* parent);
+    ~GameManager();
+
     int getCurrentoOganizedTour()const;
+    void setCurrentOganizedTour(const int tour);
+
     QString getInfo()const;
-    int getPlayerCount()const;
-    int getTourCount()const;
-    int getIndexOfTournament()const;
-    int getCurrentTour()const;
-    QString getTourName()const;
-    QString getDate()const;
-    std::vector<Game *> *getTourGames(int tour);
-    std::vector<QRadioButton*>*  getRadioButtonsOfTabel();
-    int getSizeOfGameMap() const;
-    Player * getPlayerById(const int id) const;
-    void setRadioButtonsOfTabel( QRadioButton* radioButton);
-    void setCurrentoOganizedTour(const int tour);
-    void setIndexOfTournament(const int index);
-    void setPlayerCount(const int playerCount);
-    void setTourCount(const int tourCount);
     void setInfo(const QString Info);
+
+    int getPlayerCount()const;
+    void setPlayerCount(const int playerCount);
+
+    int getTourCount()const;
+    void setTourCount(const int tourCount);
+
+    int getIndexOfTournament()const;
+    void setIndexOfTournament(const int index);
+
+    int getCurrentTour()const;
     void setCurrentTour(const int tour);
+
+    QString getTourName()const;
+
+    QString getDate()const;
+
+    std::vector<Game *> *getTourGames(int tour);
     void setGame(int tour, Game* game);
+    int getSizeOfGameMap() const;
+
+    std::vector<QRadioButton*>*  getRadioButtonsOfTabel();
+    void setRadioButtonsOfTabel( QRadioButton* radioButton);
+
+    std::vector<Player*>*getPlayers();
+    void changePlayersList(std::vector<Player*>*);
+    Player * getPlayerById(const int id) const;
+    void addNewPlayer(Player* P);
 
     void setTourName(const QString tourName);
     void setDate(const QString date);
-    void addNewPlayer(Player* P);
+
     bool hasTheTournamentStarted();
+
+    bool HaveThePlayersMet(int p1Id, int p2Id);
+    void ThePlayerSMet(int p1Id, int p2ID);
+    void changeMatrixOfPlayers(int playerCount);
+
 
 private:
 
@@ -48,9 +69,10 @@ private:
     QString m_date;
     QString m_info;
 
-    std::vector<QRadioButton*>  m_vecotrOfRadioButtonsOfTabel;
+    std::vector<QRadioButton*>*  m_vectorOfRadioButtonsOfTabel;
     std::map< int, std::vector<Game*> > m_gameMap;
     std::vector<Player*> m_playerList;
+    std::vector<std::vector<bool>>* m_matrixOfPlayers;
 };
 
 #endif // GAMEMANAGER_H

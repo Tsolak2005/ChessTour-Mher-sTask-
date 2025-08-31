@@ -377,7 +377,7 @@ QLabel {
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>2</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page">
             <widget class="QTextBrowser" name="textBrowser">
@@ -609,7 +609,7 @@ QTabBar::tab:selected {
 </string>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <property name="iconSize">
               <size>
@@ -750,7 +750,7 @@ QTableWidget::item:hover {
                  </layout>
                 </item>
                 <item alignment="Qt::AlignmentFlag::AlignHCenter">
-                 <widget class="QPushButton" name="pushButtonOKDrawing">
+                 <widget class="QPushButton" name="pushButtonOkOfDrawing">
                   <property name="text">
                    <string>OK</string>
                   </property>
@@ -768,11 +768,11 @@ QTableWidget::item:hover {
                 <rect>
                  <x>10</x>
                  <y>30</y>
-                 <width>681</width>
+                 <width>651</width>
                  <height>331</height>
                 </rect>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_12">
+               <layout class="QVBoxLayout" name="verticalLayoutOfTable">
                 <item>
                  <widget class="QTableWidget" name="tableWidgetOfTabel">
                   <property name="styleSheet">
@@ -896,6 +896,13 @@ QTableWidget::item:hover {
                     </property>
                    </spacer>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="checkBoxOfSort">
+                    <property name="text">
+                     <string>Sort</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </item>
                </layout>
@@ -965,7 +972,7 @@ QTableWidget::item:hover {
      <x>0</x>
      <y>0</y>
      <width>1757</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menughjkm">

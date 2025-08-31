@@ -9,8 +9,8 @@ class Player:public QObject
 {
     Q_OBJECT
 public:
-    explicit Player(QObject *parent = nullptr);
-
+    Player();
+    Player(Player *parent);
     int getId()const;
     double getCurrentPoint()const;
     int getColorCoef()const;
