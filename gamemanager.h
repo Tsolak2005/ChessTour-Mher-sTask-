@@ -5,6 +5,7 @@
 #include"player.h"
 #include "game.h"
 #include <QRadioButton>
+#include <iostream>
 
 class GameManager
 {
@@ -55,7 +56,7 @@ public:
 
     bool HaveThePlayersMet(int p1Id, int p2Id);
     void ThePlayerSMet(int p1Id, int p2ID);
-    void changeMatrixOfPlayers(int playerCount);
+    void changeMatrixOfPlayers(int playerCount, int lastPlayerCount);
 
 
 private:

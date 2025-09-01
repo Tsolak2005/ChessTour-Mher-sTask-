@@ -232,7 +232,7 @@ void GameManager::ThePlayerSMet(int p1Id, int p2Id)
     (*m_matrixOfPlayers)[p2Id-1][p1Id-1] = true;
 }
 
-void GameManager::changeMatrixOfPlayers(int playerCount)
+void GameManager::changeMatrixOfPlayers(int playerCount, int lastPlayerCount)
 {
     if(playerCount<m_playerCount) qDebug() << "inserted players count is less then the existing";
 
@@ -242,13 +242,22 @@ void GameManager::changeMatrixOfPlayers(int playerCount)
     {
         (*temp)[i][i] = true;
     }
-
-    for(int i=0; i<m_playerCount; ++i)
+    std::cout << "ERROR BEFORE FOR"<<std::endl;
+    for(int i=0; i<lastPlayerCount; ++i)
     {
-        for(int j=0; j<m_playerCount; ++j)
+        for(int j=0; j<lastPlayerCount; ++j)
         {
             (*temp)[i][j] = (*m_matrixOfPlayers)[i][j];
         }
+    }
+    std::cout << "ERROR AFTDER FOR"<<std::endl;
+    for(int i=0; i<lastPlayerCount; ++i)
+    {
+        for(int j=0; j<lastPlayerCount; ++j)
+        {
+            std::cout << (*temp)[j][i]<< " ";
+        }
+        std::cout << std::endl;
     }
 
     delete m_matrixOfPlayers;

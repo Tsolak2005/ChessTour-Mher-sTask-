@@ -380,7 +380,13 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
                     if(lastPlayerCount < playerCount)
                     {
-                        thechangingTournamnet->changeMatrixOfPlayers(playerCount);
+                        std::cout << "ERROR HERE" << std::endl;
+
+                        thechangingTournamnet->changeMatrixOfPlayers(playerCount, lastPlayerCount);
+                        if(lastPlayerCount % 2){
+
+                            thechangingTournamnet->getTourGames(currentTour)->back()->setBlackPlayerId(++lastPlayerCount);
+                        }
                         for(int i=lastPlayerCount+1; i<=playerCount; i++)
                         {
                             Game * newGame = new Game(i);
@@ -480,13 +486,13 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     ui->horizontalLayoutOFTorursOfTabel->addWidget(l);
 
                     // emit ui->checkBoxOfSort->checkStateChanged(Qt::Unchecked);
-                    ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
-
 
                     std::vector<QRadioButton*>* radios = currentTournament->getRadioButtonsOfTabel();
                     for (QRadioButton* rb : *radios) {
                         ui->horizontalLayoutOFTorursOfTabel->addWidget(rb);
                     }
+
+                    ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
 
                     GivingDataToTable(currentTournament, currentTournament->getCurrentoOganizedTour()-1);
                     GivingDataToDrawing(Tournament);
@@ -1006,7 +1012,7 @@ void MainWindow::on_pushButtonNext_clicked()
                 if( j==weakestPlayerId) continue;
                 if (currentTournament->HaveThePlayersMet(i,j))
                 {
-                    v.push_back(0);
+                    v.push_back(INT_MIN);
                 }
                 else
                 {
@@ -1108,6 +1114,8 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                         if(!(currentTournament->getPlayerCount()%2) || i!=countOfGames-1)
                         {
                             QMessageBox::critical(this, "Error", "Insert result!!");
+                            ui->tabWidget->setTabEnabled(1,false);
+                            currentTournament->setCurrentOganizedTour(currentTournament->getCurrentoOganizedTour()-1);
                             return;
                         }
                         (*game)[i]->setResult(-2);
