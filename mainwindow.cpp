@@ -2,54 +2,63 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 
-void MainWindow::MergeSortForPlayers(std::vector<Player*>& Players, int start, int end)
+void MergeSortForPlayers(std::vector<Player*>& Players, int start, int end, std::vector<double>& Scores)
 {
-    if (end - start < 2) return; // меньше 2 элементов - ничего сортировать
+    if (end - start < 2) return;
+
     if (end - start == 2) {
-        if (Players[start]->getCurrentPoint() < Players[start+1]->getCurrentPoint()) {
+        if (Scores[start] < Scores[start+1]) {
             std::swap(Players[start], Players[start+1]);
+            std::swap(Scores[start], Scores[start+1]);
         }
         return;
     }
 
     int mid = start + (end - start) / 2;
 
-
-    MergeSortForPlayers(Players, start, mid);
-    MergeSortForPlayers(Players, mid, end);
+    MergeSortForPlayers(Players, start, mid, Scores);
+    MergeSortForPlayers(Players, mid, end, Scores);
 
     // слияние
-    std::vector<Player*> temp;
-    temp.reserve(end - start);
+    std::vector<Player*> tempPlayers;
+    std::vector<double> tempScores;
+
+    tempPlayers.reserve(end - start);
+    tempScores.reserve(end - start);
 
     int i = start;
     int j = mid;
 
     while (i < mid && j < end)
     {
-        if (Players[i]->getCurrentPoint() >= Players[j]->getCurrentPoint()) {
-            temp.push_back(Players[i]);
+        if (Scores[i] >= Scores[j]) {
+            tempPlayers.push_back(Players[i]);
+            tempScores.push_back(Scores[i]);
             i++;
         } else {
-            temp.push_back(Players[j]);
+            tempPlayers.push_back(Players[j]);
+            tempScores.push_back(Scores[j]);
             j++;
         }
     }
 
     while (i < mid) {
-        temp.push_back(Players[i]);
+        tempPlayers.push_back(Players[i]);
+        tempScores.push_back(Scores[i]);
         i++;
     }
     while (j < end) {
-        temp.push_back(Players[j]);
+        tempPlayers.push_back(Players[j]);
+        tempScores.push_back(Scores[j]);
         j++;
     }
 
-
-    for (int k = 0; k < temp.size(); k++) {
-        Players[start + k] = temp[k];
+    for (int k = 0; k < (int)tempPlayers.size(); k++) {
+        Players[start + k] = tempPlayers[k];
+        Scores[start + k] = tempScores[k];
     }
 }
+
 
 void MainWindow::connectFunction()
 {
@@ -61,8 +70,6 @@ void MainWindow::connectFunction()
         deleteTournamentDetailes();
         currentTournament = nullptr;
         ui->pushButtonOkOfDrawing->setVisible(true);
-        ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
-
 
         ui->lineEditOfTourCount->setDisabled(false);
         ui->PushButtonOkOfNewTournamnet->setDisabled(false);
@@ -163,7 +170,16 @@ void MainWindow::connectFunction()
                 newPlayerList->push_back(new Player(playerList[i]));
             }
 
-            MergeSortForPlayers(*newPlayerList, 0, playerCount);
+            std::vector<double> Scores;
+
+            int tourCount = currentTournament->getTourCount();
+            for(int i=0; i<playerCount; ++i)
+            {
+                double score = qobject_cast<QLabel*>(ui->tableWidgetOfTabel->cellWidget(i,tourCount))->text().toDouble();
+                Scores.push_back(score);
+            }
+
+            MergeSortForPlayers(*newPlayerList, 0, playerCount, Scores);
 
             currentTournament->changePlayersList(newPlayerList);
 
@@ -372,9 +388,10 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 {
         if(isDataComplete())
         {
-            ui->labelOfTour->setText("Tour 1");
+
             if(thechangingTournamnet)
             {
+
                 ui->pushButtonEdit->setDisabled(false);
                 thechangingTournamnet->setTourName(ui->lineEditOfName->text());
                 thechangingTournamnet->setDate(ui->lineEditOfData->text());
@@ -396,13 +413,14 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
                 if(thechangingTournamnet->hasTheTournamentStarted())
                 {
+                    ui->labelOfTour->setText("Tour " + QString::number(thechangingTournamnet->getCurrentoOganizedTour()-1));
                     ui->tabWidget->setTabEnabled(1,true);
                     GivingDataToDrawing(thechangingTournamnet);
                     GivingDataToTable(thechangingTournamnet, thechangingTournamnet->getCurrentoOganizedTour()-1);  
                 }
                 else
                 {
-
+                    ui->labelOfTour->setText("Tour 1");
                     ui->tabWidget->setTabEnabled(1,false);
 
                     int playerCount = thechangingTournamnet->getPlayerCount();
@@ -437,7 +455,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
             }
             else
             {
-
+                ui->labelOfTour->setText("Tour 1");
                 ui->tableWidgetOfTabel->clear();
                 ui->stackedWidget->setCurrentIndex(2);
                 QRadioButton * radioButton = new QRadioButton();
@@ -863,12 +881,12 @@ void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
             }
 
             QLabel *l1 = qobject_cast<QLabel*>(ui->tableWidgetOfTabel->cellWidget((*mapOfIdes)[it->getWhitePlayerId()],tourCount));
-            l1->setText(QString::number(l1->text().toInt()+score));
+            l1->setText(QString::number(l1->text().toDouble()+score));
 
             if(!odd)
             {
                 QLabel *l2 = qobject_cast<QLabel*>(ui->tableWidgetOfTabel->cellWidget((*mapOfIdes)[it->getBlackPlayerId()],tourCount));
-                l2->setText(QString::number(l2->text().toInt()+(1-score)));
+                l2->setText(QString::number(l2->text().toDouble()+(1-score)));
             }
 
         }
@@ -1243,6 +1261,7 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
             }
         }
 
+
         int currentTour = currentTournament->getCurrentTour();
 
         for(int i = 0; i<countOfGames; ++i)
@@ -1262,14 +1281,7 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
         QObject::connect(radioButtonOfTours, &QRadioButton::clicked, this, [radioButtonOfTours, this, currentTour]()
         {
             GivingDataToTable(currentTournament, currentTour);
-            if(ui->checkBoxOfSort->isChecked())
-            {
-                emit ui->checkBoxOfSort->checkStateChanged(Qt::Checked);
-            }
-            else
-            {
-                emit ui->checkBoxOfSort->checkStateChanged(Qt::Unchecked);
-            }
+            ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
         });
         currentTournament->setRadioButtonsOfTabel(radioButtonOfTours);
         ui->horizontalLayoutOFTorursOfTabel->addWidget(radioButtonOfTours);

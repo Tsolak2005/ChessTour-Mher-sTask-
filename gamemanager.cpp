@@ -266,3 +266,4 @@ void GameManager::changeMatrixOfPlayers(int playerCount, int lastPlayerCount)
 }
 
 
+
