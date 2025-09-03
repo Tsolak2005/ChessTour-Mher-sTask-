@@ -48,7 +48,9 @@ public:
     void GivingDataToTable(GameManager* Tournament, int toWichTour);
     void OkOfDrowing();
     void MergeSortForPlayers(std::vector<Player*>&, int start, int end);
-    std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(const std::vector<std::vector<int>>&, std::vector<int>& , std::vector<int>);
+    std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(
+        const std::vector<std::vector<int>>&, std::vector<int>& , std::vector<int>);
+    void removeWidgetFromLayout(QLayout* layout, QWidget* widget);
 
 private slots:
     void on_pushButtonAddName_clicked(QString text);
@@ -75,6 +77,7 @@ private:
     std::vector<GameManager*> vectorOfTournaments;
     std::vector<QRadioButton *> vectorOfRadioButtons;
 
+    QButtonGroup * radioGroup;
 
     GameManager * currentTournament;
 

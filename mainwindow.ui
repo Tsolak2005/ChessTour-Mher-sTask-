@@ -60,8 +60,8 @@ app.setStyleSheet(R&quot;(
    <widget class="QWidget" name="verticalLayoutWidget_6">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
+      <x>10</x>
+      <y>10</y>
       <width>1471</width>
       <height>571</height>
      </rect>
@@ -92,19 +92,19 @@ app.setStyleSheet(R&quot;(
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_8">
          <item>
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
           <layout class="QVBoxLayout" name="verticalLayout">
            <property name="sizeConstraint">
             <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
            </property>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QPushButton" name="newTournamnetClickButton">
                <property name="enabled">
@@ -203,6 +203,13 @@ QLabel {
             </layout>
            </item>
            <item>
+            <widget class="Line" name="line_14">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QScrollArea" name="scrollAreaOfTournaments">
              <property name="maximumSize">
               <size>
@@ -249,6 +256,13 @@ QLabel {
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
+              <widget class="Line" name="line_15">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="label_2">
                <property name="enabled">
                 <bool>true</bool>
@@ -284,23 +298,41 @@ QLabel {
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="oldTournament_1_checkBox">
-                 <property name="enabled">
+                <widget class="QScrollArea" name="scrollAreaOfOldTournaments">
+                 <property name="maximumSize">
+                  <size>
+                   <width>180</width>
+                   <height>101</height>
+                  </size>
+                 </property>
+                 <property name="widgetResizable">
                   <bool>true</bool>
                  </property>
-                 <property name="text">
-                  <string>Old tournament 1</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="oldTournamnet_2_checkBox">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string>Old tournament 2</string>
-                 </property>
+                 <widget class="QWidget" name="scrollAreaWidgetContents_3">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>178</width>
+                    <height>99</height>
+                   </rect>
+                  </property>
+                  <widget class="QWidget" name="verticalLayoutWidget_7">
+                   <property name="geometry">
+                    <rect>
+                     <x>20</x>
+                     <y>10</y>
+                     <width>151</width>
+                     <height>80</height>
+                    </rect>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayoutOfOldTournaments">
+                    <property name="sizeConstraint">
+                     <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+                    </property>
+                   </layout>
+                  </widget>
+                 </widget>
                 </widget>
                </item>
                <item>
@@ -377,7 +409,7 @@ QLabel {
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>1</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="page">
             <widget class="QTextBrowser" name="textBrowser">
@@ -609,7 +641,7 @@ QTabBar::tab:selected {
 </string>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <property name="iconSize">
               <size>
