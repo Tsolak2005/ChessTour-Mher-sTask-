@@ -6,7 +6,7 @@ ComfortCoef::ComfortCoef() {}
 
 int ComfortCoef::gameCoef(Player* P1, Player* P2)
 {
-    return 10 - abs(P1->getCurrentPoint() - P2->getCurrentPoint()) * 2;
+    return 10 - abs(P1->getCurrentPoint() - P2->getCurrentPoint());
 }
 
 int ComfortCoef::colorCoef(Player* P1, Player* P2)

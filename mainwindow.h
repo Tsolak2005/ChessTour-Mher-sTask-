@@ -23,6 +23,7 @@
 #include "comfortcoef.h"
 #include "player.h"
 #include "game.h"
+#include <iomanip>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,7 +76,6 @@ private:
 
     std::vector<GameManager*> vectorOfTournaments;
     std::vector<QRadioButton *> vectorOfRadioButtons;
-
     QButtonGroup * radioGroup;
 
     GameManager * currentTournament;
