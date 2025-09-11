@@ -510,6 +510,12 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
                     ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
 
+                    if(!currentTournament->hasTheTournamentStarted())
+                    {
+                        ui->pushButtonAddName->setDisabled(false);
+                        ui->lineEditOfTourCount->setDisabled(false);
+                    }
+
                     if((currentTournament->getCurrentTour() != currentTournament->getTourCount()) &&
                         (currentTournament->getCurrentoOganizedTour()!=currentTournament->getCurrentTour()))
                     {ui->pushButtonNext->setDisabled(false);}

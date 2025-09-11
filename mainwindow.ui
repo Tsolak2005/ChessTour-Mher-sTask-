@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1757</width>
-    <height>970</height>
+    <width>1540</width>
+    <height>683</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -62,7 +62,7 @@ app.setStyleSheet(R&quot;(
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>1471</width>
+      <width>821</width>
       <height>571</height>
      </rect>
     </property>
@@ -615,7 +615,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
               <rect>
                <x>10</x>
                <y>10</y>
-               <width>690</width>
+               <width>711</width>
                <height>501</height>
               </rect>
              </property>
@@ -1003,8 +1003,8 @@ QTableWidget::item:hover {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1757</width>
-     <height>21</height>
+     <width>1540</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menughjkm">
