@@ -25,6 +25,10 @@
 #include "game.h"
 #include <iomanip>
 
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QSqlQuery>
+
 QT_BEGIN_NAMESPACE
 
 namespace Ui {
@@ -51,6 +55,7 @@ public:
     std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(
         const std::vector<std::vector<int>>&, std::vector<int>& , std::vector<int>);
     void removeWidgetFromLayout(QLayout* layout, QWidget* widget);
+    void loadingDatabaseDatas();
 
 private slots:
     void on_pushButtonAddName_clicked(QString text);
@@ -80,6 +85,6 @@ private:
 
     GameManager * currentTournament;
 
-
+    QSqlDatabase db;
 };
 #endif // MAINWINDOW_H

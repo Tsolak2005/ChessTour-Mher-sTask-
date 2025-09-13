@@ -196,6 +196,20 @@ void MainWindow::connectFunction()
     } );
 }
 
+void MainWindow::loadingDatabaseDatas()
+{
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("mydb.sqlite");
+
+    if (!db.open()) {
+        qDebug() << "DB connection failed:" << db.lastError().text();
+    } else {
+        qDebug() << "DB connected!";
+    }
+
+
+}
+
 void MainWindow::clearLayout(QLayout* layout)
 {
     if (!layout) return;
@@ -1263,7 +1277,6 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                 qDebug() << "No combo box in this cell. ";
             }
         }
-
 
         int currentTour = currentTournament->getCurrentTour();
 
