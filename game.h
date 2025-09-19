@@ -6,7 +6,6 @@ class Game
 public:
     Game(int w, int b, int res = -2);
     Game(int w);
-    Game(Game&);
 
     int getWhitePlayerId() const;
     int getBlackPlayerId() const;

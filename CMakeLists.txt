@@ -25,6 +25,7 @@ set(PROJECT_SOURCES
 qt_add_executable(ChessTournament
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+
 )
 
 target_link_libraries(ChessTournament PRIVATE

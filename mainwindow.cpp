@@ -207,7 +207,36 @@ void MainWindow::loadingDatabaseDatas()
         qDebug() << "DB connected!";
     }
 
+    QSqlQuery query("CREATE TABLE IF NOT EXISTS tableOfTournament("
+                    "\"index\" INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    "tourCount INTEGER,"
+                    "tourName TEXT,"
+                    "data TEXT,"
+                    " m_info TEXT)", db);
 
+    // if(query.exec("ALTER TABLE tableOfPlayers  RENAME COLUMN Tournamnet to tournament"))
+    //    {
+    //         qDebug() << "rename failed:" << db.lastError().text();
+    //     } else {
+    //         qDebug() << "rename connected!";
+    //     }
+
+    // if (query.exec("REINDEX tableOfTournament")) {
+    //     qDebug() << "Index reindexed successfully";
+    // } else {
+    //     qDebug() << "Failed to reindex index:" << query.lastError().text();
+    // }
+
+    // query.exec("Select * from tableOfTournament");
+    // if(query.next())
+    // {
+    //     int count = query.value(0).toInt();
+    //     for(int i=0; i<count; ++i)
+    //     {
+    //         int countOfPlayers  =query.value()
+    //         GameManager * tournament = new GameManager();
+    //     }
+    // }
 }
 
 void MainWindow::clearLayout(QLayout* layout)
@@ -243,9 +272,11 @@ MainWindow::MainWindow(QWidget *parent)
      , radioGroup(new QButtonGroup(this))
 {
     ui->setupUi(this);
-    connectFunction();
-    currentTournament = nullptr;
 
+    connectFunction();
+    loadingDatabaseDatas();
+
+    currentTournament = nullptr;
     radioGroup->setExclusive(true);
 
 };
@@ -292,6 +323,8 @@ void MainWindow::on_pushButtonAddName_clicked(QString text)
 
 void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 {
+    QSqlQuery query(db);
+
     int rowCount = ui->verticalLayoutOfNames->count();
     int lastcount = gameManager->getPlayerCount();
     gameManager->setPlayerCount(ui->verticalLayoutOfNames->count());
@@ -324,11 +357,44 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
                 newPlayer->setCurrentPoint(0);
                 newPlayer->setId(++lastcount);
                 gameManager->addNewPlayer(newPlayer);
+
+                query.prepare("insert into tableOfPlayers (id,name,Tournament) "
+                              "Values (:id,:name,:Tournament)");
+                query.bindValue(":id", lastcount);
+                query.bindValue(":name", playerName);
+                query.bindValue(":Tournament", currentTournament->getIndexOfTournament());
+
+                    if(query.exec())
+                    {
+                        qDebug() << "player's datas with id:" + QString::number(lastcount) +"inserted successfully";
+                    }
+                    else
+                    {
+                        qDebug() << " ERORR: player's datas are not inserted";
+                        qDebug() << "SQL error:" << query.lastError().text();
+                    }
             }
         }
         else
         {
-            gameManager->getPlayerById(i+1)->setName(lineEdit->text().trimmed());
+            QString playerName = lineEdit->text().trimmed();
+
+            gameManager->getPlayerById(i+1)->setName(playerName);
+
+            query.prepare("UPDATE tableOfPlayers SET name = :name where id = :id and tournament = :tournament");
+            query.bindValue(":name", playerName);
+            query.bindValue(":id", i+1);
+            query.bindValue(":tournament", currentTournament->getIndexOfTournament());
+
+            if(query.exec())
+            {
+                qDebug() << "player's name with id:" + QString::number(i+1) +"changed successfully";
+            }
+            else
+            {
+                qDebug() << " ERORR: player's name are not inserted";
+                qDebug() << "SQL error:" << query.lastError().text();
+            }
         }
     }
 }
@@ -396,6 +462,7 @@ bool MainWindow::isDataComplete( )
         return false;
     }
 }
+
 
 void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangingTournamnet)
 {
@@ -479,11 +546,52 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
 
                 GameManager* Tournament = new GameManager(ui->verticalLayoutOfNames->count());
-                Tournament->setTourName(ui->lineEditOfName->text());
+                Tournament->setTourName(ui->lineEditOfName->text().trimmed());
                 Tournament->setTourCount(ui->lineEditOfTourCount->text().toInt());
-                Tournament->setDate(ui->lineEditOfData->text());
-                Tournament->setInfo(ui->textEditOfInfo->toPlainText());
+                Tournament->setDate(ui->lineEditOfData->text().trimmed());
+                Tournament->setInfo(ui->textEditOfInfo->toPlainText().trimmed());
 
+                QSqlQuery query(db);
+                query.prepare("INSERT INTO tableOfTournament (tourCount, tourName, data, m_info) "
+                              "VALUES (:tourCount, :tourName, :data, :m_info)");
+
+                query.bindValue(":tourCount", Tournament->getTourCount());
+                query.bindValue(":tourName", Tournament->getTourName());
+                query.bindValue(":data", Tournament->getDate());
+                query.bindValue(":m_info", Tournament->getInfo());
+
+                if(query.exec())
+                {
+                    qDebug() << "tournament datas inserted successfully";
+                }
+                else
+                {
+                    qDebug() << " ERORR: tournament datas are not inserted";
+                    qDebug() << "SQL error:" << query.lastError().text();
+                }
+
+                if(query.exec("CREATE TABLE IF NOT EXISTS tableOfPlayers("
+                               "\"index\" INTEGER PRIMARY KEY AUTOINCREMENT,"
+                               "currentPoint INTEGER,"
+                               "colorCoef INTEGER,"
+                               "lastColor INTEGER,"
+                               "id INTEGER,"
+                               "name TEXT,"
+                               "tournament INTEGER)"))
+                {
+                    qDebug() << "tabelOfPlayers is created successfully";
+
+                    if(query.exec("create table if not exists tableOfGames("
+                                   "\"index\" INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                   "whitePlayerId INTEGER,"
+                                   "blackPLayerId INTEGER,"
+                                   "result INTEGER,"
+                                   "tour INTEGER,"
+                                   "tournament INTEGER)"))
+                    {
+                        qDebug() << "tabelOfGames is created successfully";
+                    }
+                }
 
                 addPlayersToGameManager(Tournament);
                 vectorOfTournaments.push_back(Tournament);
@@ -561,8 +669,9 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     l->setText("                  ");
                     ui->horizontalLayoutOFTorursOfTabel->addWidget(l);
 
-                    std::vector<QRadioButton*>* radios = currentTournament->getRadioButtonsOfTabel();
-                    for (QRadioButton* rb : *radios) {
+                    std::vector<QRadioButton*> radios = mapOfTabelRadiobuttons[currentTournament->getIndexOfTournament()];
+
+                    for (auto rb : radios) {
                         ui->horizontalLayoutOFTorursOfTabel->addWidget(rb);
                     }
 
@@ -581,10 +690,6 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
             return;
         }
 }
-
-
-
-
 
 
 void MainWindow::GivingDataToDrawing(GameManager* Tournament)
@@ -674,7 +779,6 @@ void MainWindow::GivingDataToDrawing(GameManager* Tournament)
 
     if(Tournament->getPlayerCount()%2) ui->tableWidgetOfDrawing->cellWidget(rowCount-1, 2)->setDisabled(true);
 }
-
 
 void MainWindow::GivingDataToTable(GameManager *Tournament, int toWichTour)
 {
@@ -957,7 +1061,6 @@ void MainWindow::on_pushButtonDelete_clicked()
     }
 }
 
-
 std::vector<std::vector<int>> eraseRowCol(const std::vector<std::vector<int>>& matrix, int i, int j) {
     int n = matrix.size();
     std::vector<std::vector<int>> result;
@@ -973,7 +1076,6 @@ std::vector<std::vector<int>> eraseRowCol(const std::vector<std::vector<int>>& m
     }
     return result;
 }
-
 
 std::pair<int, std::vector<std::pair<int,int>>> MainWindow::findMaxValueWithPairs(
     const std::vector<std::vector<int>>& matrixOfScores, std::vector<int>& participantPlayers, std::vector<int> indices)
@@ -1021,8 +1123,6 @@ void printMatrix( std::vector<std::vector<int>>& matrix) {
     }
     std::cout << '\n';
 }
-
-
 
 void MainWindow::on_pushButtonNext_clicked()
 {
@@ -1138,7 +1238,6 @@ void MainWindow::on_pushButtonNext_clicked()
 
 }
 
-
 void MainWindow::on_pushButtonPrevious_clicked()
 {
     currentTournament->setCurrentTour((currentTournament->getCurrentTour())-1);
@@ -1154,7 +1253,6 @@ void MainWindow::on_pushButtonPrevious_clicked()
      GivingDataToDrawing(currentTournament);
 }
 
-
 void MainWindow::removeWidgetFromLayout(QLayout* layout, QWidget* widget)
 {
     if (!layout || !widget) return;
@@ -1169,7 +1267,6 @@ void MainWindow::removeWidgetFromLayout(QLayout* layout, QWidget* widget)
         }
     }
 }
-
 
 void MainWindow::on_pushButtonOkOfDrawing_clicked()
 {
@@ -1299,7 +1396,8 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
             GivingDataToTable(currentTournament, currentTour);
             ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
         });
-        currentTournament->setRadioButtonsOfTabel(radioButtonOfTours);
+        // currentTournament->setRadioButtonsOfTabel(radioButtonOfTours);
+        mapOfTabelRadiobuttons[currentTournament->getIndexOfTournament()].push_back(radioButtonOfTours);
         ui->horizontalLayoutOFTorursOfTabel->addWidget(radioButtonOfTours);
 
         ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
@@ -1324,5 +1422,3 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
         return;
     }
 }
-
-

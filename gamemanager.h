@@ -12,7 +12,6 @@ class GameManager
 public:
 
     GameManager(int playerCount);
-     GameManager(GameManager* parent);
     ~GameManager();
 
     int getCurrentoOganizedTour()const;
@@ -41,9 +40,6 @@ public:
     void setGame(int tour, Game* game);
     int getSizeOfGameMap() const;
 
-    std::vector<QRadioButton*>*  getRadioButtonsOfTabel();
-    void setRadioButtonsOfTabel( QRadioButton* radioButton);
-
     std::vector<Player*>*getPlayers();
     void changePlayersList(std::vector<Player*>*);
     Player * getPlayerById(const int id) const;
@@ -70,7 +66,6 @@ private:
     QString m_date;
     QString m_info;
 
-    std::vector<QRadioButton*>*  m_vectorOfRadioButtonsOfTabel;
     std::map< int, std::vector<Game*> > m_gameMap;
     std::vector<Player*> m_playerList;
     std::vector<std::vector<bool>>* m_matrixOfPlayers;

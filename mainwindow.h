@@ -19,11 +19,12 @@
 #include <QButtonGroup>
 #include <QList>
 #include <QFrame>
-#include"gamemanager.h"
+#include <iomanip>
+
+#include "gamemanager.h"
 #include "comfortcoef.h"
 #include "player.h"
 #include "game.h"
-#include <iomanip>
 
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
@@ -81,6 +82,7 @@ private:
 
     std::vector<GameManager*> vectorOfTournaments;
     std::vector<QRadioButton *> vectorOfRadioButtons;
+    std::map<int, std::vector<QRadioButton*>> mapOfTabelRadiobuttons;
     QButtonGroup * radioGroup;
 
     GameManager * currentTournament;

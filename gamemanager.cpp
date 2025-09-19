@@ -1,7 +1,7 @@
 #include "gamemanager.h"
 
 GameManager::GameManager(int playerCount) : m_currentoOganizedTour(1), m_playerCount(0),
-    m_tourCount(0), m_currentTour(1), m_vectorOfRadioButtonsOfTabel(new std::vector<QRadioButton*>),
+    m_tourCount(0), m_currentTour(1),
     m_matrixOfPlayers(new std::vector<std::vector<bool>>(playerCount, std::vector<bool>(playerCount, false)))
 {
     for(int i=0; i<m_playerCount; ++i)
@@ -10,40 +10,6 @@ GameManager::GameManager(int playerCount) : m_currentoOganizedTour(1), m_playerC
     }
 }
 
-GameManager::GameManager(GameManager* parent)
-    : m_IndexOfTournament(parent->m_IndexOfTournament),
-    m_currentoOganizedTour(parent->m_currentoOganizedTour),
-    m_playerCount(parent->m_playerCount),
-    m_tourCount(parent->m_tourCount),
-    m_currentTour(parent->m_currentTour),
-    m_tourName(parent->m_tourName),
-    m_date(parent->m_date),
-    m_info(parent->m_info),
-    m_vectorOfRadioButtonsOfTabel(new std::vector<QRadioButton*>())
-{
-    // Deep copy radio buttons
-    for (auto* btn : *parent->m_vectorOfRadioButtonsOfTabel) {
-        QRadioButton* newBtn = new QRadioButton(btn->text());
-        newBtn->setChecked(btn->isChecked());
-        m_vectorOfRadioButtonsOfTabel->push_back(newBtn);
-    }
-
-    // Deep copy players (requires Player::clone())
-    for (auto* it : parent->m_playerList) {
-        m_playerList.push_back(new Player(it));
-    }
-
-    // Deep copy games (requires Game::clone())
-    for (const auto& [id, games] : parent->m_gameMap) {
-        std::vector<Game*> copies;
-        for (auto* g : games) {
-            copies.push_back(new Game(*g));
-        }
-        m_gameMap[id] = std::move(copies);
-    }
-
-    delete m_matrixOfPlayers;
-}
 
 GameManager::~GameManager()
 {
@@ -60,15 +26,6 @@ GameManager::~GameManager()
         delete player;
     }
     m_playerList.clear();
-
-    // 3. Delete all radio buttons of the table
-    if (m_vectorOfRadioButtonsOfTabel) {
-        for (auto* rb : *m_vectorOfRadioButtonsOfTabel) {
-            delete rb;  // careful: only if you created them without a parent!
-        }
-        delete m_vectorOfRadioButtonsOfTabel; // since it's a pointer to vector
-        m_vectorOfRadioButtonsOfTabel = nullptr;
-    }
 
 }
 
@@ -113,10 +70,6 @@ Player * GameManager::getPlayerById(const int id) const
     throw std::runtime_error("There is not  player with such Id");
 }
 
-void GameManager::setRadioButtonsOfTabel(QRadioButton *radioButton)
-{
-    m_vectorOfRadioButtonsOfTabel->push_back(radioButton);
-}
 
 void GameManager::setCurrentOganizedTour(const int tour)
 {
@@ -184,11 +137,6 @@ std::vector<Game*>* GameManager::getTourGames(int tour)
         return &m_gameMap[tour];
     }
     return nullptr;
-}
-
-std::vector<QRadioButton *>* GameManager::getRadioButtonsOfTabel()
-{
-    return m_vectorOfRadioButtonsOfTabel;
 }
 
 std::vector<Player *>* GameManager::getPlayers()
