@@ -25,6 +25,8 @@ set(PROJECT_SOURCES
 qt_add_executable(ChessTournament
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
+    database.h database.cpp
+
 
 )
 

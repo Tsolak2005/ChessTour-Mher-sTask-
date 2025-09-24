@@ -196,49 +196,6 @@ void MainWindow::connectFunction()
     } );
 }
 
-void MainWindow::loadingDatabaseDatas()
-{
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("mydb.sqlite");
-
-    if (!db.open()) {
-        qDebug() << "DB connection failed:" << db.lastError().text();
-    } else {
-        qDebug() << "DB connected!";
-    }
-
-    QSqlQuery query("CREATE TABLE IF NOT EXISTS tableOfTournament("
-                    "\"index\" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    "tourCount INTEGER,"
-                    "tourName TEXT,"
-                    "data TEXT,"
-                    " m_info TEXT)", db);
-
-    // if(query.exec("ALTER TABLE tableOfPlayers  RENAME COLUMN Tournamnet to tournament"))
-    //    {
-    //         qDebug() << "rename failed:" << db.lastError().text();
-    //     } else {
-    //         qDebug() << "rename connected!";
-    //     }
-
-    // if (query.exec("REINDEX tableOfTournament")) {
-    //     qDebug() << "Index reindexed successfully";
-    // } else {
-    //     qDebug() << "Failed to reindex index:" << query.lastError().text();
-    // }
-
-    // query.exec("Select * from tableOfTournament");
-    // if(query.next())
-    // {
-    //     int count = query.value(0).toInt();
-    //     for(int i=0; i<count; ++i)
-    //     {
-    //         int countOfPlayers  =query.value()
-    //         GameManager * tournament = new GameManager();
-    //     }
-    // }
-}
-
 void MainWindow::clearLayout(QLayout* layout)
 {
     if (!layout) return;
@@ -255,6 +212,27 @@ void MainWindow::clearLayout(QLayout* layout)
     }
 }
 
+void MainWindow::removeWidgetFromLayout(QLayout* layout, QWidget* widget)
+{
+    if (!layout || !widget)
+    {
+        qDebug() << "return" ;
+
+        return;
+
+    }
+
+
+    for (int i = 0; i < layout->count(); ++i) {
+        QLayoutItem* item = layout->itemAt(i);
+        if (item && item->widget() == widget) {
+            layout->takeAt(i);          // remove item from layout
+            widget->setParent(nullptr); // detach widget from layout
+            delete item;                // delete only the QLayoutItem (not the widget!)
+            break;
+        }
+    }
+}
 
 
 void MainWindow::deleteTournamentDetailes()
@@ -274,8 +252,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     connectFunction();
-    loadingDatabaseDatas();
-
     currentTournament = nullptr;
     radioGroup->setExclusive(true);
 
@@ -323,8 +299,6 @@ void MainWindow::on_pushButtonAddName_clicked(QString text)
 
 void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 {
-    QSqlQuery query(db);
-
     int rowCount = ui->verticalLayoutOfNames->count();
     int lastcount = gameManager->getPlayerCount();
     gameManager->setPlayerCount(ui->verticalLayoutOfNames->count());
@@ -353,26 +327,12 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
                 Player* newPlayer = new Player();
                 newPlayer->setName(playerName);
                 newPlayer->setColorCoef(0);
-                newPlayer->setLastColor(0);
+                newPlayer->setLastColor(-1);
                 newPlayer->setCurrentPoint(0);
                 newPlayer->setId(++lastcount);
                 gameManager->addNewPlayer(newPlayer);
 
-                query.prepare("insert into tableOfPlayers (id,name,Tournament) "
-                              "Values (:id,:name,:Tournament)");
-                query.bindValue(":id", lastcount);
-                query.bindValue(":name", playerName);
-                query.bindValue(":Tournament", currentTournament->getIndexOfTournament());
-
-                    if(query.exec())
-                    {
-                        qDebug() << "player's datas with id:" + QString::number(lastcount) +"inserted successfully";
-                    }
-                    else
-                    {
-                        qDebug() << " ERORR: player's datas are not inserted";
-                        qDebug() << "SQL error:" << query.lastError().text();
-                    }
+                dataBase.addNewPlayer(lastcount,playerName, currentTournament->getIndexOfTournament());
             }
         }
         else
@@ -381,20 +341,7 @@ void MainWindow::addPlayersToGameManager(GameManager* gameManager)
 
             gameManager->getPlayerById(i+1)->setName(playerName);
 
-            query.prepare("UPDATE tableOfPlayers SET name = :name where id = :id and tournament = :tournament");
-            query.bindValue(":name", playerName);
-            query.bindValue(":id", i+1);
-            query.bindValue(":tournament", currentTournament->getIndexOfTournament());
-
-            if(query.exec())
-            {
-                qDebug() << "player's name with id:" + QString::number(i+1) +"changed successfully";
-            }
-            else
-            {
-                qDebug() << " ERORR: player's name are not inserted";
-                qDebug() << "SQL error:" << query.lastError().text();
-            }
+            dataBase.updatePlayersData(0,0,-1,playerName,currentTournament->getIndexOfTournament(),i+1);
         }
     }
 }
@@ -512,11 +459,16 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                         }
                         for(int i=lastPlayerCount+1; i<=playerCount; i++)
                         {
-                            Game * newGame = new Game(i);
+                            Game * newGame = new Game(i,-1);
                             if(i+1<=playerCount)
                             {
                                 thechangingTournamnet->ThePlayerSMet(i,i+1);
-                                newGame->setBlackPlayerId(++i);                                
+                                newGame->setBlackPlayerId(++i);
+                                dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),i,i+1);
+                            }
+                            else
+                            {
+                                dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),i,-1);
                             }
                            thechangingTournamnet->setGame(currentTour, newGame);
                         }
@@ -551,49 +503,12 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                 Tournament->setDate(ui->lineEditOfData->text().trimmed());
                 Tournament->setInfo(ui->textEditOfInfo->toPlainText().trimmed());
 
-                QSqlQuery query(db);
-                query.prepare("INSERT INTO tableOfTournament (tourCount, tourName, data, m_info) "
-                              "VALUES (:tourCount, :tourName, :data, :m_info)");
+                dataBase.addNewTournamnet(Tournament->getTourCount(),Tournament->getTourName(),Tournament->getDate(), Tournament->getInfo());
 
-                query.bindValue(":tourCount", Tournament->getTourCount());
-                query.bindValue(":tourName", Tournament->getTourName());
-                query.bindValue(":data", Tournament->getDate());
-                query.bindValue(":m_info", Tournament->getInfo());
+                currentTournament = Tournament;
 
-                if(query.exec())
-                {
-                    qDebug() << "tournament datas inserted successfully";
-                }
-                else
-                {
-                    qDebug() << " ERORR: tournament datas are not inserted";
-                    qDebug() << "SQL error:" << query.lastError().text();
-                }
 
-                if(query.exec("CREATE TABLE IF NOT EXISTS tableOfPlayers("
-                               "\"index\" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                               "currentPoint INTEGER,"
-                               "colorCoef INTEGER,"
-                               "lastColor INTEGER,"
-                               "id INTEGER,"
-                               "name TEXT,"
-                               "tournament INTEGER)"))
-                {
-                    qDebug() << "tabelOfPlayers is created successfully";
 
-                    if(query.exec("create table if not exists tableOfGames("
-                                   "\"index\" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                                   "whitePlayerId INTEGER,"
-                                   "blackPLayerId INTEGER,"
-                                   "result INTEGER,"
-                                   "tour INTEGER,"
-                                   "tournament INTEGER)"))
-                    {
-                        qDebug() << "tabelOfGames is created successfully";
-                    }
-                }
-
-                addPlayersToGameManager(Tournament);
                 vectorOfTournaments.push_back(Tournament);
 
                 int i = 0;
@@ -601,15 +516,26 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     it->setIndexOfTournament(i++);
                 }
 
+                addPlayersToGameManager(Tournament);
+
+
+
                 int playerCount = Tournament->getPlayerCount();
                 int currentTour = Tournament->getCurrentTour();
+
                 for(int i=1; i<=playerCount; i++)
                 {
-                    Game * newGame = new Game(i);
+                    Game * newGame = new Game(i,-1);
+
                     if(i+1<=playerCount)
                     {
                         Tournament->ThePlayerSMet(i,i+1);
+                        dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),i,i+1);
                         newGame->setBlackPlayerId(++i);
+                    }
+                    else
+                    {
+                        dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),i,-1);
                     }
                     Tournament->setGame(currentTour, newGame);
                 }
@@ -1203,7 +1129,7 @@ void MainWindow::on_pushButtonNext_clicked()
             matrix.push_back(v);
         }
 
-        printMatrix(matrix);
+        // printMatrix(matrix);
 
         std::pair<int, std::vector<std::pair<int,int>>> bestVersion = findMaxValueWithPairs(matrix, participantPlayers, vectorOfIndices);
 
@@ -1215,18 +1141,24 @@ void MainWindow::on_pushButtonNext_clicked()
             if(currentTournament->getPlayerById(participantPlayers[result[i].first])->getLastColor()==1)
             {
                 currentTournament->setGame(currentTour, new Game(participantPlayers[result[i].first], participantPlayers[result[i].second]));
-
+                dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),
+                                    participantPlayers[result[i].first],participantPlayers[result[i].second]);
             }
             else
             {
                 currentTournament->setGame(currentTour, new Game(participantPlayers[result[i].second], participantPlayers[result[i].first]));
-
+                dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),
+                                    participantPlayers[result[i].second],participantPlayers[result[i].first]);
             }
             currentTournament->ThePlayerSMet(participantPlayers[result[i].second], participantPlayers[result[i].first]);
         }
 
         if(weakestPlayerId != -1)
-            currentTournament->setGame(currentTour, new Game(weakestPlayerId));
+        {
+            currentTournament->setGame(currentTour, new Game(weakestPlayerId,-1));
+            dataBase.addNewGame(-2, currentTour, currentTournament->getIndexOfTournament(), weakestPlayerId, -1);
+        }
+
 
     }
 
@@ -1253,20 +1185,6 @@ void MainWindow::on_pushButtonPrevious_clicked()
      GivingDataToDrawing(currentTournament);
 }
 
-void MainWindow::removeWidgetFromLayout(QLayout* layout, QWidget* widget)
-{
-    if (!layout || !widget) return;
-
-    for (int i = 0; i < layout->count(); ++i) {
-        QLayoutItem* item = layout->itemAt(i);
-        if (item && item->widget() == widget) {
-            layout->takeAt(i);        // убираем item из layout
-            widget->setParent(nullptr); // открепляем, но НЕ удаляем
-            delete item;              // удаляем сам QLayoutItem
-            break;
-        }
-    }
-}
 
 void MainWindow::on_pushButtonOkOfDrawing_clicked()
 {
@@ -1306,61 +1224,131 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                             return;
                         }
                         (*game)[i]->setResult(-2);
-                        Player* currentPlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
-                        double GrayPlayerCurrentPoint = currentPlayer->getCurrentPoint();
-                        currentPlayer->setCurrentPoint(++GrayPlayerCurrentPoint);
-                        currentPlayer->setLastColor(-2);
+
+                        int playerId = (*game)[i]->getWhitePlayerId();
+                        Player* currentPlayer =  currentTournament->getPlayerById(playerId);
+                        double GrayPlayerCurrentPoint = currentPlayer->getCurrentPoint()+1;
+                        QString name = currentPlayer->getName();
+
+                        int colorCoefOfGray = currentPlayer->getColorCoef();
+
+                        currentPlayer->setCurrentPoint(GrayPlayerCurrentPoint);
+                        currentPlayer->setLastColor(-1);
+
+                        dataBase.updatePlayersData(GrayPlayerCurrentPoint,colorCoefOfGray,-1,name, currentTournament->getIndexOfTournament(),playerId);
+
+                        dataBase.updateGamesData(playerId,-1, -2, currentTournament->getCurrentTour(), currentTournament->getIndexOfTournament());
+
                         break;
 
                     }
                     case 1:
                     {
                         (*game)[i]->setResult(1);
-                        Player* currentWhitePlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
-                        double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
-                        currentWhitePlayer->setCurrentPoint(++WhitePlayerCurrentPoint);
-                        currentWhitePlayer->setLastColor(0);
-                        currentWhitePlayer->setColorCoef(currentWhitePlayer->getColorCoef()+1);
+                        int whitePlayerId = (*game)[i]->getWhitePlayerId();
 
-                        Player* currentBlackPlayer =  currentTournament->getPlayerById((*game)[i]->getBlackPlayerId());
+                        Player* currentWhitePlayer =  currentTournament->getPlayerById(whitePlayerId);
+                        int colorCoefOfWhite = currentWhitePlayer->getColorCoef()+1;
+                        double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint()+1;
+                        QString nameW = currentWhitePlayer->getName();
+
+
+                        currentWhitePlayer->setCurrentPoint(WhitePlayerCurrentPoint);
+                        currentWhitePlayer->setLastColor(0);
+                        currentWhitePlayer->setColorCoef(colorCoefOfWhite);
+
+                        dataBase.updatePlayersData(WhitePlayerCurrentPoint,colorCoefOfWhite,0,nameW, currentTournament->getIndexOfTournament(),whitePlayerId);
+
+
+                        int blackPlayerId = (*game)[i]->getBlackPlayerId();
+                        Player* currentBlackPlayer =  currentTournament->getPlayerById(blackPlayerId);
+                        int colorCoefOfBlack = currentBlackPlayer->getColorCoef()-1;
+                        QString nameB = currentBlackPlayer->getName();
+                        double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
+
+
                         // double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
-                        // currentBlackPlayer->setCurrentPoint(++WhitePlayerCurrentPoint);
+                        // currentBlackPlayer->setCurrentPoint(WhitePlayerCurrentPoint);
                         currentBlackPlayer->setLastColor(1);
-                        currentBlackPlayer->setColorCoef(currentBlackPlayer->getColorCoef()-1);
+                        currentBlackPlayer->setColorCoef(colorCoefOfBlack);
+
+                        dataBase.updatePlayersData(BlackPlayerCurrentPoint,colorCoefOfBlack,1,nameB, currentTournament->getIndexOfTournament(),blackPlayerId);
+
+                        dataBase.updateGamesData(whitePlayerId,blackPlayerId, 1, currentTournament->getCurrentTour(), currentTournament->getIndexOfTournament());
+
                         break;
 
                     }
                     case 2:
                     {
                         (*game)[i]->setResult(-1);
-                        Player* currentWhitePlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
-                        // double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
-                        // currentWhitePlayer->setCurrentPoint(++WhitePlayerCurrentPoint);
-                        currentWhitePlayer->setLastColor(0);
-                        currentWhitePlayer->setColorCoef(currentWhitePlayer->getColorCoef()+1);
+                        int whitePlayerId = (*game)[i]->getWhitePlayerId();
 
-                        Player* currentBlackPlayer =  currentTournament->getPlayerById((*game)[i]->getBlackPlayerId());
-                        double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
-                        currentBlackPlayer->setCurrentPoint(++BlackPlayerCurrentPoint);
+                        Player* currentWhitePlayer =  currentTournament->getPlayerById(whitePlayerId);
+                        int colorCoefOfWhite = currentWhitePlayer->getColorCoef()+1;
+                        QString nameW = currentWhitePlayer->getName();
+                        double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
+
+                        // double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
+                        // currentWhitePlayer->setCurrentPoint(WhitePlayerCurrentPoint);
+                        currentWhitePlayer->setLastColor(0);
+                        currentWhitePlayer->setColorCoef(colorCoefOfWhite);
+
+                        dataBase.updatePlayersData(WhitePlayerCurrentPoint,colorCoefOfWhite,0,nameW, currentTournament->getIndexOfTournament(),whitePlayerId);
+
+
+                        int blackPlayerId = (*game)[i]->getBlackPlayerId();
+                        Player* currentBlackPlayer =  currentTournament->getPlayerById(blackPlayerId);
+                        double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint()+1;
+                        int colorCoefOfBlack = currentBlackPlayer->getColorCoef()-1;
+                        QString nameB = currentBlackPlayer->getName();
+
+
+                        currentBlackPlayer->setCurrentPoint(BlackPlayerCurrentPoint);
                         currentBlackPlayer->setLastColor(1);
-                        currentBlackPlayer->setColorCoef(currentBlackPlayer->getColorCoef()-1);
+                        currentBlackPlayer->setColorCoef(colorCoefOfBlack);
+
+                        dataBase.updatePlayersData(BlackPlayerCurrentPoint,colorCoefOfBlack,1,nameB, currentTournament->getIndexOfTournament(),blackPlayerId);
+
+                        dataBase.updateGamesData(whitePlayerId,blackPlayerId, -1, currentTournament->getCurrentTour(), currentTournament->getIndexOfTournament());
+
                         break;
                     }
 
                     case 3:
                     {
                         (*game)[i]->setResult(0);
-                        Player* currentWhitePlayer =  currentTournament->getPlayerById((*game)[i]->getWhitePlayerId());
-                        double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
-                        currentWhitePlayer->setCurrentPoint(WhitePlayerCurrentPoint + 0.5);
-                        currentWhitePlayer->setLastColor(0);
-                        currentWhitePlayer->setColorCoef(currentWhitePlayer->getColorCoef()+1);
 
-                        Player* currentBlackPlayer =  currentTournament->getPlayerById((*game)[i]->getBlackPlayerId());
-                        double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
-                        currentBlackPlayer->setCurrentPoint(BlackPlayerCurrentPoint + 0.5);
+                        int whitePlayerId = (*game)[i]->getWhitePlayerId();
+                        Player* currentWhitePlayer = currentTournament->getPlayerById(whitePlayerId);
+                        QString nameW = currentWhitePlayer->getName();
+                        double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint()+ 0.5;
+                        int colorCoefOfWhite = currentWhitePlayer->getColorCoef()+1;
+
+
+                        currentWhitePlayer->setCurrentPoint(currentWhitePlayer->getCurrentPoint());
+                        currentWhitePlayer->setLastColor(0);
+                        currentWhitePlayer->setColorCoef(colorCoefOfWhite);
+
+                        dataBase.updatePlayersData(WhitePlayerCurrentPoint,colorCoefOfWhite,0,nameW, currentTournament->getIndexOfTournament(),whitePlayerId);
+
+
+                        int blackPlayerId = (*game)[i]->getBlackPlayerId();
+                        Player* currentBlackPlayer = currentTournament->getPlayerById(blackPlayerId);
+                        QString nameB = currentBlackPlayer->getName();
+                        double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint() + 0.5;
+                        int colorCoefOfBlack = currentBlackPlayer->getColorCoef()-1;
+
+
+
+                        currentBlackPlayer->setCurrentPoint(currentBlackPlayer->getCurrentPoint());
                         currentBlackPlayer->setLastColor(1);
-                        currentBlackPlayer->setColorCoef(currentBlackPlayer->getColorCoef()-1);
+                        currentBlackPlayer->setColorCoef(colorCoefOfBlack);
+
+                        dataBase.updatePlayersData(BlackPlayerCurrentPoint,colorCoefOfBlack,1,nameB, currentTournament->getIndexOfTournament(),blackPlayerId);
+
+                        dataBase.updateGamesData(whitePlayerId,blackPlayerId, 0, currentTournament->getCurrentTour(), currentTournament->getIndexOfTournament());
+
                         break;
                     }
 
@@ -1396,25 +1384,36 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
             GivingDataToTable(currentTournament, currentTour);
             ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
         });
+
         // currentTournament->setRadioButtonsOfTabel(radioButtonOfTours);
         mapOfTabelRadiobuttons[currentTournament->getIndexOfTournament()].push_back(radioButtonOfTours);
         ui->horizontalLayoutOFTorursOfTabel->addWidget(radioButtonOfTours);
+
+
 
         ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
 
         emit radioButtonOfTours->click();
 
+
         if(currentTournament->getCurrentoOganizedTour()-1==currentTournament->getTourCount())
         {
+            qDebug() << "before";
+
             int index = currentTournament->getIndexOfTournament();
+
             QRadioButton* currentRadioButton = vectorOfRadioButtons[index];
 
             removeWidgetFromLayout(ui->verticalLayoutOfTournamnets, currentRadioButton);
+
             ui->verticalLayoutOfOldTournaments->addWidget(currentRadioButton);
-            currentRadioButton = nullptr;
+
+             currentRadioButton = nullptr;
+
             ui->pushButtonEdit->setDisabled(true);
 
         }
+
     }
     else
 

@@ -25,10 +25,9 @@
 #include "comfortcoef.h"
 #include "player.h"
 #include "game.h"
+#include "database.h"
 
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
-#include <QSqlQuery>
+
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +55,7 @@ public:
     std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(
         const std::vector<std::vector<int>>&, std::vector<int>& , std::vector<int>);
     void removeWidgetFromLayout(QLayout* layout, QWidget* widget);
-    void loadingDatabaseDatas();
+
 
 private slots:
     void on_pushButtonAddName_clicked(QString text);
@@ -86,7 +85,6 @@ private:
     QButtonGroup * radioGroup;
 
     GameManager * currentTournament;
-
-    QSqlDatabase db;
+    database dataBase;
 };
 #endif // MAINWINDOW_H
