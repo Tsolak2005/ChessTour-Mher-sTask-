@@ -5,6 +5,10 @@
 #include <QtSql/QSqlError>
 #include <QSqlQuery>
 
+#include "gamemanager.h"
+#include <QRadioButton>
+#include <QButtonGroup>
+
 class database
 {
 public:
@@ -12,8 +16,14 @@ public:
     ~database();
     void clearAllTables();
 
-    void addNewTournamnet(int tourCount, QString tourName, QString data, QString info);
+    void loadingDataBase(std::vector<GameManager*>& vectorOfTournaments,
+                         std::vector<QRadioButton *>& vectorOfRadioButtons,
+                         std::map<int, std::vector<QRadioButton*>>& mapOfTabelRadiobuttons,
+                         QButtonGroup *radioGroup);
+
     void removeTournamentAndAllDatasInIt(int index);
+
+    void addNewTournamnet(int tourCount, QString tourName, QString data, QString info);
 
     void addNewGame(int result, int tour, int tournament, int whitePlayerId, int blackPlayerId);
     void updateGamesData(int whitePlayerId, int blackPlayerId, int result, int tour, int tournament);

@@ -59,3 +59,10 @@ void Player::setName(const QString name)
 {
     m_name = name;
 }
+
+TieBreakInfo &Player::getTieBreakInfo()
+{
+    return m_info;
+}
+
+

@@ -20,14 +20,14 @@ set(PROJECT_SOURCES
     game.h game.cpp
     player.h player.cpp
     gamemanager.h gamemanager.cpp
+    tiebreaks.h tiebreaks.cpp
 )
 
 qt_add_executable(ChessTournament
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     database.h database.cpp
-
-
+    tiebreaks.h tiebreaks.cpp
 )
 
 target_link_libraries(ChessTournament PRIVATE

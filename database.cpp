@@ -45,12 +45,12 @@ database::database()
         qDebug() << "tabelOfGames is created successfully";
     }
 
-
 }
+
 
 database::~database()
 {
-    clearAllTables();
+    // clearAllTables();
 }
 
 void database::clearAllTables()
@@ -88,6 +88,113 @@ void database::clearAllTables()
     qDebug() << "All tables cleared and AUTOINCREMENT reset.";
 }
 
+void database::loadingDataBase(std::vector<GameManager *> &vectorOfTournaments,
+                               std::vector<QRadioButton *> &vectorOfRadioButtons,
+                               std::map<int, std::vector<QRadioButton *>> &mapOfTabelRadiobuttons,
+                               QButtonGroup *radioGroup)
+{
+    QSqlQuery queryOfTournamnets(db);
+    QSqlQuery queryOfPlayers(db);
+    QSqlQuery queryOfGames(db);
+
+    if (!queryOfTournamnets.exec("SELECT * FROM tableOfTournaments")) {
+        qDebug() << "Failed to load tournaments:" << queryOfTournamnets.lastError().text();
+        return;
+    }
+
+    while (queryOfTournamnets.next()) {
+        int tournamentId   = queryOfTournamnets.value("index").toInt();
+        int tourCount      = queryOfTournamnets.value("tourCount").toInt();
+        QString tourName   = queryOfTournamnets.value("tourName").toString();
+        QString data       = queryOfTournamnets.value("data").toString();
+        QString info       = queryOfTournamnets.value("info").toString();
+
+        queryOfPlayers.prepare("SELECT COUNT(*) FROM tableOfPlayers where tournament = :tournament");
+        queryOfPlayers.bindValue(":tournament", tournamentId);
+
+        int playerCount = 0;
+        if (queryOfPlayers.exec() && queryOfPlayers.next()) {
+
+            playerCount = queryOfPlayers.value(0).toInt();
+        }
+
+        // 1. Create GameManager for this tournament
+        GameManager *Tournament = new GameManager(playerCount);
+        Tournament->setPlayerCount(playerCount);
+        Tournament->setIndexOfTournament(tournamentId-1);
+        Tournament->setTourCount(tourCount);
+        Tournament->setTourName(tourName);
+        Tournament->setDate(data);
+        Tournament->setInfo(info);
+
+        vectorOfTournaments.push_back(Tournament);
+
+
+        // 2. Load players for this tournament
+        queryOfPlayers.prepare("SELECT * FROM tableOfPlayers where tournament = :tournament");
+        queryOfPlayers.bindValue(":tournament", tournamentId);
+
+        if (queryOfPlayers.exec())
+        {
+            while(queryOfPlayers.next())
+            {
+                    Player *p = new Player();
+                    p->setId(queryOfPlayers.value("id").toInt());
+                    p->setName(queryOfPlayers.value("name").toString());
+                    p->setCurrentPoint(queryOfPlayers.value("currentPoint").toDouble());
+                    p->setColorCoef(queryOfPlayers.value("colorCoef").toInt());
+                    p->setLastColor(queryOfPlayers.value("lastColor").toInt());
+                    Tournament->addNewPlayer(p);
+            }
+        }
+
+
+        // 3. Load games for this tournament and creating matrix for players
+        int theLastOrganizedTour = 0;
+
+        QSqlQuery gameQuery(db);
+        gameQuery.prepare("SELECT * FROM tableOfGames WHERE tournament = :tournament");
+        gameQuery.bindValue(":tournament", tournamentId);
+        if (gameQuery.exec()) {
+            while (gameQuery.next()) {
+                int whitePlayerId = gameQuery.value("whitePlayerId").toInt();
+                int blackPlayerId = gameQuery.value("blackPlayerId").toInt();
+                int res = gameQuery.value("result").toInt();
+                int tour = gameQuery.value("tour").toInt();
+                if(theLastOrganizedTour<tour)
+                {
+                    theLastOrganizedTour=tour;
+                    if(res == -2)
+                    {
+                        --theLastOrganizedTour;
+                    }
+                }
+                Game * newGame = new Game(whitePlayerId,blackPlayerId,res);
+                Tournament->setGame(tour, newGame);
+                if(blackPlayerId > 0)
+                Tournament->ThePlayerSMet(whitePlayerId,blackPlayerId);
+            }
+        }
+
+        //#currentoOganizedTour
+        Tournament->setCurrentOganizedTour(++theLastOrganizedTour);
+
+        // 4. Create radio button for UI
+        QRadioButton *btn = new QRadioButton(tourName);
+        radioGroup->addButton(btn);
+        vectorOfRadioButtons.push_back(btn);
+
+        //5 Create radio buttons for Table
+        for(int i=0; i<theLastOrganizedTour-1; ++i)
+        {
+            QRadioButton * radioButtonOfTours = new QRadioButton();
+            radioButtonOfTours->setText("Tour " + QString::number(i+1));
+            mapOfTabelRadiobuttons[Tournament->getIndexOfTournament()].push_back(radioButtonOfTours);
+        }
+
+    }
+}
+
 void database::addNewTournamnet(int tourCount, QString tourName, QString data, QString info)
 {
     QSqlQuery query(db);
@@ -115,6 +222,9 @@ void database::addNewTournamnet(int tourCount, QString tourName, QString data, Q
 void database::removeTournamentAndAllDatasInIt(int index)
 {
     QSqlQuery query(db);
+    ++index;
+
+    //REMOVING
 
     query.prepare("DELETE FROM tableOfTournaments WHERE \"index\" = :index ");
 
@@ -126,7 +236,59 @@ void database::removeTournamentAndAllDatasInIt(int index)
         qDebug() << "EROR!! Tournamnet with index : "<< index << " is not deleted";
     }
 
-    // ry.prep
+    query.prepare("DELETE FROM tableOfPlayers Where tournament = :tournament");
+
+    query.bindValue(":tournament" , index);
+
+    if (query.exec()) {
+        qDebug() << "Players' datas in tournament with index: " <<index << " are deleted successfully";
+    } else {
+        qDebug() << "EROR!! Players' datas in tournament with index : "<< index << " are not deleted";
+    }
+
+    query.prepare("DELETE FROM tableOfGames where tournament = :tournament");
+
+    query.bindValue(":tournament" , index);
+
+    if (query.exec()) {
+        qDebug() << "Games' datas in tournament with index: " <<index << " are deleted successfully";
+    } else {
+        qDebug() << "EROR!! Games' datas in tournament with index : "<< index << " are not deleted";
+    }
+
+    //UPDATING
+    query.prepare("UPDATE tableOfTournaments Set \"index\" = \"index\"-1 where \"index\" > :tournamentId");
+
+    query.bindValue(":tournamentId",index);
+
+    if (query.exec()) {
+        qDebug() << "Tournaments insdexes are updated";
+    } else {
+        qDebug() << "EROR!! Tournaments insdexes are not updated";
+    }
+
+
+    query.prepare("UPDATE tableOfPlayers Set tournament = tournament-1 where tournament > :tournamentId");
+
+    query.bindValue(":tournamentId",index);
+
+    if (query.exec()) {
+        qDebug() << "Players' datas are updated";
+    } else {
+        qDebug() << "EROR!! Players' datas are not updated";
+    }
+
+
+    query.prepare("UPDATE tableOfGames Set tournament = tournament-1 where tournament > :tournamentId");
+
+    query.bindValue(":tournamentId",index);
+
+    if (query.exec()) {
+        qDebug() << "Games' datas are updated";
+    } else {
+        qDebug() << "EROR!! Games' datas are not updated";
+    }
+
 }
 
 void database::addNewPlayer(int id, QString name, int tournament)
@@ -141,7 +303,7 @@ void database::addNewPlayer(int id, QString name, int tournament)
     query.bindValue(":lastColor", 0);
     query.bindValue(":id", id);
     query.bindValue(":name", name);
-    query.bindValue(":tournament", tournament);
+    query.bindValue(":tournament", tournament+1);
 
     if (query.exec()) {
         int newIndex = query.lastInsertId().toInt();
@@ -163,7 +325,7 @@ void database::addNewGame(int result, int tour, int tournament, int whitePlayerI
     query.bindValue(":blackPlayerId", blackPlayerId);
     query.bindValue(":result", result);
     query.bindValue(":tour", tour);
-    query.bindValue(":tournament", tournament);
+    query.bindValue(":tournament", tournament+1);
 
     if(query.exec())
     {
@@ -192,7 +354,7 @@ void database::updateGamesData(int whitePlayerId, int blackPlayerId, int result,
     query.bindValue(":blackPlayerId", blackPlayerId);
     query.bindValue(":result", result);
     query.bindValue(":tour", tour);
-    query.bindValue(":tournament", tournament);
+    query.bindValue(":tournament", tournament+1);
 
     if (query.exec()) {
         qDebug() << "Game updated successfully!";
@@ -213,7 +375,7 @@ void database::updatePlayersData(double currentPoint, int colorCoef, int lastCol
     query.bindValue(":lastColor", lastColor);
     query.bindValue(":id", id);
     query.bindValue(":name", name);
-    query.bindValue(":tournament", tournament);
+    query.bindValue(":tournament", tournament+1);
 
 
     if(query.exec())

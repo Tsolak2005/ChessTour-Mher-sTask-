@@ -4,6 +4,7 @@
 #include<QString>
 #include"player.h"
 #include "game.h"
+#include "tiebreaks.h"
 #include <QRadioButton>
 #include <iostream>
 
@@ -54,11 +55,14 @@ public:
     void ThePlayerSMet(int p1Id, int p2ID);
     void changeMatrixOfPlayers(int playerCount, int lastPlayerCount);
 
+    std::vector<double> extraPointComputing(int tour);
+
+
 
 private:
 
     int m_IndexOfTournament;
-    int m_currentoOganizedTour;
+    int m_currentOrganizedTour;
     int m_playerCount;
     int m_tourCount;
     int m_currentTour;

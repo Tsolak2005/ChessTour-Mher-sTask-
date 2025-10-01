@@ -44,14 +44,18 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
     void connectFunction();
+    void radioButtonsConnections();
+
     void deleteTournamentDetailes();
     void addPlayersToGameManager(GameManager* gameManager);
     bool isDataComplete();
     void clearLayout(QLayout* layout);
+
     void GivingDataToDrawing(GameManager* Tournament);
     void GivingDataToTable(GameManager* Tournament, int toWichTour);
-    void OkOfDrowing();
+
     std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(
         const std::vector<std::vector<int>>&, std::vector<int>& , std::vector<int>);
     void removeWidgetFromLayout(QLayout* layout, QWidget* widget);

@@ -1,6 +1,6 @@
-#include "gamemanager.h"
+ #include "gamemanager.h"
 
-GameManager::GameManager(int playerCount) : m_currentoOganizedTour(1), m_playerCount(0),
+GameManager::GameManager(int playerCount) : m_currentOrganizedTour(1), m_playerCount(0),
     m_tourCount(0), m_currentTour(1),
     m_matrixOfPlayers(new std::vector<std::vector<bool>>(playerCount, std::vector<bool>(playerCount, false)))
 {
@@ -10,6 +10,10 @@ GameManager::GameManager(int playerCount) : m_currentoOganizedTour(1), m_playerC
     }
 }
 
+std::vector<double> GameManager::extraPointComputing(int tour)
+{
+    return tiebreaks::computeExtraPointsOnly(m_playerList, m_gameMap, tour);
+}
 
 GameManager::~GameManager()
 {
@@ -31,7 +35,7 @@ GameManager::~GameManager()
 
 int GameManager::getCurrentoOganizedTour() const
 {
-    return m_currentoOganizedTour;
+    return m_currentOrganizedTour;
 }
 
 QString GameManager::getInfo()const
@@ -73,7 +77,7 @@ Player * GameManager::getPlayerById(const int id) const
 
 void GameManager::setCurrentOganizedTour(const int tour)
 {
-    m_currentoOganizedTour = tour;
+    m_currentOrganizedTour = tour;
 }
 
 void GameManager::setIndexOfTournament(const int index)
