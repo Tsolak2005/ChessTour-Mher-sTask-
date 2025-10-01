@@ -216,6 +216,3 @@ void GameManager::changeMatrixOfPlayers(int playerCount, int lastPlayerCount)
     m_matrixOfPlayers = temp;
     temp = nullptr;
 }
-
-
-
