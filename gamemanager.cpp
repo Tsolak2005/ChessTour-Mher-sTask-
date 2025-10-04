@@ -59,7 +59,7 @@ int GameManager::getCurrentTour() const
 }
 
 
-Player * GameManager::getPlayerById(const int id) const
+std::shared_ptr<Player> GameManager::getPlayerById(const int id) const
 {
     for (int i = 0; i < m_playerCount; ++i) {
         if (m_playerList[i]->getId() == id) {
@@ -197,7 +197,7 @@ void GameManager::changeMatrixOfPlayers(int playerCount, int lastPlayerCount)
             (*temp)[i][j] = (*m_matrixOfPlayers)[i][j];
         }
     }
-    std::cout << "ERROR AFTDER FOR"<<std::endl;
+    std::cout << "ERROR AFTER FOR"<<std::endl;
     for(int i=0; i<lastPlayerCount; ++i)
     {
         for(int j=0; j<lastPlayerCount; ++j)
