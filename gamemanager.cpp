@@ -10,11 +10,6 @@ GameManager::GameManager(int playerCount) : m_currentOrganizedTour(1), m_playerC
     }
 }
 
-std::vector<double> GameManager::extraPointComputing(int tour)
-{
-    return tiebreaks::computeExtraPointsOnly(m_playerList, m_gameMap, tour);
-}
-
 GameManager::~GameManager()
 {
     // 1. Delete all games stored in m_gameMap
@@ -113,12 +108,12 @@ void GameManager::setGame(int tour, Game* game)
     }
 }
 
-void GameManager::changePlayersList(std::vector<Player *> *P)
+void GameManager::changePlayersList(const std::vector<std::shared_ptr<Player>>& P)
 {
     m_playerList.clear();
-    for(auto * it: *P)
+    for(const auto& it: P)
     {
-        m_playerList.push_back(new Player(it));
+        m_playerList.push_back(new Player(it.get()));
     }
 
 }
@@ -143,9 +138,9 @@ std::vector<Game*>* GameManager::getTourGames(int tour)
     return nullptr;
 }
 
-std::vector<Player *>* GameManager::getPlayers()
+std::vector<Player *>& GameManager::getPlayers()
 {
-    return &m_playerList;
+    return m_playerList;
 }
 
 int GameManager::getSizeOfGameMap() const

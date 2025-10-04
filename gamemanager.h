@@ -4,7 +4,6 @@
 #include<QString>
 #include"player.h"
 #include "game.h"
-#include "tiebreaks.h"
 #include <QRadioButton>
 #include <iostream>
 
@@ -41,8 +40,8 @@ public:
     void setGame(int tour, Game* game);
     int getSizeOfGameMap() const;
 
-    std::vector<Player*>*getPlayers();
-    void changePlayersList(std::vector<Player*>*);
+    std::vector<Player*>& getPlayers();
+    void changePlayersList(const std::vector<std::shared_ptr<Player>>&);
     Player * getPlayerById(const int id) const;
     void addNewPlayer(Player* P);
 
@@ -54,9 +53,6 @@ public:
     bool HaveThePlayersMet(int p1Id, int p2Id);
     void ThePlayerSMet(int p1Id, int p2ID);
     void changeMatrixOfPlayers(int playerCount, int lastPlayerCount);
-
-    std::vector<double> extraPointComputing(int tour);
-
 
 
 private:
@@ -72,7 +68,7 @@ private:
 
     std::map< int, std::vector<Game*> > m_gameMap;
     std::vector<Player*> m_playerList;
-    std::vector<std::vector<bool>>* m_matrixOfPlayers;
+    std::vector<std::vector<bool>> m_matrixOfPlayers;
 };
 
 #endif // GAMEMANAGER_H

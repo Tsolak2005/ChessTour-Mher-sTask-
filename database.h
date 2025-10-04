@@ -16,9 +16,9 @@ public:
     ~database();
     void clearAllTables();
 
-    void loadingDataBase(std::vector<GameManager*>& vectorOfTournaments,
-                         std::vector<QRadioButton *>& vectorOfRadioButtons,
-                         std::map<int, std::vector<QRadioButton*>>& mapOfTabelRadiobuttons,
+    void loadingDataBase(std::vector<std::shared_ptr<GameManager>> &vectorOfTournaments,
+                                   std::vector<std::shared_ptr<QRadioButton>> &vectorOfRadioButtons,
+                                   std::map<int,std::vector<std::shared_ptr<QRadioButton>>> &mapOfTableRadiobuttons,
                          QButtonGroup *radioGroup);
 
     void removeTournamentAndAllDatasInIt(int index);
@@ -29,7 +29,7 @@ public:
     void updateGamesData(int whitePlayerId, int blackPlayerId, int result, int tour, int tournament);
 
     void addNewPlayer(int id, QString name, int tournament);
-    void updatePlayersData(double currentPoint, int colorCoef, int lastColor, QString name, int tournament, int id);
+    void updatePlayersData(double currentPoint, double extraPoint, int colorCoef, int lastColor, QString name, int tournament, int id);
 
 private:
     QSqlDatabase db;

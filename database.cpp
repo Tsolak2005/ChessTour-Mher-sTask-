@@ -26,6 +26,7 @@ database::database()
     if(query.exec("CREATE TABLE IF NOT EXISTS tableOfPlayers("
                    "\"index\" INTEGER PRIMARY KEY AUTOINCREMENT,"
                    "currentPoint REAL,"
+                   "extraPoint REAL,"
                    "colorCoef INTEGER,"
                    "lastColor INTEGER,"
                    "id INTEGER,"
@@ -50,7 +51,7 @@ database::database()
 
 database::~database()
 {
-    // clearAllTables();
+    clearAllTables();
 }
 
 void database::clearAllTables()
@@ -88,9 +89,9 @@ void database::clearAllTables()
     qDebug() << "All tables cleared and AUTOINCREMENT reset.";
 }
 
-void database::loadingDataBase(std::vector<GameManager *> &vectorOfTournaments,
-                               std::vector<QRadioButton *> &vectorOfRadioButtons,
-                               std::map<int, std::vector<QRadioButton *>> &mapOfTabelRadiobuttons,
+void database::loadingDataBase(std::vector<std::shared_ptr<GameManager>> &vectorOfTournaments,
+                               std::vector<std::shared_ptr<QRadioButton>> &vectorOfRadioButtons,
+                               std::map<int,std::vector<std::shared_ptr<QRadioButton>>> &mapOfTableRadiobuttons,
                                QButtonGroup *radioGroup)
 {
     QSqlQuery queryOfTournamnets(db);
@@ -119,7 +120,7 @@ void database::loadingDataBase(std::vector<GameManager *> &vectorOfTournaments,
         }
 
         // 1. Create GameManager for this tournament
-        GameManager *Tournament = new GameManager(playerCount);
+        std::shared_ptr<GameManager> Tournament = std::make_shared<GameManager>(playerCount);
         Tournament->setPlayerCount(playerCount);
         Tournament->setIndexOfTournament(tournamentId-1);
         Tournament->setTourCount(tourCount);
@@ -127,7 +128,7 @@ void database::loadingDataBase(std::vector<GameManager *> &vectorOfTournaments,
         Tournament->setDate(data);
         Tournament->setInfo(info);
 
-        vectorOfTournaments.push_back(Tournament);
+        vectorOfTournaments.emplace_back(Tournament);
 
 
         // 2. Load players for this tournament
@@ -142,6 +143,7 @@ void database::loadingDataBase(std::vector<GameManager *> &vectorOfTournaments,
                     p->setId(queryOfPlayers.value("id").toInt());
                     p->setName(queryOfPlayers.value("name").toString());
                     p->setCurrentPoint(queryOfPlayers.value("currentPoint").toDouble());
+                    p->addExtraPoint(queryOfPlayers.value("extraPoint").toDouble());
                     p->setColorCoef(queryOfPlayers.value("colorCoef").toInt());
                     p->setLastColor(queryOfPlayers.value("lastColor").toInt());
                     Tournament->addNewPlayer(p);
@@ -180,16 +182,16 @@ void database::loadingDataBase(std::vector<GameManager *> &vectorOfTournaments,
         Tournament->setCurrentOganizedTour(++theLastOrganizedTour);
 
         // 4. Create radio button for UI
-        QRadioButton *btn = new QRadioButton(tourName);
-        radioGroup->addButton(btn);
-        vectorOfRadioButtons.push_back(btn);
+        std::shared_ptr<QRadioButton> btn =  std::make_shared<QRadioButton>(tourName);
+        radioGroup->addButton(btn.get());
+        vectorOfRadioButtons.emplace_back(btn);
 
         //5 Create radio buttons for Table
         for(int i=0; i<theLastOrganizedTour-1; ++i)
         {
-            QRadioButton * radioButtonOfTours = new QRadioButton();
+             std::shared_ptr<QRadioButton> radioButtonOfTours = std::make_shared<QRadioButton>();
             radioButtonOfTours->setText("Tour " + QString::number(i+1));
-            mapOfTabelRadiobuttons[Tournament->getIndexOfTournament()].push_back(radioButtonOfTours);
+            mapOfTableRadiobuttons[Tournament->getIndexOfTournament()].emplace_back(radioButtonOfTours);
         }
 
     }
@@ -295,10 +297,11 @@ void database::addNewPlayer(int id, QString name, int tournament)
 {
     QSqlQuery query(db);
 
-    query.prepare("INSERT INTO tableOfPlayers (currentPoint, colorCoef, lastColor, id, name, tournament) "
-                  "VALUES (:currentPoint, :colorCoef, :lastColor, :id, :name, :tournament)");
+    query.prepare("INSERT INTO tableOfPlayers (currentPoint, extraPoint, colorCoef, lastColor, id, name, tournament) "
+                  "VALUES (:currentPoint,  :extraPoint, :colorCoef, :lastColor, :id, :name, :tournament)");
 
     query.bindValue(":currentPoint", 0);
+    query.bindValue(":extraPoint", 0);
     query.bindValue(":colorCoef", 0);
     query.bindValue(":lastColor", 0);
     query.bindValue(":id", id);
@@ -363,14 +366,15 @@ void database::updateGamesData(int whitePlayerId, int blackPlayerId, int result,
     }
 }
 
-void database::updatePlayersData(double currentPoint, int colorCoef, int lastColor, QString name, int tournament, int id)
+void database::updatePlayersData(double currentPoint, double extraPoint, int colorCoef, int lastColor, QString name, int tournament, int id)
 {
     QSqlQuery query(db);
 
-    query.prepare("UPDATE tableOfPlayers SET name = :name, currentPoint = :currentPoint, colorCoef = :colorCoef,"
+    query.prepare("UPDATE tableOfPlayers SET name = :name, currentPoint = :currentPoint, extraPoint = :extraPoint, colorCoef = :colorCoef,"
                   " lastColor = :lastColor where id = :id and tournament = :tournament");
 
     query.bindValue(":currentPoint", currentPoint);
+    query.bindValue(":extraPoint", extraPoint);
     query.bindValue(":colorCoef", colorCoef);
     query.bindValue(":lastColor", lastColor);
     query.bindValue(":id", id);

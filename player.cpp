@@ -60,9 +60,15 @@ void Player::setName(const QString name)
     m_name = name;
 }
 
-TieBreakInfo &Player::getTieBreakInfo()
+void Player::addExtraPoint(double point)
 {
-    return m_info;
+    m_extrapoint+=point/10;
 }
+
+double Player::getExtraPoint() const
+{
+    return m_extrapoint;
+}
+
 
 

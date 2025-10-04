@@ -49,12 +49,12 @@ public:
     void radioButtonsConnections();
 
     void deleteTournamentDetailes();
-    void addPlayersToGameManager(GameManager* gameManager);
+    void addPlayersToGameManager(GameManager& gameManager);
     bool isDataComplete();
     void clearLayout(QLayout* layout);
 
-    void GivingDataToDrawing(GameManager* Tournament);
-    void GivingDataToTable(GameManager* Tournament, int toWichTour);
+    void GivingDataToDrawing(GameManager& Tournament);
+    void GivingDataToTable(GameManager& Tournament, int toWichTour);
 
     std::pair<int, std::vector<std::pair<int,int>>> findMaxValueWithPairs(
         const std::vector<std::vector<int>>&, std::vector<int>& , std::vector<int>);
@@ -75,18 +75,18 @@ private slots:
 
     void on_pushButtonPrevious_clicked();
 
-signals:
+/*signals:
 
     void pushButtonAddName_clicked(QString text);
-
+*/
 
 private:
     Ui::MainWindow *ui;
 
-    std::vector<GameManager*> vectorOfTournaments;
-    std::vector<QRadioButton *> vectorOfRadioButtons;
-    std::map<int, std::vector<QRadioButton*>> mapOfTabelRadiobuttons;
-    QButtonGroup * radioGroup;
+    std::vector<std::shared_ptr<GameManager>> vectorOfTournaments;
+    std::vector<std::shared_ptr<QRadioButton>> vectorOfRadioButtons;
+    std::map<int,std::vector<std::shared_ptr<QRadioButton>>> mapOfTableRadiobuttons;
+    std::shared_ptr<QButtonGroup> radioGroup;
 
     GameManager * currentTournament;
     database dataBase;

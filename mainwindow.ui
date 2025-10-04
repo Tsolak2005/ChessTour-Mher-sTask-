@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1540</width>
-    <height>683</height>
+    <width>1519</width>
+    <height>851</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -1003,7 +1003,7 @@ QTableWidget::item:hover {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1540</width>
+     <width>1519</width>
      <height>21</height>
     </rect>
    </property>
