@@ -183,7 +183,7 @@ void MainWindow::connectFunction()
         if(state == Qt::Checked)
         {
             std::vector<std::shared_ptr<Player>> newPlayerList;
-            std::vector<Player*>playerList = currentTournament->getPlayers();
+            std::vector<std::shared_ptr<Player>> playerList = currentTournament->getPlayers();
             // if(playerList)
             int playerCount = currentTournament->getPlayerCount();
 
@@ -201,9 +201,9 @@ void MainWindow::connectFunction()
                 Scores.push_back(score);
             }
 
-            std::sort(newPlayerList.begin(), newPlayerList.end(), [](const Player* const lhs, const Player* const rhs) {
-                return lhs->getCurrentPoint() < rhs->getCurrentPoint() || lhs->getCurrentPoint() == rhs->getCurrentPoint() && lhs->getExtraPoint() < rhs->getExtraPoint();
-            });
+            // std::sort(newPlayerList.begin(), newPlayerList.end(), [](const Player* const lhs, const Player* const rhs) {
+            //     return lhs->getCurrentPoint() < rhs->getCurrentPoint() || lhs->getCurrentPoint() == rhs->getCurrentPoint() && lhs->getExtraPoint() < rhs->getExtraPoint();
+            // });
 
             currentTournament->changePlayersList(newPlayerList);
 
@@ -216,7 +216,7 @@ void MainWindow::connectFunction()
         }
         else
         {
-            GivingDataToTable(currentTournament, columnsWithWidgets);
+            GivingDataToTable(*currentTournament, columnsWithWidgets);
         }
     } );
 }
@@ -466,7 +466,7 @@ void MainWindow::addPlayersToGameManager(GameManager& gameManager)
             QString playerName = lineEdit->text().trimmed();
             if (!playerName.isEmpty())
             {
-                Player* newPlayer = new Player();
+                std::shared_ptr<Player> newPlayer = std::make_shared<Player>();
                 newPlayer->setName(playerName);
                 newPlayer->setColorCoef(0);
                 newPlayer->setLastColor(-1);
@@ -597,12 +597,12 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                     thechangingTournamnet->changeMatrixOfPlayers(playerCount, lastPlayerCount);
                     if(lastPlayerCount % 2){
 
-                        thechangingTournamnet->getTourGames(currentTour)->back()->setBlackPlayerId(++lastPlayerCount);
+                        thechangingTournamnet->getTourGames(currentTour).back()->setBlackPlayerId(++lastPlayerCount);
                         thechangingTournamnet->ThePlayerSMet(lastPlayerCount-1, lastPlayerCount);
                     }
                     for(int i=lastPlayerCount+1; i<=playerCount; i++)
                     {
-                        Game * newGame = new Game(i,-1);
+                        std::shared_ptr<Game> newGame = std::make_shared<Game>(i,-1);
                         if(i+1<=playerCount)
                         {
                             thechangingTournamnet->ThePlayerSMet(i,i+1);
@@ -679,7 +679,7 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
 
             for(int i=1; i<=playerCount; i++)
             {
-                Game * newGame = new Game(i,-1);
+                std::shared_ptr<Game> newGame = std::make_shared<Game>(i,-1);
 
                 if(i+1<=playerCount)
                 {
@@ -803,20 +803,20 @@ void MainWindow::GivingDataToDrawing(GameManager& Tournament)
     headers << "White Color" << "Black Color" << "Results";
     ui->tableWidgetOfDrawing->setHorizontalHeaderLabels(headers);
 
-    std::vector<Game*>* games = Tournament.getTourGames(Tournament.getCurrentTour());
-    int size = (*games).size();
+    std::vector<std::shared_ptr<Game>> games = Tournament.getTourGames(Tournament.getCurrentTour());
+    int size = games.size();
     for (int i = 0; i < size; ++i)
     {
         ui->tableWidgetOfDrawing->setCellWidget(
             i,0, new QLabel(
                 Tournament.getPlayerById(
-                                     (*games)[i]->getWhitePlayerId())->getName()));
+                                     games[i]->getWhitePlayerId())->getName()));
         if(!(i ==  size-1 && Tournament.getPlayerCount()%2))
         {
             ui->tableWidgetOfDrawing->setCellWidget(
                 i,1, new QLabel(
                     Tournament.getPlayerById(
-                                     (*games)[i]->getBlackPlayerId())->getName()));
+                                     games[i]->getBlackPlayerId())->getName()));
         }
     }
 
@@ -833,9 +833,9 @@ void MainWindow::GivingDataToDrawing(GameManager& Tournament)
         if(!(Tournament.getCurrentoOganizedTour() == Tournament.getCurrentTour()) && Tournament.hasTheTournamentStarted())
         {
 
-            std::vector<Game*>* game = Tournament.getTourGames(Tournament.getCurrentTour());
+            std::vector<std::shared_ptr<Game>> game = Tournament.getTourGames(Tournament.getCurrentTour());
 
-            switch ((*game)[i]->getResult())
+            switch (game[i]->getResult())
             {
                 case -1:
                 {
@@ -902,11 +902,11 @@ void MainWindow::GivingDataToTable(GameManager &Tournament, int toWichTour)
     ui->tableWidgetOfTabel->setHorizontalHeaderLabels(listoOfColumn);
 
     QStringList listOfRows;
-    std::vector<Player*> playerList = currentTournament->getPlayers();
+    std::vector<std::shared_ptr<Player>> playerList = currentTournament->getPlayers();
     std::map<int, int>* mapOfIdes = new std::map<int,int>;
     {
         int i =0;
-        for (auto* it: playerList)
+        for (auto& it: playerList)
         {
             listOfRows << QString::number(it->getId()) + ". " + it->getName();
             (*mapOfIdes)[it->getId()] = i++;
@@ -915,9 +915,9 @@ void MainWindow::GivingDataToTable(GameManager &Tournament, int toWichTour)
     }
     for(int i=1; i<=toWichTour; ++i)
     {
-        std::vector<Game*>* vectorOgGames = Tournament.getTourGames(i);
+        std::vector<std::shared_ptr<Game>> vectorOgGames = Tournament.getTourGames(i);
         bool odd = false;
-        for(Game* it : (*vectorOgGames))
+        for(auto& it : vectorOgGames)
         {
             int res = it->getResult();
             double score;
@@ -1074,9 +1074,9 @@ void MainWindow::GivingDataToTable(GameManager &Tournament, int toWichTour)
 
     for(int i=1; i<=toWichTour; i++)
     {
-        std::vector<Game*>* vectorOgGames = Tournament.getTourGames(i);
+        std::vector<std::shared_ptr<Game>> vectorOgGames = Tournament.getTourGames(i);
 
-        for(Game* it : (*vectorOgGames))
+        for(auto& it : vectorOgGames)
         {
             double score = 0;
             int res = it->getResult();
@@ -1343,13 +1343,13 @@ void MainWindow::on_pushButtonNext_clicked()
 
             if(currentTournament->getPlayerById(participantPlayers[result[i].first])->getLastColor()==1)
             {
-                currentTournament->setGame(currentTour, new Game(wIndex, bIndex));
+                currentTournament->setGame(currentTour, std::make_shared<Game>(wIndex, bIndex));
                 dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),
                                     wIndex,bIndex);
             }
             else
             {
-                currentTournament->setGame(currentTour, new Game(bIndex,wIndex));
+                currentTournament->setGame(currentTour, std::make_shared<Game>(bIndex,wIndex));
                 dataBase.addNewGame(-2,currentTour,currentTournament->getIndexOfTournament(),
                                     bIndex,wIndex);
             }
@@ -1360,7 +1360,7 @@ void MainWindow::on_pushButtonNext_clicked()
 
         if(weakestPlayerId != -1)
         {
-            currentTournament->setGame(currentTour, new Game(weakestPlayerId,-1));
+            currentTournament->setGame(currentTour, std::make_shared<Game>(weakestPlayerId,-1));
             dataBase.addNewGame(-2, currentTour, currentTournament->getIndexOfTournament(), weakestPlayerId, -1);
         }
 
@@ -1404,8 +1404,8 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
     if (reply == QMessageBox::Ok)
     {
         ui->tabWidget->setTabEnabled(1,true);
-        std::vector<Game*>* game = currentTournament->getTourGames(currentTournament->getCurrentTour());
-        int countOfGames = game->size();
+        std::vector<std::shared_ptr<Game>>& game = currentTournament->getTourGames(currentTournament->getCurrentTour());
+        int countOfGames = game.size();
         int countOfPlayers = currentTournament->getPlayerCount();
 
         currentTournament->setCurrentOganizedTour(currentTournament->getCurrentoOganizedTour()+1);
@@ -1428,10 +1428,10 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                             currentTournament->setCurrentOganizedTour(currentTournament->getCurrentoOganizedTour()-1);
                             return;
                         }
-                        (*game)[i]->setResult(-2);
+                        game[i]->setResult(-2);
 
-                        int playerId = (*game)[i]->getWhitePlayerId();
-                        Player* currentPlayer =  currentTournament->getPlayerById(playerId);
+                        int playerId = game[i]->getWhitePlayerId();
+                        std::shared_ptr<Player>& currentPlayer =  currentTournament->getPlayerById(playerId);
                         double GrayPlayerCurrentPoint = currentPlayer->getCurrentPoint()+1;
                         QString name = currentPlayer->getName();
 
@@ -1449,10 +1449,10 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                     }
                     case 1:
                     {
-                        (*game)[i]->setResult(1);
-                        int whitePlayerId = (*game)[i]->getWhitePlayerId();
+                        game[i]->setResult(1);
+                        int whitePlayerId = game[i]->getWhitePlayerId();
 
-                        Player* currentWhitePlayer =  currentTournament->getPlayerById(whitePlayerId);
+                        std::shared_ptr<Player>&currentWhitePlayer =  currentTournament->getPlayerById(whitePlayerId);
                         int colorCoefOfWhite = currentWhitePlayer->getColorCoef()+1;
                         double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint()+1;
                         QString nameW = currentWhitePlayer->getName();
@@ -1465,8 +1465,8 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                         dataBase.updatePlayersData(WhitePlayerCurrentPoint, currentWhitePlayer->getExtraPoint(), colorCoefOfWhite,0,nameW, currentTournament->getIndexOfTournament(),whitePlayerId);
 
 
-                        int blackPlayerId = (*game)[i]->getBlackPlayerId();
-                        Player* currentBlackPlayer =  currentTournament->getPlayerById(blackPlayerId);
+                        int blackPlayerId = game[i]->getBlackPlayerId();
+                        std::shared_ptr<Player>& currentBlackPlayer =  currentTournament->getPlayerById(blackPlayerId);
                         int colorCoefOfBlack = currentBlackPlayer->getColorCoef()-1;
                         QString nameB = currentBlackPlayer->getName();
                         double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint();
@@ -1486,10 +1486,10 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                     }
                     case 2:
                     {
-                        (*game)[i]->setResult(-1);
-                        int whitePlayerId = (*game)[i]->getWhitePlayerId();
+                        game[i]->setResult(-1);
+                        int whitePlayerId = game[i]->getWhitePlayerId();
 
-                        Player* currentWhitePlayer =  currentTournament->getPlayerById(whitePlayerId);
+                        std::shared_ptr<Player>& currentWhitePlayer =  currentTournament->getPlayerById(whitePlayerId);
                         int colorCoefOfWhite = currentWhitePlayer->getColorCoef()+1;
                         QString nameW = currentWhitePlayer->getName();
                         double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint();
@@ -1502,8 +1502,8 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                         dataBase.updatePlayersData(WhitePlayerCurrentPoint, currentWhitePlayer->getExtraPoint(), colorCoefOfWhite,0,nameW, currentTournament->getIndexOfTournament(),whitePlayerId);
 
 
-                        int blackPlayerId = (*game)[i]->getBlackPlayerId();
-                        Player* currentBlackPlayer =  currentTournament->getPlayerById(blackPlayerId);
+                        int blackPlayerId = game[i]->getBlackPlayerId();
+                        std::shared_ptr<Player>& currentBlackPlayer =  currentTournament->getPlayerById(blackPlayerId);
                         double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint()+1;
                         int colorCoefOfBlack = currentBlackPlayer->getColorCoef()-1;
                         QString nameB = currentBlackPlayer->getName();
@@ -1522,10 +1522,10 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
 
                     case 3:
                     {
-                        (*game)[i]->setResult(0);
+                        game[i]->setResult(0);
 
-                        int whitePlayerId = (*game)[i]->getWhitePlayerId();
-                        Player* currentWhitePlayer = currentTournament->getPlayerById(whitePlayerId);
+                        int whitePlayerId = game[i]->getWhitePlayerId();
+                        std::shared_ptr<Player>& currentWhitePlayer = currentTournament->getPlayerById(whitePlayerId);
                         QString nameW = currentWhitePlayer->getName();
                         double WhitePlayerCurrentPoint = currentWhitePlayer->getCurrentPoint()+ 0.5;
                         int colorCoefOfWhite = currentWhitePlayer->getColorCoef()+1;
@@ -1538,8 +1538,8 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
                         dataBase.updatePlayersData(WhitePlayerCurrentPoint,currentWhitePlayer->getExtraPoint(),colorCoefOfWhite,0,nameW, currentTournament->getIndexOfTournament(),whitePlayerId);
 
 
-                        int blackPlayerId = (*game)[i]->getBlackPlayerId();
-                        Player* currentBlackPlayer = currentTournament->getPlayerById(blackPlayerId);
+                        int blackPlayerId = game[i]->getBlackPlayerId();
+                        std::shared_ptr<Player>& currentBlackPlayer = currentTournament->getPlayerById(blackPlayerId);
                         QString nameB = currentBlackPlayer->getName();
                         double BlackPlayerCurrentPoint = currentBlackPlayer->getCurrentPoint() + 0.5;
                         int colorCoefOfBlack = currentBlackPlayer->getColorCoef()-1;

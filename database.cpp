@@ -139,7 +139,7 @@ void database::loadingDataBase(std::vector<std::shared_ptr<GameManager>> &vector
         {
             while(queryOfPlayers.next())
             {
-                    Player *p = new Player();
+                    std::shared_ptr<Player> p = std::make_shared<Player>();
                     p->setId(queryOfPlayers.value("id").toInt());
                     p->setName(queryOfPlayers.value("name").toString());
                     p->setCurrentPoint(queryOfPlayers.value("currentPoint").toDouble());
@@ -171,7 +171,7 @@ void database::loadingDataBase(std::vector<std::shared_ptr<GameManager>> &vector
                         --theLastOrganizedTour;
                     }
                 }
-                Game * newGame = new Game(whitePlayerId,blackPlayerId,res);
+                std::shared_ptr<Game> newGame = std::make_shared<Game>(whitePlayerId,blackPlayerId,res);
                 Tournament->setGame(tour, newGame);
                 if(blackPlayerId > 0)
                 Tournament->ThePlayerSMet(whitePlayerId,blackPlayerId);

@@ -36,14 +36,14 @@ public:
 
     QString getDate()const;
 
-    std::vector<Game *> *getTourGames(int tour);
-    void setGame(int tour, Game* game);
+    std::vector<std::shared_ptr<Game>> &getTourGames(int tour);
+    void setGame(int tour,std::shared_ptr<Game> game);
     int getSizeOfGameMap() const;
 
-    std::vector<Player*>& getPlayers();
+    std::vector<std::shared_ptr<Player>>& getPlayers();
     void changePlayersList(const std::vector<std::shared_ptr<Player>>&);
-    Player * getPlayerById(const int id) const;
-    void addNewPlayer(Player* P);
+    std::shared_ptr<Player> &getPlayerById(const int id);
+    void addNewPlayer(std::shared_ptr<Player> P);
 
     void setTourName(const QString tourName);
     void setDate(const QString date);
@@ -66,8 +66,8 @@ private:
     QString m_date;
     QString m_info;
 
-    std::map< int, std::vector<Game*> > m_gameMap;
-    std::vector<Player*> m_playerList;
+    std::map< int, std::vector<std::shared_ptr<Game>>> m_gameMap;
+    std::vector<std::shared_ptr<Player>> m_playerList;
     std::vector<std::vector<bool>> m_matrixOfPlayers;
 };
 
