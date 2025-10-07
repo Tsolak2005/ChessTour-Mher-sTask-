@@ -36,14 +36,14 @@ public:
 
     QString getDate()const;
 
-    std::vector<std::shared_ptr<Game>> &getTourGames(int tour);
+    const std::vector<std::shared_ptr<Game>> &getTourGames(int tour)const;
     void setGame(int tour,std::shared_ptr<Game> game);
     int getSizeOfGameMap() const;
 
     std::vector<std::shared_ptr<Player>>& getPlayers();
     void changePlayersList(const std::vector<std::shared_ptr<Player>>&);
     std::shared_ptr<Player> &getPlayerById(const int id);
-    void addNewPlayer(std::shared_ptr<Player> P);
+    void addNewPlayer(const std::shared_ptr<Player>& P);
 
     void setTourName(const QString tourName);
     void setDate(const QString date);

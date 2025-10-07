@@ -51,7 +51,7 @@ database::database()
 
 database::~database()
 {
-    clearAllTables();
+    // clearAllTables();
 }
 
 void database::clearAllTables()
@@ -92,7 +92,7 @@ void database::clearAllTables()
 void database::loadingDataBase(std::vector<std::shared_ptr<GameManager>> &vectorOfTournaments,
                                std::vector<std::shared_ptr<QRadioButton>> &vectorOfRadioButtons,
                                std::map<int,std::vector<std::shared_ptr<QRadioButton>>> &mapOfTableRadiobuttons,
-                               QButtonGroup *radioGroup)
+                               std::shared_ptr<QButtonGroup>& radioGroup)
 {
     QSqlQuery queryOfTournamnets(db);
     QSqlQuery queryOfPlayers(db);
@@ -288,7 +288,7 @@ void database::removeTournamentAndAllDatasInIt(int index)
     if (query.exec()) {
         qDebug() << "Games' datas are updated";
     } else {
-        qDebug() << "EROR!! Games' datas are not updated";
+        qDebug() << "ERROR!! Games' datas are not updated";
     }
 
 }

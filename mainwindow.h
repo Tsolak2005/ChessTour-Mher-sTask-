@@ -46,7 +46,8 @@ public:
     ~MainWindow();
 
     void connectFunction();
-    void radioButtonsConnections();
+    void connectionsOfLoadingRadiobuttons();
+    void radioButtonsConnections(std::shared_ptr<QRadioButton>& radioButton, GameManager* tournament);
 
     void deleteTournamentDetailes();
     void addPlayersToGameManager(GameManager& gameManager);
@@ -75,10 +76,7 @@ private slots:
 
     void on_pushButtonPrevious_clicked();
 
-/*signals:
 
-    void pushButtonAddName_clicked(QString text);
-*/
 
 private:
     Ui::MainWindow *ui;

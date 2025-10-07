@@ -189,7 +189,7 @@ void MainWindow::connectFunction()
 
             for(int i=0; i<playerCount; ++i)
             {
-                newPlayerList.emplace_back(playerList[i]);
+                newPlayerList.push_back(playerList[i]);
             }
 
             std::vector<double> Scores;
@@ -201,9 +201,9 @@ void MainWindow::connectFunction()
                 Scores.push_back(score);
             }
 
-            // std::sort(newPlayerList.begin(), newPlayerList.end(), [](const Player* const lhs, const Player* const rhs) {
-            //     return lhs->getCurrentPoint() < rhs->getCurrentPoint() || lhs->getCurrentPoint() == rhs->getCurrentPoint() && lhs->getExtraPoint() < rhs->getExtraPoint();
-            // });
+            std::sort(newPlayerList.begin(), newPlayerList.end(), [](const std::shared_ptr<Player>& lhs, const std::shared_ptr<Player>& rhs) {
+                return lhs->getCurrentPoint() > rhs->getCurrentPoint() || lhs->getCurrentPoint() == rhs->getCurrentPoint() && lhs->getExtraPoint() > rhs->getExtraPoint();
+            });
 
             currentTournament->changePlayersList(newPlayerList);
 
@@ -221,108 +221,33 @@ void MainWindow::connectFunction()
     } );
 }
 
-void MainWindow::radioButtonsConnections()
+
+
+void MainWindow::connectionsOfLoadingRadiobuttons()
 {
     clearLayout(ui->horizontalLayoutOFTorursOfTabel);
 
     for (int i = 0; i < vectorOfRadioButtons.size() && i < vectorOfTournaments.size(); ++i)
     {
-        QRadioButton * radioButton = vectorOfRadioButtons[i].get();
-        GameManager* Tournament = vectorOfTournaments[i].get();
-        QObject::connect(radioButton, &QRadioButton::clicked, this, [Tournament, this]()
-        {
-            ui->stackedWidget->setCurrentIndex(2);
-            currentTournament = Tournament;
-            if(currentTournament->hasTheTournamentStarted())
-            currentTournament->setCurrentTour(currentTournament->getCurrentoOganizedTour()-1);
+        std::shared_ptr<QRadioButton>& radioButton = vectorOfRadioButtons[i];
+        // GameManager* Tournament = vectorOfTournaments[i].get();
 
-
-            if(currentTournament->getCurrentoOganizedTour()-1==currentTournament->getTourCount())
-            {
-                ui->pushButtonEdit->setDisabled(true);
-                ui->pushButtonDelete->setDisabled(false);
-            }
-            else
-            {
-                ui->pushButtonEdit->setDisabled(false);
-                ui->pushButtonDelete->setDisabled(false);
-            }
-
-            ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
-
-            if(!currentTournament->hasTheTournamentStarted())
-            {
-                ui->pushButtonAddName->setDisabled(false);
-                ui->lineEditOfTourCount->setDisabled(false);
-            }
-
-            if((currentTournament->getCurrentTour() != currentTournament->getTourCount()) &&
-                (currentTournament->getCurrentoOganizedTour()!=currentTournament->getCurrentTour()))
-            {ui->pushButtonNext->setDisabled(false);}
-            else
-            {ui->pushButtonNext->setDisabled(true);}
-
-            if(currentTournament->getCurrentTour()==1)
-            {
-                ui->pushButtonPrevious->setDisabled(true);
-            }
-            else
-            {
-                ui->pushButtonPrevious->setDisabled(false);
-            }
-
-            if(currentTournament->hasTheTournamentStarted())
-            {
-                ui->tabWidget->setTabEnabled(1,true);
-            }
-            else
-            {
-                ui->tabWidget->setTabEnabled(1,false);
-            }
-
-            clearLayout(ui->horizontalLayoutOFTorursOfTabel);
-
-
-            QLabel * l = new QLabel();
-            l->setText("                  ");
-            ui->horizontalLayoutOFTorursOfTabel->addWidget(l);
-
-            std::vector<std::shared_ptr<QRadioButton>>& radios = mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()];
-
-            for (auto& rb : radios) {
-                ui->horizontalLayoutOFTorursOfTabel->addWidget(rb.get());
-            }
-
-
-            GivingDataToTable(*currentTournament, currentTournament->getCurrentoOganizedTour()-1);
-
-            GivingDataToDrawing(*Tournament);
-
-            ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
-            if(currentTournament->hasTheTournamentStarted())
-            {
-                emit mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->clicked();
-                mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->setChecked(true);
-            }
-
-            deleteTournamentDetailes();
-        });
+        radioButtonsConnections(radioButton, vectorOfTournaments[i].get());
 
         if(vectorOfTournaments[i]->getCurrentoOganizedTour()-1==vectorOfTournaments[i]->getTourCount())
         {
-            ui->verticalLayoutOfOldTournaments->addWidget(radioButton);
+            ui->verticalLayoutOfOldTournaments->addWidget(radioButton.get());
         }
         else
         {
-            ui->verticalLayoutOfTournamnets->addWidget(radioButton);
+            ui->verticalLayoutOfTournamnets->addWidget(radioButton.get());
         }
 
         int j =1;
         for(auto& radioButtonOfTours: mapOfTableRadiobuttons[i])
         {
-            QObject::connect(radioButtonOfTours.get(), &QRadioButton::clicked, this, [this, j,Tournament]()
+            QObject::connect(radioButtonOfTours.get(), &QRadioButton::clicked, this, [this, j]()
                              {
-                                 // Tournament->setCurrentTour(j);
                                  GivingDataToTable(*currentTournament, j);
                                  ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
                              });
@@ -330,6 +255,88 @@ void MainWindow::radioButtonsConnections()
         }
     }
 
+}
+
+void MainWindow::radioButtonsConnections(std::shared_ptr<QRadioButton> &radioButton, GameManager* tournament)
+{
+    QObject::connect(radioButton.get(), &QRadioButton::clicked, this, [tournament, this]()
+    {
+        ui->stackedWidget->setCurrentIndex(2);
+        currentTournament = tournament;
+        if(currentTournament->hasTheTournamentStarted())
+            currentTournament->setCurrentTour(currentTournament->getCurrentoOganizedTour()-1);
+
+
+        if(currentTournament->getCurrentoOganizedTour()-1==currentTournament->getTourCount())
+        {
+            ui->pushButtonEdit->setDisabled(true);
+            ui->pushButtonDelete->setDisabled(false);
+        }
+        else
+        {
+            ui->pushButtonEdit->setDisabled(false);
+            ui->pushButtonDelete->setDisabled(false);
+        }
+
+        ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
+
+        if(!currentTournament->hasTheTournamentStarted())
+        {
+            ui->pushButtonAddName->setDisabled(false);
+            ui->lineEditOfTourCount->setDisabled(false);
+        }
+
+        if((currentTournament->getCurrentTour() != currentTournament->getTourCount()) &&
+            (currentTournament->getCurrentoOganizedTour()!=currentTournament->getCurrentTour()))
+        {ui->pushButtonNext->setDisabled(false);}
+        else
+        {ui->pushButtonNext->setDisabled(true);}
+
+        if(currentTournament->getCurrentTour()==1)
+        {
+            ui->pushButtonPrevious->setDisabled(true);
+        }
+        else
+        {
+            ui->pushButtonPrevious->setDisabled(false);
+        }
+
+        if(currentTournament->hasTheTournamentStarted())
+        {
+            ui->tabWidget->setTabEnabled(1,true);
+        }
+        else
+        {
+            ui->tabWidget->setTabEnabled(1,false);
+        }
+
+        clearLayout(ui->horizontalLayoutOFTorursOfTabel);
+
+
+        QLabel * l = new QLabel();
+        l->setText("                  ");
+        ui->horizontalLayoutOFTorursOfTabel->addWidget(l);
+
+        std::vector<std::shared_ptr<QRadioButton>>& radios = mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()];
+
+        for (auto& rb : radios) {
+            ui->horizontalLayoutOFTorursOfTabel->addWidget(rb.get());
+        }
+
+
+        GivingDataToTable(*currentTournament, currentTournament->getCurrentoOganizedTour()-1);
+
+        GivingDataToDrawing(*tournament);
+
+        ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
+        if(currentTournament->hasTheTournamentStarted())
+        {
+            emit mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->clicked();
+            mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->setChecked(true);
+        }
+
+        deleteTournamentDetailes();
+    });
 }
 
 
@@ -394,8 +401,8 @@ MainWindow::MainWindow(QWidget *parent)
     radioGroup->setExclusive(true);
 
     //data loading
-    dataBase.loadingDataBase(vectorOfTournaments,vectorOfRadioButtons,mapOfTableRadiobuttons,radioGroup.get());
-    radioButtonsConnections();
+    dataBase.loadingDataBase(vectorOfTournaments,vectorOfRadioButtons,mapOfTableRadiobuttons, radioGroup);
+    connectionsOfLoadingRadiobuttons();
 
 };
 
@@ -447,21 +454,16 @@ void MainWindow::addPlayersToGameManager(GameManager& gameManager)
 
     for (int i =0 ; i < rowCount; ++i) {
         QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
-        if (!rowItem) continue;
 
         QHBoxLayout* rowLayout = qobject_cast<QHBoxLayout*>(rowItem->layout());
-        if (!rowLayout) continue;
 
         QLayoutItem* nameItem = rowLayout->itemAt(1);
-        if (!nameItem) continue;
 
         QWidget* widget = nameItem->widget();
-        if (!widget) continue;
 
         QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
-        if (!lineEdit) continue;
 
-        if(i>=lastcount)
+        if(i >= lastcount)
         {
             QString playerName = lineEdit->text().trimmed();
             if (!playerName.isEmpty())
@@ -482,9 +484,9 @@ void MainWindow::addPlayersToGameManager(GameManager& gameManager)
 
             QString playerName = lineEdit->text().trimmed();
 
-            gameManager.getPlayerById(i+1)->setName(playerName);
+            gameManager.getPlayerById(i + 1)->setName(playerName);
 
-            dataBase.updatePlayersData(0,0,0,-1,playerName,currentTournament->getIndexOfTournament(),i+1);
+            dataBase.updatePlayersData(0, 0, 0, -1, playerName,currentTournament->getIndexOfTournament(),i+1);
         }
     }
 }
@@ -522,19 +524,14 @@ bool MainWindow::isDataComplete( )
             for (int i = 0; i < rowCount; ++i)
             {
                 QLayoutItem* rowItem = ui->verticalLayoutOfNames->itemAt(i);
-                if (!rowItem) continue;
 
                 QHBoxLayout* rowLayout = qobject_cast<QHBoxLayout*>(rowItem->layout());
-                if (!rowLayout) continue;
 
                 QLayoutItem* nameItem = rowLayout->itemAt(1);
-                if (!nameItem) continue;
 
                 QWidget* widget = nameItem->widget();
-                if (!widget) continue;
 
                 QLineEdit* lineEdit = qobject_cast<QLineEdit*>(widget);
-                if (!lineEdit) continue;
 
                 if(lineEdit->text().isEmpty())
                     throw " The data of the players is not complete. ";
@@ -694,83 +691,84 @@ void MainWindow::on_PushButtonOkOfNewTournamnet_clicked(GameManager * thechangin
                 Tournament->setGame(currentTour, newGame);
             }
 
-            QObject::connect(radioButton.get(), &QRadioButton::clicked, this, [Tournament, this]()
-                             {
+            radioButtonsConnections(radioButton,Tournament.get());
+            // QObject::connect(radioButton.get(), &QRadioButton::clicked, this, [Tournament, this]()
+            //                  {
 
-                                 ui->stackedWidget->setCurrentIndex(2);
-                                    currentTournament = Tournament.get();
-                                 if(currentTournament->hasTheTournamentStarted())
-                                     currentTournament->setCurrentTour(currentTournament->getCurrentoOganizedTour()-1);
+            //                      ui->stackedWidget->setCurrentIndex(2);
+            //                         currentTournament = Tournament.get();
+            //                      if(currentTournament->hasTheTournamentStarted())
+            //                          currentTournament->setCurrentTour(currentTournament->getCurrentoOganizedTour()-1);
 
-                                 if(currentTournament->getCurrentoOganizedTour()-1==currentTournament->getTourCount())
-                                 {
-                                     ui->pushButtonEdit->setDisabled(true);
-                                     ui->pushButtonDelete->setDisabled(false);
-                                 }
-                                 else
-                                 {
-                                     ui->pushButtonEdit->setDisabled(false);
-                                     ui->pushButtonDelete->setDisabled(false);
-                                 }
+            //                      if(currentTournament->getCurrentoOganizedTour()-1==currentTournament->getTourCount())
+            //                      {
+            //                          ui->pushButtonEdit->setDisabled(true);
+            //                          ui->pushButtonDelete->setDisabled(false);
+            //                      }
+            //                      else
+            //                      {
+            //                          ui->pushButtonEdit->setDisabled(false);
+            //                          ui->pushButtonDelete->setDisabled(false);
+            //                      }
 
-                                 ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
+            //                      ui->labelOfTour->setText("Tour " + QString::number(currentTournament->getCurrentTour()));
 
-                                 if(!currentTournament->hasTheTournamentStarted())
-                                 {
-                                     ui->pushButtonAddName->setDisabled(false);
-                                     ui->lineEditOfTourCount->setDisabled(false);
-                                 }
+            //                      if(!currentTournament->hasTheTournamentStarted())
+            //                      {
+            //                          ui->pushButtonAddName->setDisabled(false);
+            //                          ui->lineEditOfTourCount->setDisabled(false);
+            //                      }
 
-                                 if((currentTournament->getCurrentTour() != currentTournament->getTourCount()) &&
-                                     (currentTournament->getCurrentoOganizedTour()!=currentTournament->getCurrentTour()))
-                                 {ui->pushButtonNext->setDisabled(false);}
-                                 else
-                                 {ui->pushButtonNext->setDisabled(true);}
+            //                      if((currentTournament->getCurrentTour() != currentTournament->getTourCount()) &&
+            //                          (currentTournament->getCurrentoOganizedTour()!=currentTournament->getCurrentTour()))
+            //                      {ui->pushButtonNext->setDisabled(false);}
+            //                      else
+            //                      {ui->pushButtonNext->setDisabled(true);}
 
-                                 if(currentTournament->getCurrentTour()==1)
-                                 {
-                                     ui->pushButtonPrevious->setDisabled(true);
-                                 }
-                                 else
-                                 {
-                                     ui->pushButtonPrevious->setDisabled(false);
-                                 }
+            //                      if(currentTournament->getCurrentTour()==1)
+            //                      {
+            //                          ui->pushButtonPrevious->setDisabled(true);
+            //                      }
+            //                      else
+            //                      {
+            //                          ui->pushButtonPrevious->setDisabled(false);
+            //                      }
 
-                                 if(currentTournament->hasTheTournamentStarted())
-                                 {
-                                     ui->tabWidget->setTabEnabled(1,true);
-                                 }
-                                 else
-                                 {
-                                     ui->tabWidget->setTabEnabled(1,false);
-                                 }
+            //                      if(currentTournament->hasTheTournamentStarted())
+            //                      {
+            //                          ui->tabWidget->setTabEnabled(1,true);
+            //                      }
+            //                      else
+            //                      {
+            //                          ui->tabWidget->setTabEnabled(1,false);
+            //                      }
 
-                                 clearLayout(ui->horizontalLayoutOFTorursOfTabel);
-
-
-                                 QLabel * l = new QLabel();
-                                 l->setText("                  ");
-                                 ui->horizontalLayoutOFTorursOfTabel->addWidget(l);
+            //                      clearLayout(ui->horizontalLayoutOFTorursOfTabel);
 
 
-                                 std::vector<std::shared_ptr<QRadioButton>>& radio = mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()];
-
-                                 for (auto& rb : radio) {
-                                     ui->horizontalLayoutOFTorursOfTabel->addWidget(rb.get());
-                                 }
-
-                                 GivingDataToTable(*currentTournament, currentTournament->getCurrentoOganizedTour()-1);
-                                 GivingDataToDrawing(*currentTournament);
-                                 ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
-                                 if(currentTournament->hasTheTournamentStarted())
-                                 {
-                                     emit mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->clicked();
-                                     mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->setChecked(true);
-                                 }
+            //                      QLabel * l = new QLabel();
+            //                      l->setText("                  ");
+            //                      ui->horizontalLayoutOFTorursOfTabel->addWidget(l);
 
 
-                                 deleteTournamentDetailes();
-                             });
+            //                      std::vector<std::shared_ptr<QRadioButton>>& radio = mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()];
+
+            //                      for (auto& rb : radio) {
+            //                          ui->horizontalLayoutOFTorursOfTabel->addWidget(rb.get());
+            //                      }
+
+            //                      GivingDataToTable(*currentTournament, currentTournament->getCurrentoOganizedTour()-1);
+            //                      GivingDataToDrawing(*currentTournament);
+            //                      ui->checkBoxOfSort->setCheckState(Qt::Unchecked);
+            //                      if(currentTournament->hasTheTournamentStarted())
+            //                      {
+            //                          emit mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->clicked();
+            //                          mapOfTableRadiobuttons[currentTournament->getIndexOfTournament()].back()->setChecked(true);
+            //                      }
+
+
+            //                      deleteTournamentDetailes();
+            //                  });
 
             emit radioButton->click();
 
@@ -1404,7 +1402,7 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
     if (reply == QMessageBox::Ok)
     {
         ui->tabWidget->setTabEnabled(1,true);
-        std::vector<std::shared_ptr<Game>>& game = currentTournament->getTourGames(currentTournament->getCurrentTour());
+        const std::vector<std::shared_ptr<Game>>& game = currentTournament->getTourGames(currentTournament->getCurrentTour());
         int countOfGames = game.size();
         int countOfPlayers = currentTournament->getPlayerCount();
 
@@ -1625,3 +1623,6 @@ void MainWindow::on_pushButtonOkOfDrawing_clicked()
         return;
     }
 }
+
+
+

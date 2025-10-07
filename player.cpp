@@ -6,9 +6,9 @@ Player::Player():m_currentPoint(0), m_colorCoef(0), m_lastColor(-1)
 {
 }
 
-Player::Player(Player *parent ):m_currentPoint(parent->m_currentPoint),
-    m_colorCoef(parent->m_colorCoef), m_lastColor(parent->m_lastColor),
-    m_id(parent->m_id), m_name(parent->m_name){}
+// Player::Player(Player *parent ):m_currentPoint(parent->m_currentPoint),
+//     m_colorCoef(parent->m_colorCoef), m_lastColor(parent->m_lastColor),
+//     m_id(parent->m_id), m_name(parent->m_name){}
 
 int Player::getId() const
 {

@@ -10,7 +10,7 @@ class Player:public QObject
     Q_OBJECT
 public:
     Player();
-    Player(Player *parent);
+    // Player(Player *parent);
 
     int getId()const;
     double getCurrentPoint() const;

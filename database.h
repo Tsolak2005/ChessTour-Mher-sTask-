@@ -19,7 +19,7 @@ public:
     void loadingDataBase(std::vector<std::shared_ptr<GameManager>> &vectorOfTournaments,
                                    std::vector<std::shared_ptr<QRadioButton>> &vectorOfRadioButtons,
                                    std::map<int,std::vector<std::shared_ptr<QRadioButton>>> &mapOfTableRadiobuttons,
-                         QButtonGroup *radioGroup);
+                         std::shared_ptr<QButtonGroup>& radioGroup);
 
     void removeTournamentAndAllDatasInIt(int index);
 

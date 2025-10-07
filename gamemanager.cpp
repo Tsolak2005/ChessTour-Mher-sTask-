@@ -122,12 +122,12 @@ QString GameManager::getDate() const
     return m_date;
 }
 
-std::vector<std::shared_ptr<Game>>& GameManager::getTourGames(int tour)
+const std::vector<std::shared_ptr<Game>>& GameManager::getTourGames(int tour) const
 {
 
     if(tour <= m_tourCount && tour > 0)
     {
-        return m_gameMap[tour];
+        return m_gameMap.at(tour);
     }
 
     throw std::out_of_range("Invalid tour number");
@@ -153,7 +153,7 @@ void GameManager::setDate(const QString date)
     m_date = date;
 }
 
-void GameManager::addNewPlayer(std::shared_ptr<Player> P)
+void GameManager::addNewPlayer(const std::shared_ptr<Player>& P)
 {
     m_playerList.push_back(P);
 }
